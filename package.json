@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start"
-  },
+  "dev": "next dev",
+  "docker:up": "docker-compose up -d",
+  "docker:down": "docker-compose down",
+  "dev:stack": "concurrently \"npm run docker:up\" \"wait-on tcp:5432 && npm run dev\""
+},
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "next": "15.5.5",
@@ -22,8 +23,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.1"
   }
 }

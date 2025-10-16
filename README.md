@@ -16,19 +16,17 @@ The goal of this setup is to provide a complete modern development stack for rap
 | Database | PostgreSQL (via Docker) |
 | API | Next.js API Routes |
 | AI Integration | OpenAI API |
-| Deployment-ready | Yes |
 
 ---
 
 ## ⚙️ Project Setup — Step by Step
-
-### 1️⃣ Create Next.js project
-
 ```bash
+1️⃣ Create Next.js project
+
 npx create-next-app@latest studymate
 cd studymate
-Options selected during setup:
 
+Options selected during setup:
 ✅ TypeScript → Yes
 
 ✅ ESLint → Yes
@@ -37,55 +35,33 @@ Options selected during setup:
 
 ✅ App Router → Yes
 
-✅ Import alias → @/*
+❌ Import alias → @/*
 
 2️⃣ Install TailwindCSS (version 3.4.14)
-If Tailwind was not included during create-next-app, install manually:
 
-bash
-Skopiuj kod
 npm install -D tailwindcss@3.4.14 postcss autoprefixer
 npx tailwindcss init -p
-Edit tailwind.config.js:
 
-js
-Skopiuj kod
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: { extend: {} },
-  plugins: [],
-}
 Edit src/app/globals.css:
-
-css
-Skopiuj kod
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-3️⃣ Initialize Prisma and PostgreSQL
-Install dependencies:
 
-bash
-Skopiuj kod
+3️⃣ Initialize Prisma and PostgreSQL
+
+Install dependencies:
 npm install prisma @prisma/client
 npx prisma init
-In .env.local:
 
-env
-Skopiuj kod
+
+In .env.local:
 DATABASE_URL="postgresql://postgres:password@localhost:5432/mydb?schema=public"
+
 Prisma schema (prisma/schema.prisma):
 
-prisma
-Skopiuj kod
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -118,16 +94,14 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-Run migration:
 
-bash
-Skopiuj kod
+Run migration:
 npx prisma migrate dev --name init
+
+
 4️⃣ Setup Docker with PostgreSQL + pgAdmin
 Create docker-compose.yml in project root:
 
-yaml
-Skopiuj kod
 version: '3.8'
 
 services:
@@ -158,21 +132,17 @@ services:
 
 volumes:
   postgres_data:
-Run database stack:
 
-bash
-Skopiuj kod
+
+Run database stack:
 docker-compose up -d
+
 5️⃣ Configure NextAuth
 Install:
-
-bash
-Skopiuj kod
 npm install next-auth
+
 Create /src/app/api/auth/[...nextauth]/route.ts:
 
-ts
-Skopiuj kod
 import NextAuth from "next-auth"
 import GitHubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
@@ -191,30 +161,25 @@ const handler = NextAuth({
 })
 
 export { handler as GET, handler as POST }
+
+
 Create /src/lib/prisma.ts:
 
-ts
-Skopiuj kod
 import { PrismaClient } from "@prisma/client"
 export const prisma = globalThis.prisma || new PrismaClient()
 if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma
-Add to .env.local:
 
-env
-Skopiuj kod
-GITHUB_ID=your_github_client_id
-GITHUB_SECRET=your_github_client_secret
+
+Add to .env.local:
 NEXTAUTH_SECRET=supersecretstring
+
+
 6️⃣ Add OpenAI API integration
 Install:
 
-bash
-Skopiuj kod
 npm install openai
 Create /src/app/api/generate/route.ts:
 
-ts
-Skopiuj kod
 import OpenAI from "openai"
 import { NextResponse } from "next/server"
 
@@ -232,53 +197,49 @@ export async function POST(req: Request) {
     response: completion.choices[0].message.content,
   })
 }
-Add to .env.local:
 
-env
-Skopiuj kod
+
+Add to .env.local:
 OPENAI_API_KEY=sk-...
+
+
 7️⃣ Add convenience scripts
 Install helper tools:
 
-bash
-Skopiuj kod
 npm install --save-dev concurrently wait-on
 Update package.json:
 
-json
-Skopiuj kod
 "scripts": {
   "dev": "next dev",
   "docker:up": "docker-compose up -d",
   "docker:down": "docker-compose down",
   "dev:stack": "concurrently \"npm run docker:up\" \"wait-on tcp:5432 && npm run dev\""
 }
-Now you can launch the entire stack (Next.js + PostgreSQL + pgAdmin) with:
 
-bash
-Skopiuj kod
+
+Now you can launch the entire stack (Next.js + PostgreSQL + pgAdmin) with:
 npm run dev:stack
+
 8️⃣ Test Prisma connection
-bash
-Skopiuj kod
+
 npx prisma studio
 Opens a local database UI at http://localhost:5555.
 
 ✅ Access Points
 Service	URL
 Next.js app	http://localhost:3000
-pgAdmin	http://localhost:5050
+pgAdmin	        http://localhost:5050
 PostgreSQL	localhost:5432
 Prisma Studio	http://localhost:5555
 
 🧪 Example API Test
 You can test your AI endpoint:
 
-bash
-Skopiuj kod
 curl -X POST http://localhost:3000/api/generate \
 -H "Content-Type: application/json" \
 -d '{"prompt":"Write a haiku about code"}'
+
+
 🧱 Summary
 This setup provides a modern, production-ready environment for building web apps with authentication, database persistence, and AI capabilities — all locally containerized and fully scriptable.
 
@@ -290,6 +251,4 @@ Start full stack	npm run dev:stack
 Run only Next.js	npm run dev
 Open Prisma Studio	npx prisma studio
 
-🧑‍💻 Authors
-StudyMate project — created as part of Inżynieria Oprogramowania (AGH) coursework.
-Maintained by Team StudyMate.
+```
