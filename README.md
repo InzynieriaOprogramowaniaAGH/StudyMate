@@ -29,7 +29,7 @@ cd studymate
 Options selected during setup:
 ✅ TypeScript → Yes
 
-✅ ESLint → Yes
+❌ ESLint → Yes
 
 ✅ TailwindCSS → Yes
 
