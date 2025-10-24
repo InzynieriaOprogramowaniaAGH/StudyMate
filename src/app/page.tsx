@@ -3,15 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { fadeInUp} from "../lib/motionutils";
 
-
-
-
-// === Framer Motion Variants ===
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
-};
 
 const fadeIn = {
   hidden: { opacity: 0 },
@@ -57,11 +50,13 @@ export default function HomePage() {
       <motion.section
         initial="hidden"
         animate="show"
-        variants={fadeIn}
+        variants={fadeInUp}
+
         className="flex flex-col items-center text-center py-24 px-6 bg-gradient-to-b from-gray-950 to-gray-900"
       >
         <motion.span
           variants={fadeInUp}
+
           className="bg-blue-950/40 text-blue-400 text-sm px-3 py-1 rounded-full mb-4"
         >
           🤖 AI-Powered Learning
@@ -69,6 +64,7 @@ export default function HomePage() {
 
         <motion.h1
           variants={fadeInUp}
+
           className="text-5xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
         >
           Study Smarter with Your AI Assistant
@@ -76,6 +72,7 @@ export default function HomePage() {
 
         <motion.p
           variants={fadeInUp}
+
           className="text-gray-400 max-w-xl mb-8"
         >
           Transform your notes into interactive quizzes and flashcards automatically. 
@@ -116,42 +113,51 @@ export default function HomePage() {
         </motion.div>
       </motion.section>
 
-      {/* === Features === */}
-      <motion.section
-        id="features"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        variants={fadeIn}
-        className="py-24 px-8 bg-gray-900"
-      >
-        <motion.h2
-          variants={fadeInUp}
-          className="text-center text-3xl font-bold mb-12"
-        >
-          Everything You Need to Excel
-        </motion.h2>
+      {/* === Features Section === */}
+<motion.section
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: true }}
+  variants={fadeInUp}
+  className="py-24 px-6 bg-gray-900 text-center"
+>
+  <motion.h2
+    className="text-4xl font-bold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+  >
+    Powerful AI Features
+  </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            ["AI-Generated Quizzes", "Automatically create practice questions using AI."],
-            ["Smart Flashcards", "Generate flashcards with spaced repetition algorithms."],
-            ["AI Summaries", "Quickly review key concepts with concise summaries."],
-            ["Progress Tracking", "Monitor learning progress with analytics."],
-            ["Quick Note Taking", "Capture notes with an intuitive note editor."],
-            ["Personalized Learning", "AI adapts to your learning style for better results."],
-          ].map(([title, desc], i) => (
-            <motion.div
-              key={i}
-              variants={fadeInUp}
-              className="bg-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-blue-500 transition"
-            >
-              <h3 className="font-semibold text-lg mb-2">{title}</h3>
-              <p className="text-gray-400">{desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <motion.div
+      className="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-blue-500 transition"
+    >
+      <h3 className="text-xl font-semibold mb-3 text-blue-400">AI Flashcards</h3>
+      <p className="text-gray-400">
+        Automatically turn your notes into smart, reviewable flashcards with spaced repetition.
+      </p>
+    </motion.div>
+
+    <motion.div
+      className="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-blue-500 transition"
+    >
+      <h3 className="text-xl font-semibold mb-3 text-blue-400">Quiz Generator</h3>
+      <p className="text-gray-400">
+        Generate personalized quizzes to test your understanding in seconds.
+      </p>
+    </motion.div>
+
+    <motion.div
+
+      className="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-blue-500 transition"
+    >
+      <h3 className="text-xl font-semibold mb-3 text-blue-400">AI Summaries</h3>
+      <p className="text-gray-400">
+        Summarize any topic into digestible, easy-to-study key points with AI.
+      </p>
+    </motion.div>
+  </div>
+</motion.section>
+
 
       {/* === How It Works === */}
       <motion.section
@@ -159,7 +165,7 @@ export default function HomePage() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        variants={fadeIn}
+        variants={fadeInUp}
         className="py-24 text-center px-8"
       >
         <motion.h2
@@ -191,7 +197,7 @@ export default function HomePage() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        variants={fadeIn}
+        variants={fadeInUp}
         className="py-24 bg-gray-900 px-8"
       >
         <motion.h2
