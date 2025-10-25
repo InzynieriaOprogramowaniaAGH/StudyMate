@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Clarity City';
-  src: url('/fonts/clarity-city/ClarityCity-Regular.woff2') format('woff2');
+  src: url('/fonts/ClarityCity-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: 'Clarity City';
-  src: url('/fonts/clarity-city/ClarityCity-Medium.woff2') format('woff2');
+  src: url('/fonts/ClarityCity-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: 'Clarity City';
-  src: url('/fonts/clarity-city/ClarityCity-Bold.woff2') format('woff2');
+  src: url('/fonts/ClarityCity-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -28,8 +28,9 @@
 
 :root {
   /* Brand colors */
-  --color-bg: rgb(8 12 15);
-  --color-bg-light: rgb(23 27 31);
+  --color-bg: #080c0f;
+  --color-bg-light: #171b1f;
+  --color-bg-darker: #040609;
   --color-primary: rgb(0 139 255);
   --color-primary-10: rgb(0 139 255 / 0.1);
   --color-primary-30: rgb(0 139 255 / 0.3);
@@ -37,6 +38,11 @@
   --color-accent-10: rgb(162 120 255 / 0.1);
   --color-text: rgb(234 234 234);
   --color-muted: rgb(139 144 149);
-  --color-border: rgb(23 27 31 / 0.3);
+  --color-border: #171b1f;
   --color-white: rgb(255 255 255);
 }
+
+html {
+  scroll-behavior: smooth;
+}
+

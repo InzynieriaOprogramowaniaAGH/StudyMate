@@ -9,17 +9,17 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how" className="py-24 text-center px-8 bg-bg">
+    <section id="how" className="py-20 sm:py-24 text-center px-4 sm:px-8 bg-bg">
       <motion.h2
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-3xl font-bold mb-12 text-white"
+        className="text-3xl sm:text-4xl font-bold mb-10 sm:mb-12 text-white"
       >
         How It <span className="text-accent">Works</span>
       </motion.h2>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
         {steps.map(([title, desc], i) => (
           <motion.div
             key={i}
