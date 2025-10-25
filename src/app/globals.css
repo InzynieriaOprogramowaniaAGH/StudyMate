@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Clarity City';
+  src: url('/fonts/clarity-city/ClarityCity-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clarity City';
+  src: url('/fonts/clarity-city/ClarityCity-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clarity City';
+  src: url('/fonts/clarity-city/ClarityCity-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Brand colors */
+  --color-bg: rgb(8 12 15);
+  --color-bg-light: rgb(23 27 31);
+  --color-primary: rgb(0 139 255);
+  --color-primary-10: rgb(0 139 255 / 0.1);
+  --color-primary-30: rgb(0 139 255 / 0.3);
+  --color-accent: rgb(162 120 255);
+  --color-accent-10: rgb(162 120 255 / 0.1);
+  --color-text: rgb(234 234 234);
+  --color-muted: rgb(139 144 149);
+  --color-border: rgb(23 27 31 / 0.3);
+  --color-white: rgb(255 255 255);
+}
