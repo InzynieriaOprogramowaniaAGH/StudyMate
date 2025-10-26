@@ -15,32 +15,28 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+  e.preventDefault();
+  setIsLoading(true);
+  setError("");
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const formData = new FormData(e.currentTarget);
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
+  const result = await signIn("credentials", {
+    redirect: false, // ❗ Prevents auto-redirect loops
+    email,
+    password,
+  });
 
-      if (result?.error) {
-        setError("Invalid email or password");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (result?.error) {
+    setError("Invalid email or password");
+  } else {
+    router.push("/dashboard");
+  }
+
+  setIsLoading(false);
+};
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">

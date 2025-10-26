@@ -1,18 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
- content: [
-  "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-],
-   theme: {
+  darkMode: ["class"],
+  content: [
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
     extend: {
       fontFamily: {
         clarity: ["'Clarity City'", "sans-serif"],
       },
+
+      // 🩵 Merge your color palette + shadcn semantic tokens
       colors: {
+        // === Your custom brand system (highest priority) ===
         bg: "var(--color-bg)",
         "bg-light": "var(--color-bg-light)",
+        "bg-darker": "var(--color-bg-darker)",
         primary: "var(--color-primary)",
         "primary-dark": "var(--color-primary-dark)",
         "primary-10": "var(--color-primary-10)",
@@ -23,18 +28,62 @@ module.exports = {
         muted: "var(--color-muted)",
         border: "var(--color-border)",
         white: "var(--color-white)",
+
+        // === shadcn/ui semantic colors (mapped to your variables) ===
+        background: "var(--color-bg)",
+        foreground: "var(--color-text)",
+        card: {
+          DEFAULT: "var(--color-bg-light)",
+          foreground: "var(--color-text)",
+        },
+        popover: {
+          DEFAULT: "var(--color-bg-light)",
+          foreground: "var(--color-text)",
+        },
+        primary: {
+          DEFAULT: "var(--color-primary)",
+          foreground: "white",
+        },
+        secondary: {
+          DEFAULT: "var(--color-accent)",
+          foreground: "white",
+        },
+        muted: {
+          DEFAULT: "var(--color-muted)",
+          foreground: "var(--color-text)",
+        },
+        accent: {
+          DEFAULT: "var(--color-accent)",
+          foreground: "white",
+        },
+        destructive: {
+          DEFAULT: "#dc2626",
+          foreground: "white",
+        },
+        border: "var(--color-border)",
+        input: "var(--color-border)",
+        ring: "var(--color-primary)",
       },
+
+      // 🌀 Keep your animations
       keyframes: {
-    'gradient-move': {
-      '0%, 100%': { backgroundPosition: '0% 50%' },
-      '50%': { backgroundPosition: '100% 50%' },
+        "gradient-move": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+      },
+      animation: {
+        "gradient-fast": "gradient-move 4s ease infinite",
+      },
+
+      // 💫 Nice rounded radii for shadcn components
+      borderRadius: {
+        lg: "var(--radius, 0.5rem)",
+        md: "calc(var(--radius, 0.5rem) - 2px)",
+        sm: "calc(var(--radius, 0.5rem) - 4px)",
+      },
     },
   },
-  animation: {
-    'gradient-fast': 'gradient-move 4s ease infinite',
-  },
-    },
-    
-  },
-  plugins: [],
+
+  plugins: [require("tailwindcss-animate")],
 };
