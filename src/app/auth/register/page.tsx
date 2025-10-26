@@ -7,6 +7,7 @@ import { fadeInUp } from "@/lib/motionutils";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,9 +39,34 @@ export default function RegisterPage() {
     }
 
     try {
-      // TODO: Implement registration logic
-      router.push("/dashboard");
-    } catch {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, password }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid server response");
+      }
+
+      if (!res.ok) {
+        setError(data?.error || "Failed to register");
+        setIsLoading(false);
+        return;
+      }
+
+      // ✅ Auto-login after registration
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -50,7 +76,6 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
       <Header />
-
       <motion.div
         initial="hidden"
         animate="show"
@@ -58,7 +83,6 @@ export default function RegisterPage() {
         className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12"
       >
         <div className="w-full max-w-md bg-[var(--color-bg-light)] rounded-2xl border border-[var(--color-border)] p-8 shadow-lg">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-xl sm:text-2xl font-semibold text-[var(--color-text)]">
               Create an account
@@ -68,7 +92,6 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center">
@@ -108,7 +131,6 @@ export default function RegisterPage() {
               className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
             />
 
-            {/* Terms Checkbox */}
             <label className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
               <input
                 type="checkbox"
@@ -144,7 +166,6 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="relative mt-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[var(--color-border)]"></div>
@@ -156,7 +177,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Social Logins */}
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
               <Image

@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import SessionProviderWrapper from "@/providers/SessionProviderWrapper";
 
 export const metadata: Metadata = {
   title: "StudyMate — AI-Powered Learning",
@@ -12,9 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className="font-clarity bg-bg text-text antialiased">
-        {children}
+        <SessionProviderWrapper>{children}</SessionProviderWrapper>
       </body>
     </html>
   );

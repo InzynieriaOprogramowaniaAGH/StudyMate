@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,14 +9,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//////////////////////////////////////////////////////////////
+// AUTH MODELS (NextAuth compatible)
+//////////////////////////////////////////////////////////////
+
 model User {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?  @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
-  sessions      Session[]
+  password      String? // for credentials auth
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  notes       Note[]
+  flashcards  Flashcard[]
+  quizzes     Quiz[]
+  progress    Progress[]
+  preferences UserPreference?
 }
 
 model Account {
@@ -31,6 +47,7 @@ model Account {
   id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -46,5 +63,82 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
+}
+
+//////////////////////////////////////////////////////////////
+// CORE APP MODELS
+//////////////////////////////////////////////////////////////
+
+model Note {
+  id         String      @id @default(cuid())
+  title      String
+  content    String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  flashcards Flashcard[]
+  quizzes    Quiz[]      @relation("NoteQuizzes") // ✅ give relation a name
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Flashcard {
+  id         String    @id @default(cuid())
+  front      String
+  back       String
+  noteId     String?
+  note       Note?     @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nextReview DateTime? // for spaced repetition
+  easeFactor Float? // for spaced repetition algorithms
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Quiz {
+  id             String         @id @default(cuid())
+  title          String
+  score          Int?
+  totalQuestions Int?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  note           Note?          @relation("NoteQuizzes", fields: [noteId], references: [id]) // ✅ opposite side
+  noteId         String?
+  questions      QuizQuestion[] // ✅ connect to QuizQuestion
+}
+
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  question      String
+  correctAnswer String
+  options       String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade) // ✅ has opposite side now
+  quizId String
+}
+
+model Progress {
+  id                 String   @id @default(cuid())
+  quizzesTaken       Int      @default(0)
+  flashcardsReviewed Int      @default(0)
+  notesCreated       Int      @default(0) // ✅ add this field
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+}
+
+model UserPreference {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learningGoal String? // e.g., "Learn Physics in 30 days"
+  theme        String? // e.g., "dark" or "light"
+  aiStyle      String? // e.g., "concise", "detailed", etc.
 }
