@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { fadeInUp } from "@/lib/motionutils";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Image from "next/image";
+import { fadeInUp } from "@/lib/motionutils";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function LoginPage() {
       } else {
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -43,148 +43,125 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col">
+    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
       <Header />
+
       <motion.div
         initial="hidden"
         animate="show"
         variants={fadeInUp}
-        className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12 overflow-auto"
+        className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12"
       >
-        <div className="w-full max-w-md">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="text-2xl font-bold text-primary inline-block mb-2">
-              StudyMate
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-text mb-2 font-clarity">
-              Welcome back!
+        <div className="w-full max-w-md bg-[var(--color-bg-light)] rounded-2xl border border-[var(--color-border)] p-8 shadow-lg">
+          {/* Title */}
+          <div className="mb-8 text-center">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[var(--color-text)]">
+              Welcome back
             </h1>
-            <p className="text-sm sm:text-base text-muted font-clarity">
-              Sign in to continue your learning journey
+            <p className="text-sm text-[var(--color-muted)] mt-1">
+              Enter your credentials to access your account
             </p>
           </div>
 
           {/* Form */}
-          <div className="bg-bg-light p-6 sm:p-8 rounded-2xl shadow-lg border border-border">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
-                  {error}
-                </div>
-              )}
-
-              {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                  placeholder="you@example.com"
-                />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center">
+                {error}
               </div>
+            )}
 
-              {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                  placeholder="••••••••"
-                />
-              </div>
+            {/* Email */}
+            <div>
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="name@example.com"
+                className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+              />
+            </div>
 
-              {/* Options */}
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
-                <label className="flex items-center text-sm sm:text-base">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 text-primary border-border rounded bg-bg"
-                  />
-                  <span className="ml-2 text-muted">Remember me</span>
-                </label>
-                <Link
-                  href="/auth/forgot-password"
-                  className="text-sm sm:text-base text-primary hover:text-accent transition"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+            {/* Password */}
+            <div>
+              <input
+                type="password"
+                name="password"
+                required
+                placeholder="Password"
+                className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+              />
+            </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full bg-primary hover:bg-accent text-white px-6 py-3 sm:py-3.5 rounded-xl font-medium transition ${
-                  isLoading ? "opacity-75 cursor-not-allowed" : ""
-                }`}
+            <div className="flex justify-end text-sm">
+              <Link
+                href="/auth/forgot-password"
+                className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
               >
-                {isLoading ? "Signing in..." : "Sign in"}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative mt-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
-              </div>
-              <div className="relative flex justify-center text-sm sm:text-base">
-                <span className="px-2 bg-bg-light text-muted">OR CONTINUE WITH</span>
-              </div>
+                Forgot password?
+              </Link>
             </div>
 
-            {/* Social buttons */}
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button className="flex items-center justify-center w-full px-4 py-3 border border-[#171b1f] rounded-xl hover:border-primary transition text-text bg-[#040609]">
-                <Image
-                  src="/images/googleLogo.svg"
-                  alt="Google"
-                  width={25}
-                  height={25}
-                  className="mr-2"
-                />
-                Google
-              </button>
-              <button className="flex items-center justify-center w-full px-4 py-3 border border-[#171b1f] rounded-xl hover:border-primary transition text-text bg-[#040609]">
-                <Image
-                  src="/images/githubLogo.svg"
-                  alt="GitHub"
-                  width={25}
-                  height={25}
-                  className="mr-2"
-                />
-                GitHub
-              </button>
-            </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500  ${
+                isLoading ? "opacity-75 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
 
-            {/* Signup link */}
-            <div className="mt-6 text-center text-sm sm:text-base">
-              <p className="text-muted">
-                Don't have an account?{" "}
-                <Link
-                  href="/auth/register"
-                  className="text-primary hover:text-accent transition"
-                >
-                  Sign up
-                </Link>
-              </p>
+          {/* Divider */}
+          <div className="relative mt-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[var(--color-border)]"></div>
             </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-[var(--color-bg-light)] text-[var(--color-muted)]">
+                OR CONTINUE WITH
+              </span>
+            </div>
+          </div>
+
+          {/* Social Logins */}
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
+              <Image
+                src="/images/googleLogo.svg"
+                alt="Google"
+                width={22}
+                height={22}
+                className="mr-2"
+              />
+              Google
+            </button>
+
+            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
+              <Image
+                src="/images/githubLogo.svg"
+                alt="GitHub"
+                width={22}
+                height={22}
+                className="mr-2"
+              />
+              GitHub
+            </button>
+          </div>
+
+          {/* Signup Link */}
+          <div className="mt-6 text-center text-sm text-[var(--color-muted)]">
+            <p>
+              Don’t have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
       </motion.div>

@@ -3,18 +3,28 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
+
+
 
 export default function Hero() {
   return (
     <section className="flex flex-col items-center text-center py-20 sm:py-24 px-4 sm:px-6 bg-bg">
-      <motion.span
+    <motion.span
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-primary-10 text-primary text-sm px-3 py-1 rounded-full mb-4"
+        className="flex items-center gap-2 text-sm font-medium px-4 py-1.5 rounded-full mb-4"
+        style={{
+          backgroundColor: "color-mix(in srgb, var(--color-accent) 15%, transparent)",
+          color: "var(--color-accent)",
+        }}
       >
-        🤖 AI-Powered Learning
-      </motion.span>
+        <Sparkles className="w-4 h-4" />         
+        AI-Powered Learning
+    </motion.span>
+
+
 
       <motion.h1
         initial={{ opacity: 0, y: 20 }}

@@ -28,10 +28,11 @@
 
 :root {
   /* Brand colors */
-  --color-bg: #080c0f;
-  --color-bg-light: #171b1f;
+  --color-bg: #040609;
+  --color-bg-light: #080C0F;
   --color-bg-darker: #040609;
   --color-primary: rgb(0 139 255);
+  --color-primary-dark: rgb(0 109 204);
   --color-primary-10: rgb(0 139 255 / 0.1);
   --color-primary-30: rgb(0 139 255 / 0.3);
   --color-accent: rgb(162 120 255);
@@ -44,5 +45,21 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+@keyframes gradient-slow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-slow {
+  animation: gradient-slow 6s ease-in-out infinite;
 }
 

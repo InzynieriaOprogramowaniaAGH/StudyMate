@@ -8,22 +8,38 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="flex justify-between items-center px-6 md:px-8 py-4 border-b border-gray-800 sticky top-0 bg-gray-950/80 backdrop-blur-md z-50">
-      <Link href="/" className="text-2xl font-bold text-blue-400">
-        StudyMate
-      </Link>
+    <header className="flex justify-between items-center px-6 md:px-8 py-4 border-b border-gray-800 sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
+<Link
+  href="/"
+  className="
+    text-2xl font-bold 
+    bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))]
+    bg-[length:200%_200%]
+    bg-clip-text text-transparent 
+    animate-gradient-fast
+    transition-all duration-300 ease-out
+    hover:scale-105
+    hover:saturate-150
+  "
+>
+  StudyMate
+</Link>
+
+
+
+
 
       {/* Desktop nav */}
       <div className="hidden md:flex space-x-3 items-center">
         <Link
           href="/auth/login"
-          className="flex justify-center items-center h-10 px-4 rounded-xl text-gray-300 font-medium hover:text-white transition"
+          className="flex justify-center items-center h-10 px-4 rounded-xl text-white font-medium hover:text-white transition"
         >
           Log in
         </Link>
         <Link
           href="/auth/register"
-          className="flex justify-center items-center h-10 px-4 rounded-xl bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+          className="flex justify-center text-black items-center h-10 px-4 rounded-xl bg-primary font-medium hover:bg-primary-dark hover:text-white transition duration-500"
         >
           Get Started
         </Link>

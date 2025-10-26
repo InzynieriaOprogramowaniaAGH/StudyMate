@@ -40,7 +40,7 @@ export default function RegisterPage() {
     try {
       // TODO: Implement registration logic
       router.push("/dashboard");
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -48,185 +48,149 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col">
+    <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
       <Header />
+
       <motion.div
         initial="hidden"
         animate="show"
         variants={fadeInUp}
-        className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12 overflow-auto"
+        className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12"
       >
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-[var(--color-bg-light)] rounded-2xl border border-[var(--color-border)] p-8 shadow-lg">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 text-2xl font-bold text-primary mb-4 sm:mb-6">
-              StudyMate
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-text mb-2 font-clarity">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[var(--color-text)]">
               Create an account
             </h1>
-            <p className="text-sm sm:text-base text-muted font-clarity">
+            <p className="text-sm text-[var(--color-muted)] mt-1">
               Start your journey to smarter studying
             </p>
           </div>
 
           {/* Form */}
-          <div className="bg-bg-light p-6 sm:p-8 rounded-2xl shadow-lg border border-border">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
-                  {error}
-                </div>
-              )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center">
+                {error}
+              </div>
+            )}
 
-              {/* Full Name */}
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
+            <input
+              type="text"
+              name="fullName"
+              required
+              placeholder="John Doe"
+              className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+            />
+
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="name@example.com"
+              className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+            />
+
+            <input
+              type="password"
+              name="password"
+              required
+              placeholder="Create a strong password"
+              className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+            />
+
+            <input
+              type="password"
+              name="confirmPassword"
+              required
+              placeholder="Re-enter your password"
+              className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+            />
+
+            {/* Terms Checkbox */}
+            <label className="flex items-center gap-2 text-sm text-[var(--color-muted)]">
+              <input
+                type="checkbox"
+                name="terms"
+                className="w-4 h-4 accent-[var(--color-primary)] border border-[var(--color-border)] rounded-sm bg-[var(--color-bg-darker)] focus:ring-[var(--color-primary)] cursor-pointer"
+              />
+              <span>
+                I agree to the{" "}
+                <Link
+                  href="/terms"
+                  className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
                 >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  required
-                  placeholder="John Doe"
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy"
+                  className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
                 >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  placeholder="name@example.com"
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  placeholder="Create a strong password"
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                />
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm sm:text-base font-medium text-text mb-1"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  required
-                  placeholder="Re-enter your password"
-                  className="w-full px-4 py-3 sm:py-3.5 bg-bg border border-border rounded-xl text-text focus:outline-none focus:border-primary transition"
-                />
-              </div>
-
-              {/* Terms */}
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  name="terms"
-                  required
-                  className="w-4 h-4 text-primary border-border rounded bg-bg mt-1"
-                />
-                <label htmlFor="terms" className="ml-2 text-sm sm:text-base text-muted">
-                  I agree to the{" "}
-                  <Link href="/terms" className="text-primary hover:text-accent transition">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy" className="text-primary hover:text-accent transition">
-                    Privacy Policy
-                  </Link>
-                </label>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full bg-primary hover:bg-accent text-white px-6 py-3 sm:py-3.5 rounded-xl font-medium transition ${
-                  isLoading ? "opacity-75 cursor-not-allowed" : ""
-                }`}
-              >
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="mt-6 relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
-              </div>
-              <div className="relative flex justify-center text-sm sm:text-base">
-                <span className="px-2 bg-bg-light text-muted">OR CONTINUE WITH</span>
-              </div>
-            </div>
-
-            {/* Social buttons */}
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button className="flex items-center justify-center w-full px-4 py-3 border border-[#171b1f] rounded-xl hover:border-primary transition text-text bg-[#040609]">
-                <Image
-                  src="/images/googleLogo.svg"
-                  alt="Google"
-                  width={25}
-                  height={25}
-                  className="mr-2"
-                />
-                Google
-              </button>
-              <button className="flex items-center justify-center w-full px-4 py-3 border border-[#171b1f] rounded-xl hover:border-primary transition text-text bg-[#040609]">
-                <Image
-                  src="/images/githubLogo.svg"
-                  alt="GitHub"
-                  width={25}
-                  height={25}
-                  className="mr-2"
-                />
-                GitHub
-              </button>
-            </div>
-
-            {/* Sign in link */}
-            <div className="mt-6 text-center text-sm sm:text-base">
-              <p className="text-muted">
-                Already have an account?{" "}
-                <Link href="/auth/login" className="text-primary hover:text-accent transition">
-                  Sign in
+                  Privacy Policy
                 </Link>
-              </p>
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500 ${
+                isLoading ? "opacity-75 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative mt-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[var(--color-border)]"></div>
             </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-[var(--color-bg-light)] text-[var(--color-muted)]">
+                OR CONTINUE WITH
+              </span>
+            </div>
+          </div>
+
+          {/* Social Logins */}
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
+              <Image
+                src="/images/googleLogo.svg"
+                alt="Google"
+                width={22}
+                height={22}
+                className="mr-2"
+              />
+              Google
+            </button>
+
+            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
+              <Image
+                src="/images/githubLogo.svg"
+                alt="GitHub"
+                width={22}
+                height={22}
+                className="mr-2"
+              />
+              GitHub
+            </button>
+          </div>
+
+          <div className="mt-6 text-center text-sm text-[var(--color-muted)]">
+            <p>
+              Already have an account?{" "}
+              <Link
+                href="/auth/login"
+                className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
+              >
+                Sign in
+              </Link>
+            </p>
           </div>
         </div>
       </motion.div>

@@ -77,7 +77,7 @@ export default function Testimonials() {
               scale: 1.02,
               transition: { type: "spring", stiffness: 150, damping: 12 },
             }}
-            className="relative p-8 bg-bg rounded-2xl border border-border cursor-pointer text-left flex flex-col items-start"
+            className="relative p-8 bg-bg rounded-2xl border border-border text-left flex flex-col items-start"
           >
             {/* Quote icon */}
             <motion.div
