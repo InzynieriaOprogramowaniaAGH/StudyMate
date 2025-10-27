@@ -10,14 +10,17 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "text", placeholder: "you@example.com" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
+        // ✅ Validate input
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing email or password");
         }
 
+        // ✅ Find user by email
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -26,13 +29,14 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        // ✅ Force-cast because we already checked for null
-        const isValid = await compare(credentials.password, user.password as string);
+        // ✅ Verify password
+        const isValid = await compare(credentials.password, user.password);
 
         if (!isValid) {
           throw new Error("Invalid email or password");
         }
 
+        // ✅ Return safe user object (exclude password)
         return {
           id: user.id,
           name: user.name,
@@ -42,19 +46,23 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
+  // ✅ Use JWT-based sessions
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   },
 
+  // ✅ JWT secret
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
 
+  // ✅ Custom sign-in page
   pages: {
     signIn: "/auth/login",
   },
 
-  // ✅ Fix for localhost cookie handling
+  // ✅ Cookies config — safer for production
   cookies: {
     sessionToken: {
       name:
@@ -65,28 +73,36 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: false,
+        secure: process.env.NODE_ENV === "production", // secure only in production
       },
     },
   },
 
+  // ✅ Callbacks — attach user to JWT and session
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.user = user as any; // ✅ explicitly cast
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
       return token;
     },
 
     async session({ session, token }) {
-      if (token?.user) {
-        session.user = token.user as any; // ✅ explicitly cast
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          name: token.name as string,
+          email: token.email as string,
+        };
       }
       return session;
     },
   },
 
-  debug: true,
+  // ✅ Enable debug mode only in development
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

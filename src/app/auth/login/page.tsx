@@ -25,6 +25,7 @@ export default function LoginPage() {
 
   const result = await signIn("credentials", {
     redirect: false, // ❗ Prevents auto-redirect loops
+    // redirectTo: "/dashboard",
     email,
     password,
   });

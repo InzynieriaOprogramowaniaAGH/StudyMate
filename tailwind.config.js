@@ -12,9 +12,9 @@ module.exports = {
         clarity: ["'Clarity City'", "sans-serif"],
       },
 
-      // 🩵 Merge your color palette + shadcn semantic tokens
+
       colors: {
-        // === Your custom brand system (highest priority) ===
+
         bg: "var(--color-bg)",
         "bg-light": "var(--color-bg-light)",
         "bg-darker": "var(--color-bg-darker)",
@@ -29,7 +29,7 @@ module.exports = {
         border: "var(--color-border)",
         white: "var(--color-white)",
 
-        // === shadcn/ui semantic colors (mapped to your variables) ===
+
         background: "var(--color-bg)",
         foreground: "var(--color-text)",
         card: {
@@ -65,7 +65,6 @@ module.exports = {
         ring: "var(--color-primary)",
       },
 
-      // 🌀 Keep your animations
       keyframes: {
         "gradient-move": {
           "0%, 100%": { backgroundPosition: "0% 50%" },
@@ -76,7 +75,6 @@ module.exports = {
         "gradient-fast": "gradient-move 4s ease infinite",
       },
 
-      // 💫 Nice rounded radii for shadcn components
       borderRadius: {
         lg: "var(--radius, 0.5rem)",
         md: "calc(var(--radius, 0.5rem) - 2px)",
