@@ -41,6 +41,7 @@
   --color-muted: rgb(139 144 149);
   --color-border: #171b1f;
   --color-white: rgb(255 255 255);
+  --color-accent-dark: #0C0C16
 }
 
 html {
@@ -63,3 +64,9 @@ html {
   animation: gradient-slow 6s ease-in-out infinite;
 }
 
+body {
+  font-family: "Clarity City", sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
