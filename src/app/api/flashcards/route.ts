@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 706aa7d057557567126f31231858642e5d5cf938
 
 export async function GET() {
   try {
@@ -15,7 +18,10 @@ export async function GET() {
   }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 706aa7d057557567126f31231858642e5d5cf938
 export async function POST(req: Request) {
   try {
     const data = await req.json();
