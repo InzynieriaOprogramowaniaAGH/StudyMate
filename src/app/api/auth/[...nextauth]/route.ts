@@ -15,12 +15,10 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        // ✅ Validate input
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing email or password");
         }
 
-        // ✅ Find user by email
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -29,14 +27,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        // ✅ Verify password
         const isValid = await compare(credentials.password, user.password);
 
         if (!isValid) {
           throw new Error("Invalid email or password");
         }
 
-        // ✅ Return safe user object (exclude password)
         return {
           id: user.id,
           name: user.name,
@@ -46,23 +42,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  // ✅ Use JWT-based sessions
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 7,
   },
 
-  // ✅ JWT secret
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
-
-  // ✅ Custom sign-in page
   pages: {
     signIn: "/auth/login",
   },
 
-  // ✅ Cookies config — safer for production
   cookies: {
     sessionToken: {
       name:
@@ -73,12 +64,11 @@ export const authOptions: NextAuthOptions = {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production", // secure only in production
+        secure: process.env.NODE_ENV === "production",
       },
     },
   },
 
-  // ✅ Callbacks — attach user to JWT and session
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -101,7 +91,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  // ✅ Enable debug mode only in development
   debug: process.env.NODE_ENV === "development",
 };
 

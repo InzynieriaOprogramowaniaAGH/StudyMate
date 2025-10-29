@@ -100,7 +100,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Recent Notes (mobile-friendly, no internal scroll, wrap text) */}
+            {/* Recent Notes*/}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] flex-1">
               <CardHeader className="flex justify-between items-start p-4 sm:p-3 pb-2">
                 <div>
@@ -110,8 +110,7 @@ export default function DashboardPage() {
                 <a href="#" className="text-[var(--color-primary)] text-xs hover:underline">View All</a>
               </CardHeader>
 
-              {/* Removed overflow / max height so the list doesn't scroll internally.
-                  The page will scroll as needed (preferred on mobile). */}
+              {/* Removed overflow */}
               <CardContent className="p-4 sm:p-3 space-y-4">
                 {recentNotes.map((n, i) => (
                   <article
@@ -127,7 +126,7 @@ export default function DashboardPage() {
 
                     {/* Main content */}
                     <div className="flex-1 w-full">
-                      {/* title / subject / time — stack on mobile, inline-ish on sm+ */}
+                      {/* title / subject / time*/}
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
                         <div className="min-w-0">
                           {/* Allow wrapping for long titles/subjects */}
@@ -144,7 +143,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      {/* progress row - progress fills remaining width and percentage sits to the right on larger screens */}
+                      {/* progress row*/}
                       <div className="mt-3 flex items-center gap-3">
                         <div className="flex-1">
                           <Progress value={n.progress} className="h-2 bg-[var(--color-border)] w-full" />

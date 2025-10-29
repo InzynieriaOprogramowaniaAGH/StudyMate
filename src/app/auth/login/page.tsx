@@ -24,8 +24,7 @@ export default function LoginPage() {
   const password = formData.get("password") as string;
 
   const result = await signIn("credentials", {
-    redirect: false, // ❗ Prevents auto-redirect loops
-    // redirectTo: "/dashboard",
+    redirect: false,
     email,
     password,
   });

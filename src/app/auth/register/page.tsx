@@ -58,7 +58,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // ✅ Auto-login after registration
       await signIn("credentials", {
         email,
         password,
