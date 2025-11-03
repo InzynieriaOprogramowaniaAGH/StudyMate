@@ -1,5 +1,10 @@
+import Header from "@/components/layout/Header";
+
+
 export default async function NotesPage() {
   return (
+    <>    
+    <Header/>
     <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
@@ -18,5 +23,6 @@ export default async function NotesPage() {
         </section>
       </div>
     </main>
+    </>
   );
 }

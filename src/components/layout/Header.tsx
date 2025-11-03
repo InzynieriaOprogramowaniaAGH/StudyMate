@@ -6,34 +6,30 @@ import { Menu, X, User } from "lucide-react";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Portal from "@/components/ui/Portal";
-import LogoutConfirm from "@/components/ui/LogoutConfirm";
+import LogoutConfirm from "@/components/ui/logOutConfirm";
 
 export default function Header() {
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
-
   const pathname = usePathname();
 
-  const [open, setOpen] = useState(false); // mobile menu
-  const [menuOpen, setMenuOpen] = useState(false); // desktop profile menu
-  const [logoutRequested, setLogoutRequested] = useState(false); // top-level modal flag
+  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [logoutRequested, setLogoutRequested] = useState(false);
   const avatarRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
 
-  // Close menus when route changes
-  useEffect(() => {
-    closeAllMenus();
-  }, [pathname]);
-
-  // helper to close both menus
   const closeAllMenus = () => {
     setMenuOpen(false);
     setMenuPos(null);
     setOpen(false);
   };
 
-  // position desktop dropdown near avatar
+  useEffect(() => {
+    closeAllMenus();
+  }, [pathname]);
+
   const openMenuAtAvatar = () => {
     const btn = avatarRef.current;
     if (!btn) {
@@ -41,7 +37,7 @@ export default function Header() {
     } else {
       const rect = btn.getBoundingClientRect();
       const top = rect.bottom + 8;
-      const left = rect.right - 176; // align right edge roughly
+      const left = rect.right - 176;
       setMenuPos({ top, left });
     }
     setMenuOpen(true);
@@ -54,22 +50,17 @@ export default function Header() {
     else closeAllMenus();
   };
 
-  // Outside click handler — use 'click' so inner mouseDown handlers run first
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
       const target = e.target as Node | null;
       if (menuOpen) {
-        if (avatarRef.current?.contains(target) || menuRef.current?.contains(target)) {
-          return;
-        }
+        if (avatarRef.current?.contains(target) || menuRef.current?.contains(target)) return;
         closeAllMenus();
       }
     }
-
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") closeAllMenus();
     }
-
     document.addEventListener("click", onDocClick);
     document.addEventListener("keydown", onKey);
     return () => {
@@ -78,21 +69,16 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Called from dropdown buttons: close dropdowns and open top-level modal
   const requestLogout = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     e?.preventDefault();
     closeAllMenus();
-    // small delay to ensure menus are closed visually before modal shows
     setTimeout(() => setLogoutRequested(true), 10);
   };
 
-  // actual sign-out logic (passed to LogoutConfirm)
   const performSignOut = async () => {
     try {
       await nextAuthSignOut({ redirect: false });
-
-      // fallback server POST to ensure server clears cookies if needed
       try {
         const body = new URLSearchParams({ callbackUrl: "/" });
         await fetch("/api/auth/signout", {
@@ -104,9 +90,7 @@ export default function Header() {
       } catch (err) {
         console.warn("[logout] fallback POST failed", err);
       }
-
       setLogoutRequested(false);
-      // navigate home and reload as a safety-net
       window.location.href = "/";
     } catch (err) {
       console.error("Sign out error:", err);
@@ -114,6 +98,9 @@ export default function Header() {
       window.location.href = "/";
     }
   };
+
+  // ✅ Get user's image (NextAuth automatically provides this)
+  const avatarUrl = session?.user?.image;
 
   return (
     <>
@@ -139,20 +126,31 @@ export default function Header() {
                 Progress
               </Link>
 
-              {/* Profile Icon + Dropdown (desktop) */}
+              {/* Profile Avatar */}
               <div className="relative">
                 <button
                   ref={avatarRef}
                   type="button"
                   onMouseDown={(ev) => ev.stopPropagation()}
                   onClick={toggleMenu}
-                  className="w-10 h-10 rounded-full bg-gray-800 flex justify-center items-center text-gray-300 hover:text-white hover:bg-gray-700 transition"
+                  className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 hover:border-[var(--color-primary)] transition"
                   aria-expanded={menuOpen}
                   aria-haspopup="true"
                 >
-                  <User size={20} />
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-300">
+                      <User size={20} />
+                    </div>
+                  )}
                 </button>
 
+                {/* Dropdown */}
                 {menuOpen && menuPos && (
                   <Portal>
                     <div
@@ -170,15 +168,10 @@ export default function Header() {
                         <Link
                           href="/profile"
                           className="px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition"
-                          onClick={() => {
-                            // close immediately and allow navigation
-                            closeAllMenus();
-                          }}
+                          onClick={() => closeAllMenus()}
                         >
                           Profile
                         </Link>
-
-                        {/* Logout no longer opens modal from inside dropdown; request top-level modal */}
                         <button
                           onMouseDown={(ev) => {
                             ev.preventDefault();
@@ -210,7 +203,7 @@ export default function Header() {
           )}
         </nav>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu toggle */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden text-gray-300 hover:text-white"
@@ -220,7 +213,7 @@ export default function Header() {
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* Mobile dropdown */}
+        {/* Mobile menu */}
         {open && (
           <div
             className="absolute top-full right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-xl shadow-lg p-3 flex flex-col md:hidden space-y-2 z-[9999] pointer-events-auto"
@@ -257,7 +250,6 @@ export default function Header() {
                   Profile
                 </Link>
 
-                {/* mobile logout uses same top-level request flow */}
                 <button
                   onMouseDown={(ev) => {
                     ev.preventDefault();
@@ -294,11 +286,6 @@ export default function Header() {
         )}
       </header>
 
-      {/* Top-level LogoutConfirm (controlled) using your Portal/LogoutConfirm */}
-      {/*
-        We render LogoutConfirm at top-level and control it with `logoutRequested`.
-        LogoutConfirm handles the modal UI; we pass onConfirm to run sign-out logic.
-      */}
       {logoutRequested && (
         <Portal>
           <LogoutConfirm

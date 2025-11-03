@@ -1,0 +1,135 @@
+"use client";
+
+import { CreditCard, Receipt, CheckCircle } from "lucide-react";
+
+export function BillingTab() {
+  return (
+    <div className="space-y-6">
+      {/* Subscription Section */}
+      <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+            <CreditCard size={18} className="text-[var(--color-primary)]" />
+          </div>
+          <div>
+            <h4 className="font-medium text-[var(--color-text)]">Subscription</h4>
+            <p className="text-sm text-[var(--color-muted)]">
+              Manage your StudyMate subscription
+            </p>
+          </div>
+        </div>
+
+        <div className="border border-[var(--color-border)] rounded-xl p-4 flex justify-between items-center mb-5 bg-[var(--color-bg-darker)]">
+          <div>
+            <h3 className="font-semibold text-lg text-[var(--color-text)]">
+              Pro Plan
+            </h3>
+            <p className="text-sm text-[var(--color-muted)]">
+              $9.99/month
+            </p>
+            <p className="text-xs text-[var(--color-muted)] mt-1">
+              Next billing date: November 15, 2024
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <span className="text-xs font-medium text-blue-400 bg-blue-950/40 border border-blue-900 rounded-md px-2 py-0.5">
+              Active
+            </span>
+            <div className="flex gap-2">
+              <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-black hover:opacity-90 transition">
+                Change Plan
+              </button>
+              <button className="px-3 py-1 text-sm font-medium rounded-md bg-transparent text-red-400 hover:text-red-300 transition">
+                Cancel Subscription
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h5 className="font-medium text-[var(--color-text)] mb-2">Pro Features</h5>
+          <ul className="text-sm text-[var(--color-muted)] space-y-1 list-none">
+            <li>✓ Unlimited AI-generated quizzes</li>
+            <li>✓ Advanced analytics and insights</li>
+            <li>✓ Priority support</li>
+            <li>✓ Custom study schedules</li>
+            <li>✓ Export notes and flashcards</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Payment Method */}
+      <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+            <CreditCard size={18} className="text-[var(--color-primary)]" />
+          </div>
+          <div>
+            <h4 className="font-medium text-[var(--color-text)]">Payment Method</h4>
+            <p className="text-sm text-[var(--color-muted)]">
+              Manage your payment information
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between border border-[var(--color-border)] rounded-xl p-4 bg-[var(--color-bg-darker)] mb-3">
+          <div>
+            <p className="text-[var(--color-text)] font-medium">•••• •••• •••• 4242</p>
+            <p className="text-xs text-[var(--color-muted)]">Expires 12/25</p>
+          </div>
+          <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-black hover:opacity-90 transition">
+            Update
+          </button>
+        </div>
+
+        <button className="w-full mt-2 border border-[var(--color-border)] rounded-md py-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)] transition">
+          Add Payment Method
+        </button>
+      </section>
+
+      {/* Billing History */}
+      <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+            <Receipt size={18} className="text-[var(--color-primary)]" />
+          </div>
+          <div>
+            <h4 className="font-medium text-[var(--color-text)]">Billing History</h4>
+            <p className="text-sm text-[var(--color-muted)]">
+              View your past invoices and payments
+            </p>
+          </div>
+        </div>
+
+        <div className="divide-y divide-[var(--color-border)]">
+          {[
+            { date: "Oct 15, 2024", plan: "Pro Plan", amount: "$9.99" },
+            { date: "Sep 15, 2024", plan: "Pro Plan", amount: "$9.99" },
+            { date: "Aug 15, 2024", plan: "Pro Plan", amount: "$9.99" },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between py-3"
+            >
+              <div>
+                <p className="text-[var(--color-text)] text-sm font-medium">
+                  {item.date}
+                </p>
+                <p className="text-xs text-[var(--color-muted)]">{item.plan}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-sm text-[var(--color-text)]">{item.amount}</p>
+                <span className="text-xs text-green-400 border border-green-900 rounded-md px-2 py-0.5">
+                  Paid
+                </span>
+                <button className="px-2 py-1 text-xs font-medium rounded-md bg-[var(--color-bg-darker)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition">
+                  Download
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -12,24 +12,26 @@ datasource db {
 //////////////////////////////////////////////////////////////
 // AUTH MODELS (NextAuth compatible)
 //////////////////////////////////////////////////////////////
-
 model User {
   id            String    @id @default(cuid())
+  firstName     String?
+  lastName      String?
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  password      String? // for credentials auth
+  password      String?
+  bio           String?
+  university    String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-
-  notes       Note[]
-  flashcards  Flashcard[]
-  quizzes     Quiz[]
-  progress    Progress[]
+  accounts   Account[]
+  sessions   Session[]
+  notes      Note[]
+  flashcards Flashcard[]
+  quizzes    Quiz[]
+  progress   Progress[]
   preferences UserPreference?
 }
 
