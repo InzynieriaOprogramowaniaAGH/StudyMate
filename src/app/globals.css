@@ -37,6 +37,7 @@
   --color-primary-30: rgb(0 139 255 / 0.3);
   --color-accent: rgb(162 120 255);
   --color-accent-10: rgb(162 120 255 / 0.1);
+    --color-accent-70: rgb(162 120 255 / 0.5);
   --color-text: rgb(234 234 234);
   --color-muted: rgb(139 144 149);
   --color-border: #171b1f;
