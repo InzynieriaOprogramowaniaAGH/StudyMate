@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getCsrfToken } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Image from "next/image";
@@ -13,30 +13,40 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [csrfToken, setCsrfToken] = useState<string | null>(null);
+
+  // ✅ Fetch CSRF token when the page loads
+  useEffect(() => {
+    getCsrfToken().then((token) => setCsrfToken(token));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setError("");
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-  const result = await signIn("credentials", {
-    redirect: false,
-    email,
-    password,
-  });
+    // ✅ Same working logic as your plain version
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: "/dashboard",
+    });
 
-  if (result?.error) {
-    setError("Invalid email or password");
-  } else {
-    router.push("/dashboard");
-  }
+    console.log("🔍 SIGNIN RESULT:", result);
 
-  setIsLoading(false);
-};
+    if (result?.error) {
+      setError("Invalid email or password");
+    } else {
+      router.push("/dashboard");
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
@@ -61,6 +71,9 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Hidden CSRF token */}
+            <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
+
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center">
                 {error}
@@ -102,7 +115,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500  ${
+              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500 ${
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >

@@ -10,10 +10,9 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "you@example.com" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing email or password");
@@ -23,50 +22,22 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
-          throw new Error("Invalid credentials");
-        }
+        if (!user || !user.password) throw new Error("Invalid credentials");
 
         const isValid = await compare(credentials.password, user.password);
+        if (!isValid) throw new Error("Invalid email or password");
 
-        if (!isValid) {
-          throw new Error("Invalid email or password");
-        }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        };
+        return { id: user.id, name: user.name, email: user.email };
       },
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7,
-  },
+  session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 7 },
 
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-  },
+  jwt: { secret: process.env.NEXTAUTH_SECRET },
+
   pages: {
-    signIn: "/auth/login",
-  },
-
-  cookies: {
-    sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token"
-          : "next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
+    signIn: "/auth/login", // ✅ only your page
   },
 
   callbacks: {
@@ -78,7 +49,6 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-
     async session({ session, token }) {
       if (token) {
         session.user = {
