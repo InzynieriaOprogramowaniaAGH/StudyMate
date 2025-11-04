@@ -4,7 +4,6 @@ import { useState } from "react";
 import { AccountTab } from "./AccountTab";
 import { PreferencesTab } from "./PreferencesTab";
 import { SecurityTab }  from "./SecurityTab";
-import { PlaceholderTab } from "./PlaceholderTab";
 import { NotificationsTab } from "./NotificationsTab";
 import { BillingTab } from "./BillingTab";
 import {ProfileHeader} from "./ProfileHeader";
@@ -22,20 +21,21 @@ export default function ProfileContent({ user }: { user: any }) {
 
         {/* Tabs */}
         <div className="flex bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl overflow-hidden p-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-                activeTab === tab
-                  ? "bg-gray-900 text-white shadow-inner"
-                  : "text-gray-400 hover:text-gray-200"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+  {tabs.map((tab) => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+        activeTab === tab
+          ? "bg-[var(--color-primary)] text-[var(--color-bg)] shadow-inner"
+          : "text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
+      }`}
+    >
+      {tab}
+    </button>
+  ))}
+</div>
+
 
         {/* Dynamic Content */}
         {activeTab === "Account" && <AccountTab user={user} />}

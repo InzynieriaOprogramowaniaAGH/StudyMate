@@ -1,6 +1,4 @@
-// src/components/ui/InputField.tsx
-"use client";
-
+// components/ui/InputField.tsx
 import React from "react";
 
 interface InputFieldProps {
@@ -12,42 +10,45 @@ interface InputFieldProps {
   textarea?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({
+export default function InputField({
   label,
   name,
   value,
   onChange,
   placeholder,
-  textarea = false,
-}) => {
+  textarea,
+}: InputFieldProps) {
+  const commonStyles =
+    "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition";
+
   return (
-    <div className="flex flex-col space-y-1">
-      <label htmlFor={name} className="text-sm font-medium text-gray-400">
+    <div className="flex flex-col gap-1">
+      <label
+        htmlFor={name}
+        className="text-sm font-medium text-[var(--color-muted)]"
+      >
         {label}
       </label>
       {textarea ? (
         <textarea
           id={name}
           name={name}
-          value={value || ""}
-          onChange={onChange}
+          value={value}
           placeholder={placeholder}
+          onChange={onChange}
           rows={4}
-          className="bg-gray-900 border border-gray-700 rounded-lg p-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          className={commonStyles}
         />
       ) : (
         <input
           id={name}
           name={name}
-          type="text"
-          value={value || ""}
-          onChange={onChange}
+          value={value}
           placeholder={placeholder}
-          className="bg-gray-900 border border-gray-700 rounded-lg p-2 text-gray-100 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+          onChange={onChange}
+          className={commonStyles}
         />
       )}
     </div>
   );
-};
-
-export default InputField;
+}

@@ -27,8 +27,10 @@ export default function ToggleSwitch({
         onChange={handleChange}
         className="sr-only peer"
       />
-      <div className="w-10 h-5 bg-gray-700 rounded-full peer-checked:bg-[var(--color-primary)] transition-all" />
-      <span className="absolute left-1 top-0.5 w-4 h-4 bg-white rounded-full transform peer-checked:translate-x-5 transition-all" />
+      <div className="w-10 h-5 rounded-full bg-[var(--color-border)] peer-checked:bg-[var(--color-primary)] transition-colors duration-300" />
+      <span
+        className="absolute left-0.5 top-0.5 w-4 h-4 bg-[var(--color-bg-light)] rounded-full shadow-sm transform transition-transform duration-300 peer-checked:translate-x-5"
+      />
     </label>
   );
 }

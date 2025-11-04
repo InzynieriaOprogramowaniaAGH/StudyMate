@@ -27,7 +27,6 @@ export const authOptions: NextAuthOptions = {
         const isValid = await compare(credentials.password, user.password);
         if (!isValid) throw new Error("Invalid email or password");
 
-        // ✅ Return all relevant fields
         return {
           id: user.id,
           email: user.email,
@@ -44,7 +43,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 7, 
   },
 
   jwt: {
@@ -57,7 +56,6 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-  // 🔹 When user first logs in, attach user data to token
   if (user) {
     token.id = user.id;
     token.email = user.email;
@@ -69,7 +67,6 @@ export const authOptions: NextAuthOptions = {
     token.university = (user as any).university || null;
   }
 
-  // 🔹 When `update()` is called on client side
   if (trigger === "update" && session?.user) {
     token.firstName = session.user.firstName;
     token.lastName = session.user.lastName;
@@ -80,7 +77,6 @@ export const authOptions: NextAuthOptions = {
     token.name = session.user.name;
   }
 
-  // 🔹 Otherwise (normal session refresh), sync with DB if needed
   if (!user && !trigger) {
     const dbUser = await prisma.user.findUnique({
       where: { email: token.email as string },

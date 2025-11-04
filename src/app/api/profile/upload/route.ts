@@ -1,41 +1,76 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import sharp from "sharp";
-import fs from "fs";
+import fsPromises from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function POST(req: Request) {
-  const formData = await req.formData();
-  const file = formData.get("file") as File;
-  if (!file) return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+    if (!file) {
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const fileName = `profile-${Date.now()}.webp`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "profile-photos");
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true, image: true },
+    });
 
-  const filePath = path.join(uploadDir, fileName);
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-  await sharp(buffer)
-    .resize(512, 512, { fit: "cover" })
-    .webp({ quality: 80 })
-    .toFile(filePath);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const uploadDir = path.join(process.cwd(), "public", "uploads", "profile-photos");
+    await fsPromises.mkdir(uploadDir, { recursive: true });
 
-  const publicURL = `/uploads/profile-photos/${fileName}`;
+    const filename = `profile-${user.id}-${Date.now()}.webp`;
+    const filePath = path.join(uploadDir, filename);
+    const fileUrl = `/uploads/profile-photos/${filename}`;
 
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (user.image) {
+      const storedPath = user.image.startsWith("/")
+        ? user.image.slice(1)
+        : user.image;
+
+      const oldPath = path.join(process.cwd(), "public", storedPath);
+
+      const resolvedOld = path.resolve(oldPath);
+      const resolvedUploadDir = path.resolve(uploadDir);
+
+      if (resolvedOld.startsWith(resolvedUploadDir)) {
+        try {
+          await fsPromises.unlink(resolvedOld);
+          console.log("Deleted old profile image:", resolvedOld);
+        } catch (err: any) {
+          if (err.code !== "ENOENT") console.error("Error deleting old image:", err);
+        }
+      }
+    }
+
+    await sharp(buffer)
+      .resize(512, 512, { fit: "cover" })
+      .webp({ quality: 80 })
+      .toFile(filePath);
+
+    const updatedUser = await prisma.user.update({
+      where: { email: session.user.email },
+      data: { image: fileUrl },
+    });
+
+    return NextResponse.json({ url: fileUrl, user: updatedUser });
+  } catch (error) {
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
-
-  // ✅ Update `image` field, not avatarUrl
-  await prisma.user.update({
-    where: { email: session.user.email },
-    data: { image: publicURL },
-  });
-
-  return NextResponse.json({ url: publicURL });
 }

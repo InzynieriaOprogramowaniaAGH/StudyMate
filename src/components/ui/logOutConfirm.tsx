@@ -6,11 +6,11 @@ import { signOut as nextAuthSignOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  onClose?: () => void; // called when modal closes
-  onOpen?: () => void; // called when trigger is clicked (parent may hide UI)
-  onConfirm?: () => Promise<void> | void; // optional custom sign-out handler
-  showTrigger?: boolean; // whether to render the trigger button (default: true)
-  open?: boolean; // controlled open state (when provided, component is controlled)
+  onClose?: () => void;
+  onOpen?: () => void;
+  onConfirm?: () => Promise<void> | void;
+  showTrigger?: boolean;
+  open?: boolean;
   triggerClassName?: string;
   triggerChildren?: React.ReactNode;
 };
@@ -31,10 +31,8 @@ export default function LogoutConfirm({
 
   useEffect(() => setMounted(true), []);
 
-  // derive actual open state (controlled if 'open' provided)
   const isOpen = typeof open === "boolean" ? open : internalOpen;
 
-  // attach escape key handler while modal is open
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -42,16 +40,13 @@ export default function LogoutConfirm({
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const openModalFromTrigger = (e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    // If parent wants to hide UI first, call onOpen (next tick to allow mounting)
     if (onOpen) {
-      // Give the trigger time to finish processing before parent hides UI
       setTimeout(() => onOpen(), 10);
       if (open === undefined) {
         setInternalOpen(true);
@@ -75,10 +70,7 @@ export default function LogoutConfirm({
       if (onConfirm) {
         await onConfirm();
       } else {
-        // default next-auth sign out (client-side, no redirect)
         await nextAuthSignOut({ redirect: false });
-
-        // best-effort server POST to ensure server clears cookies if needed
         try {
           const body = new URLSearchParams({ callbackUrl: "/" });
           await fetch("/api/auth/signout", {
@@ -88,11 +80,8 @@ export default function LogoutConfirm({
             body: body.toString(),
           });
         } catch (err) {
-          // non-fatal fallback
-          // console.warn("[logout] fallback POST failed", err);
         }
 
-        // navigate home and force reload as a safety-net
         router.replace("/");
         setTimeout(() => window.location.reload(), 200);
       }
@@ -108,7 +97,6 @@ export default function LogoutConfirm({
     <button
       type="button"
       onMouseDown={(ev) => {
-        // prevent mousedown from closing parent menus
         ev.preventDefault();
         ev.stopPropagation();
       }}
@@ -165,7 +153,6 @@ export default function LogoutConfirm({
   );
 
   if (!mounted) {
-    // during SSR/hydration render only the trigger (if desired)
     return showTrigger ? trigger : null;
   }
 

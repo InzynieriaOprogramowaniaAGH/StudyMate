@@ -15,7 +15,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
-  // ✅ Fetch CSRF token when the page loads
   useEffect(() => {
     getCsrfToken().then((token) => setCsrfToken(token));
   }, []);
@@ -29,7 +28,6 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // ✅ Same working logic as your plain version
     const result = await signIn("credentials", {
       redirect: false,
       email,
@@ -37,7 +35,7 @@ export default function LoginPage() {
       callbackUrl: "/dashboard",
     });
 
-    console.log("🔍 SIGNIN RESULT:", result);
+    console.log("SIGNIN RESULT:", result);
 
     if (result?.error) {
       setError("Invalid email or password");

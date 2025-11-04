@@ -25,7 +25,6 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🧩 Automatically update UI if session changes (after profile save)
   useEffect(() => {
     if (session?.user?.image) setAvatar(session.user.image);
   }, [session?.user?.image]);
@@ -53,7 +52,6 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
       const data = await res.json();
       if (data.url) {
         setAvatar(data.url);
-        // 🔹 Instantly update session
         await update({
           user: {
             ...session?.user,
@@ -106,7 +104,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
             className="hidden"
           />
         </div>
-
+            
         {/* User Info */}
         <div>
           <h2 className="font-semibold text-[var(--color-text)]">

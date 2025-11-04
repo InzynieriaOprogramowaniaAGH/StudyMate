@@ -80,7 +80,7 @@ model Note {
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   flashcards Flashcard[]
-  quizzes    Quiz[]      @relation("NoteQuizzes") // ✅ give relation a name
+  quizzes    Quiz[]      @relation("NoteQuizzes")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -108,9 +108,9 @@ model Quiz {
   updatedAt      DateTime       @updatedAt
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
-  note           Note?          @relation("NoteQuizzes", fields: [noteId], references: [id]) // ✅ opposite side
+  note           Note?          @relation("NoteQuizzes", fields: [noteId], references: [id])
   noteId         String?
-  questions      QuizQuestion[] // ✅ connect to QuizQuestion
+  questions      QuizQuestion[]
 }
 
 model QuizQuestion {
@@ -121,7 +121,7 @@ model QuizQuestion {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade) // ✅ has opposite side now
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId String
 }
 
@@ -129,7 +129,7 @@ model Progress {
   id                 String   @id @default(cuid())
   quizzesTaken       Int      @default(0)
   flashcardsReviewed Int      @default(0)
-  notesCreated       Int      @default(0) // ✅ add this field
+  notesCreated       Int      @default(0)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)

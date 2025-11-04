@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, Receipt, CheckCircle } from "lucide-react";
+import { CreditCard, Receipt } from "lucide-react";
 
 export function BillingTab() {
   return (
@@ -19,24 +19,20 @@ export function BillingTab() {
           </div>
         </div>
 
-        <div className="border border-[var(--color-border)] rounded-xl p-4 flex justify-between items-center mb-5 bg-[var(--color-bg-darker)]">
+        <div className="border border-[var(--color-border)] rounded-xl p-4 flex justify-between items-center mb-5 bg-[var(--color-bg-darker)] hover:border-[var(--color-primary-30)] transition">
           <div>
-            <h3 className="font-semibold text-lg text-[var(--color-text)]">
-              Pro Plan
-            </h3>
-            <p className="text-sm text-[var(--color-muted)]">
-              $9.99/month
-            </p>
+            <h3 className="font-semibold text-lg text-[var(--color-text)]">Pro Plan</h3>
+            <p className="text-sm text-[var(--color-muted)]">$9.99/month</p>
             <p className="text-xs text-[var(--color-muted)] mt-1">
               Next billing date: November 15, 2024
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <span className="text-xs font-medium text-blue-400 bg-blue-950/40 border border-blue-900 rounded-md px-2 py-0.5">
+            <span className="text-xs font-medium text-[var(--color-primary)] bg-[var(--color-primary-10)] border border-[var(--color-primary-30)] rounded-md px-2 py-0.5">
               Active
             </span>
             <div className="flex gap-2">
-              <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-black hover:opacity-90 transition">
+              <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-[var(--color-bg)] hover:bg-[var(--color-primary-dark)] transition">
                 Change Plan
               </button>
               <button className="px-3 py-1 text-sm font-medium rounded-md bg-transparent text-red-400 hover:text-red-300 transition">
@@ -72,17 +68,17 @@ export function BillingTab() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between border border-[var(--color-border)] rounded-xl p-4 bg-[var(--color-bg-darker)] mb-3">
+        <div className="flex items-center justify-between border border-[var(--color-border)] rounded-xl p-4 bg-[var(--color-bg-darker)] hover:border-[var(--color-primary-30)] transition mb-3">
           <div>
             <p className="text-[var(--color-text)] font-medium">•••• •••• •••• 4242</p>
             <p className="text-xs text-[var(--color-muted)]">Expires 12/25</p>
           </div>
-          <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-black hover:opacity-90 transition">
+          <button className="px-3 py-1 text-sm font-medium rounded-md bg-[var(--color-primary)] text-[var(--color-bg)] hover:bg-[var(--color-primary-dark)] transition">
             Update
           </button>
         </div>
 
-        <button className="w-full mt-2 border border-[var(--color-border)] rounded-md py-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)] transition">
+        <button className="w-full mt-2 border border-[var(--color-border)] rounded-md py-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-primary-30)] transition">
           Add Payment Method
         </button>
       </section>
@@ -109,20 +105,18 @@ export function BillingTab() {
           ].map((item, i) => (
             <div
               key={i}
-              className="flex items-center justify-between py-3"
+              className="flex items-center justify-between py-3 hover:bg-[var(--color-bg-darker)] transition rounded-md px-2"
             >
               <div>
-                <p className="text-[var(--color-text)] text-sm font-medium">
-                  {item.date}
-                </p>
+                <p className="text-[var(--color-text)] text-sm font-medium">{item.date}</p>
                 <p className="text-xs text-[var(--color-muted)]">{item.plan}</p>
               </div>
               <div className="flex items-center gap-3">
                 <p className="text-sm text-[var(--color-text)]">{item.amount}</p>
-                <span className="text-xs text-green-400 border border-green-900 rounded-md px-2 py-0.5">
+                <span className="text-xs text-[var(--color-primary)] border border-[var(--color-primary-30)] rounded-md px-2 py-0.5 bg-[var(--color-primary-10)]">
                   Paid
                 </span>
-                <button className="px-2 py-1 text-xs font-medium rounded-md bg-[var(--color-bg-darker)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition">
+                <button className="px-2 py-1 text-xs font-medium rounded-md bg-[var(--color-bg-darker)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-primary-30)] hover:text-[var(--color-primary)] transition">
                   Download
                 </button>
               </div>

@@ -99,7 +99,6 @@ export default function Header() {
     }
   };
 
-  // ✅ Get user's image (NextAuth automatically provides this)
   const avatarUrl = session?.user?.image;
 
   return (

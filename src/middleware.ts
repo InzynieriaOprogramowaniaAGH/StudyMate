@@ -6,7 +6,6 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const { pathname } = req.nextUrl;
 
-  // Allow auth and static routes
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -16,7 +15,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect unauthenticated users
   if (!token && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
