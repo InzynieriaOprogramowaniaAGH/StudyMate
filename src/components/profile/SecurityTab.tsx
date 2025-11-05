@@ -1,82 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, Shield, Link as LinkIcon, Mail, Github } from "lucide-react";
-import ToggleSwitch from "@/components/ui/ToggleSwitch";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { Link as LinkIcon, Mail, Github } from "lucide-react";
 import { PasswordSection } from "./PasswordSection";
 
 export function SecurityTab() {
-  const [enable2FA, setEnable2FA] = useState(false);
-  const [connectedGoogle, setConnectedGoogle] = useState(true);
+  const { data: session } = useSession();
+  const [connectedGoogle, setConnectedGoogle] = useState(false);
   const [connectedGithub, setConnectedGithub] = useState(false);
-  const [currentPwd, setCurrentPwd] = useState("");
-  const [newPwd, setNewPwd] = useState("");
-  const [confirmPwd, setConfirmPwd] = useState("");
-  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const handlePasswordUpdate = async () => {
-    if (!currentPwd || !newPwd || !confirmPwd) {
-      setStatusMsg({ type: "error", text: "Please fill in all fields." });
-      return;
-    }
-    if (newPwd !== confirmPwd) {
-      setStatusMsg({ type: "error", text: "New passwords do not match." });
-      return;
-    }
+  const handleConnectGoogle = async () => {
+    await signIn("google", { redirect: false });
+    setConnectedGoogle(true);
+  };
 
-    setLoading(true);
-    setStatusMsg(null);
+  const handleDisconnectGoogle = async () => {
+    await signOut({ redirect: false });
+    setConnectedGoogle(false);
+  };
 
-    // simulate API delay
-    setTimeout(() => {
-      setLoading(false);
-      setStatusMsg({ type: "success", text: "Password updated successfully!" });
-      setCurrentPwd("");
-      setNewPwd("");
-      setConfirmPwd("");
-    }, 1500);
+  const handleConnectGithub = async () => {
+    await signIn("github", { redirect: false });
+    setConnectedGithub(true);
+  };
+
+  const handleDisconnectGithub = async () => {
+    await signOut({ redirect: false });
+    setConnectedGithub(false);
   };
 
   return (
     <div className="space-y-6">
       {/* PASSWORD SECTION */}
-
       <PasswordSection />
 
-      {/* 2FA SECTION */}
-      <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
-        <div className="flex items-start gap-3 mb-4">
-          <div className="p-2 rounded-xl bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
-            <Shield size={18} className="text-[var(--color-primary)]" />
-          </div>
-          <div>
-            <h4 className="font-medium text-[var(--color-text)]">Two-Factor Authentication</h4>
-            <p className="text-sm text-[var(--color-muted)]">
-              Add an extra layer of security to your account
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between pt-2">
-          <div>
-            <p className="text-sm font-medium text-[var(--color-text)]">Enable 2FA</p>
-            <p className="text-xs text-[var(--color-muted)]">Protect your account with 2FA</p>
-          </div>
-          <ToggleSwitch
-            defaultChecked={enable2FA}
-            onChange={(checked: boolean) => setEnable2FA(checked)}
-          />
-        </div>
-
-        <div className="border-t border-[var(--color-border)] pt-4 mt-4">
-          <button className="bg-[var(--color-bg-darker)] text-[var(--color-text)] font-medium text-sm py-2 px-4 rounded-lg hover:bg-[var(--color-bg-hover)] transition">
-            Set Up Authenticator App
-          </button>
-        </div>
-      </section>
-
-      {/* CONNECTED ACCOUNTS SECTION */}
+      {/* CONNECTED ACCOUNTS */}
       <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
         <div className="flex items-start gap-3 mb-4">
           <div className="p-2 rounded-xl bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
@@ -103,7 +62,7 @@ export function SecurityTab() {
               </div>
             </div>
             <button
-              onClick={() => setConnectedGoogle(!connectedGoogle)}
+              onClick={connectedGoogle ? handleDisconnectGoogle : handleConnectGoogle}
               className="border border-[var(--color-border)] text-sm rounded-md px-3 py-1 text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition"
             >
               {connectedGoogle ? "Disconnect" : "Connect"}
@@ -122,7 +81,7 @@ export function SecurityTab() {
               </div>
             </div>
             <button
-              onClick={() => setConnectedGithub(!connectedGithub)}
+              onClick={connectedGithub ? handleDisconnectGithub : handleConnectGithub}
               className="border border-[var(--color-border)] text-sm rounded-md px-3 py-1 text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition"
             >
               {connectedGithub ? "Disconnect" : "Connect"}
