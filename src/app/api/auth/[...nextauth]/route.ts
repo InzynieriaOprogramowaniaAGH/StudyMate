@@ -1,5 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
 
@@ -7,6 +9,7 @@ const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // CREDENTIALS LOGIN
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -39,11 +42,23 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
+
+    // GOOGLE
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    // GITHUB
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+    }),
   ],
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7, 
+    maxAge: 60 * 60 * 24 * 7,
   },
 
   jwt: {
@@ -55,71 +70,102 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-  if (user) {
-    token.id = user.id;
-    token.email = user.email;
-    token.name = user.name;
-    token.image = user.image;
-    token.firstName = (user as any).firstName || null;
-    token.lastName = (user as any).lastName || null;
-    token.bio = (user as any).bio || null;
-    token.university = (user as any).university || null;
-  }
+    async jwt({ token, user, trigger, session, account }) {
+      // First login
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.image = user.image;
+        token.firstName = (user as any).firstName || null;
+        token.lastName = (user as any).lastName || null;
+        token.bio = (user as any).bio || null;
+        token.university = (user as any).university || null;
+      }
 
-  if (trigger === "update" && session?.user) {
-    token.firstName = session.user.firstName;
-    token.lastName = session.user.lastName;
-    token.bio = session.user.bio;
-    token.university = session.user.university;
-    token.email = session.user.email;
-    token.image = session.user.image;
-    token.name = session.user.name;
-  }
+      // OAuth link handling (Google/GitHub)
+      if (account && user) {
+        const existingAccount = await prisma.account.findFirst({
+          where: {
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+          },
+        });
 
-  if (!user && !trigger) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: token.email as string },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        firstName: true,
-        lastName: true,
-        bio: true,
-        university: true,
-      },
-    });
+        if (!existingAccount) {
+          await prisma.account.create({
+            data: {
+              userId: user.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+              id_token: account.id_token,
+              session_state: account.session_state,
+            },
+          });
+        }
+      }
 
-    if (dbUser) {
-      token.id = dbUser.id;
-      token.name = dbUser.name;
-      token.image = dbUser.image;
-      token.firstName = dbUser.firstName;
-      token.lastName = dbUser.lastName;
-      token.bio = dbUser.bio;
-      token.university = dbUser.university;
-    }
-  }
+      // Update session data if edited
+      if (trigger === "update" && session?.user) {
+        token.firstName = session.user.firstName;
+        token.lastName = session.user.lastName;
+        token.bio = session.user.bio;
+        token.university = session.user.university;
+        token.email = session.user.email;
+        token.image = session.user.image;
+        token.name = session.user.name;
+      }
 
-  return token;
-},
+      // Retrieve full DB user info
+      if (!user && !trigger) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email as string },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            firstName: true,
+            lastName: true,
+            bio: true,
+            university: true,
+          },
+        });
 
-   async session({ session, token }) {
-  if (session.user) {
-    session.user.id = token.id as string;
-    session.user.name = token.name as string;
-    session.user.email = token.email as string;
-    session.user.image = token.image as string | null;
-    session.user.firstName = token.firstName as string | null;
-    session.user.lastName = token.lastName as string | null;
-    session.user.bio = token.bio as string | null;
-    session.user.university = token.university as string | null;
-  }
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.name = dbUser.name;
+          token.image = dbUser.image;
+          token.firstName = dbUser.firstName;
+          token.lastName = dbUser.lastName;
+          token.bio = dbUser.bio;
+          token.university = dbUser.university;
+        }
+      }
 
-  return session;
-},
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.image = token.image as string | null;
+        session.user.firstName = token.firstName as string | null;
+        session.user.lastName = token.lastName as string | null;
+        session.user.bio = token.bio as string | null;
+        session.user.university = token.university as string | null;
+      }
+
+      return session;
+    },
   },
 
   debug: process.env.NODE_ENV === "development",

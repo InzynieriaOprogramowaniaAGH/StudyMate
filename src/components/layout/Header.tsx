@@ -5,8 +5,10 @@ import { useState, useRef, useEffect } from "react";
 import { Menu, X, User } from "lucide-react";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import Portal from "@/components/ui/Portal";
 import LogoutConfirm from "@/components/ui/logOutConfirm";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -19,6 +21,19 @@ export default function Header() {
   const avatarRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+
+  const [language, setLanguage] = useState<"en" | "pl">("en");
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("language") as "en" | "pl" | null;
+    if (savedLang) setLanguage(savedLang);
+  }, []);
+
+  const toggleLanguage = () => {
+    const newLang = language === "en" ? "pl" : "en";
+    setLanguage(newLang);
+    localStorage.setItem("language", newLang);
+  };
 
   const closeAllMenus = () => {
     setMenuOpen(false);
@@ -79,17 +94,12 @@ export default function Header() {
   const performSignOut = async () => {
     try {
       await nextAuthSignOut({ redirect: false });
-      try {
-        const body = new URLSearchParams({ callbackUrl: "/" });
-        await fetch("/api/auth/signout", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: body.toString(),
-        });
-      } catch (err) {
-        console.warn("[logout] fallback POST failed", err);
-      }
+      await fetch("/api/auth/signout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ callbackUrl: "/" }).toString(),
+      });
       setLogoutRequested(false);
       window.location.href = "/";
     } catch (err) {
@@ -111,7 +121,6 @@ export default function Header() {
           StudyMate
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex space-x-6 items-center">
           {isAuthenticated ? (
             <>
@@ -125,7 +134,17 @@ export default function Header() {
                 Progress
               </Link>
 
-              {/* Profile Avatar */}
+              <div className="flex items-center gap-3 mr-2">
+                <button
+                  onClick={toggleLanguage}
+                  className="text-2xl hover:opacity-80 transition"
+                  title="Change language"
+                >
+                  {language === "en" ? "🇬🇧" : "🇵🇱"}
+                </button>
+                <ThemeToggle />
+              </div>
+
               <div className="relative">
                 <button
                   ref={avatarRef}
@@ -137,11 +156,7 @@ export default function Header() {
                   aria-haspopup="true"
                 >
                   {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-300">
                       <User size={20} />
@@ -149,42 +164,59 @@ export default function Header() {
                   )}
                 </button>
 
-                {/* Dropdown */}
-                {menuOpen && menuPos && (
-                  <Portal>
-                    <div
-                      ref={menuRef}
-                      style={{
-                        position: "fixed",
-                        top: `${Math.max(8, menuPos.top)}px`,
-                        left: `${Math.max(8, menuPos.left)}px`,
-                        width: 176,
-                      }}
-                      className="bg-gray-900 border border-gray-800 rounded-xl shadow-lg z-[99999] pointer-events-auto"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex flex-col p-2">
-                        <Link
-                          href="/profile"
-                          className="px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition"
-                          onClick={() => closeAllMenus()}
-                        >
-                          Profile
-                        </Link>
-                        <button
-                          onMouseDown={(ev) => {
-                            ev.preventDefault();
-                            ev.stopPropagation();
-                          }}
-                          onClick={requestLogout}
-                          className="w-full text-left px-3 py-2 text-red-400 hover:bg-gray-800 rounded-lg transition"
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    </div>
-                  </Portal>
-                )}
+                <AnimatePresence>
+                  {menuOpen && menuPos && (
+                    <Portal>
+                      <motion.div
+                        ref={menuRef}
+                        style={{
+                          position: "fixed",
+                          top: `${Math.max(8, menuPos.top)}px`,
+                          left: `${Math.max(8, menuPos.left)}px`,
+                          width: 176,
+                        }}
+                        className="rounded-xl border border-gray-700/50 bg-[rgba(20,20,25,0.75)] backdrop-blur-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] overflow-hidden z-[99999]"
+                        initial={{ opacity: 0, y: -12, scale: 0.92 }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                          scale: 1,
+                          transition: { duration: 0.25, ease: "easeOut" },
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: -10,
+                          scale: 0.95,
+                          transition: { duration: 0.18, ease: "easeInOut" },
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="flex flex-col p-2 bg-gradient-to-b from-transparent to-black/20">
+                          {[{ href: "/profile", label: "Profile" }].map((item) => (
+                            <GlowItem key={item.href}>
+                              <Link
+                                href={item.href}
+                                onClick={() => closeAllMenus()}
+                                className="block px-3 py-2 text-gray-200 rounded-lg transition"
+                              >
+                                {item.label}
+                              </Link>
+                            </GlowItem>
+                          ))}
+
+                          <GlowItem>
+                            <button
+                              onClick={requestLogout}
+                              className="w-full text-left px-3 py-2 text-red-400 rounded-lg transition"
+                            >
+                              Logout
+                            </button>
+                          </GlowItem>
+                        </div>
+                      </motion.div>
+                    </Portal>
+                  )}
+                </AnimatePresence>
               </div>
             </>
           ) : (
@@ -202,7 +234,6 @@ export default function Header() {
           )}
         </nav>
 
-        {/* Mobile menu toggle */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden text-gray-300 hover:text-white"
@@ -211,78 +242,6 @@ export default function Header() {
         >
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
-
-        {/* Mobile menu */}
-        {open && (
-          <div
-            className="absolute top-full right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-xl shadow-lg p-3 flex flex-col md:hidden space-y-2 z-[9999] pointer-events-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {isAuthenticated ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/notes"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition"
-                >
-                  Notes
-                </Link>
-                <Link
-                  href="/progress"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition"
-                >
-                  Progress
-                </Link>
-                <Link
-                  href="/profile"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition"
-                >
-                  Profile
-                </Link>
-
-                <button
-                  onMouseDown={(ev) => {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                  }}
-                  onClick={() => {
-                    closeAllMenus();
-                    setTimeout(() => setLogoutRequested(true), 10);
-                  }}
-                  className="w-full text-left px-3 py-2 text-red-400 hover:bg-gray-800 rounded-lg transition"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/auth/login"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition"
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/auth/register"
-                  onClick={() => closeAllMenus()}
-                  className="w-full h-10 flex justify-center items-center rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
-        )}
       </header>
 
       {logoutRequested && (
@@ -296,5 +255,62 @@ export default function Header() {
         </Portal>
       )}
     </>
+  );
+}
+
+function GlowItem({ children }: { children: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [target, setTarget] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!hovered) return;
+    const anim = requestAnimationFrame(() => {
+      setCoords((prev) => ({
+        x: prev.x + (target.x - prev.x) * 0.15,
+        y: prev.y + (target.y - prev.y) * 0.15,
+      }));
+    });
+    return () => cancelAnimationFrame(anim);
+  }, [coords, target, hovered]);
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTarget({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <motion.div
+      className="relative rounded-md overflow-hidden group cursor-pointer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMove}
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 220, damping: 18 }}
+    >
+      <motion.div
+        className="absolute inset-0 bg-white/5 mix-blend-overlay"
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.25 }}
+      />
+
+      <motion.div
+        className="absolute inset-0 pointer-events-none rounded-md"
+        style={{
+          background: hovered
+            ? `radial-gradient(120px circle at ${coords.x}px ${coords.y}px, rgba(255,255,255,0.15), transparent 70%)`
+            : "transparent",
+        }}
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+      />
+
+      <motion.div
+        className="relative z-10 text-[15px] text-gray-200 px-3 py-1.5 font-medium select-none transition-colors duration-300"
+        animate={{ color: hovered ? "rgb(255,255,255)" : "rgb(229,229,229)" }}
+      >
+        {children}
+      </motion.div>
+    </motion.div>
   );
 }

@@ -74,10 +74,10 @@ export default function Hero() {
       >
        <div className="size-max">
           <Image
-            src="/images/hero-dashboard.webp"
+            src="/images/hero-dashboard2.webp"
             alt="StudyMate Dashboard"
-            width={300}
-            height={175}
+            width={600}
+            height={300}
             className="rounded-2xl shadow-xl border border-border w-full h-auto"
           />
        </div>
