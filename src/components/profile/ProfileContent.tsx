@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { AccountTab } from "./AccountTab";
-import { PreferencesTab } from "./PreferencesTab";
 import { SecurityTab }  from "./SecurityTab";
 import { NotificationsTab } from "./NotificationsTab";
 import { BillingTab } from "./BillingTab";
@@ -11,7 +10,7 @@ import {ProfileHeader} from "./ProfileHeader";
 export default function ProfileContent({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState("Account");
 
-  const tabs = ["Account", "Preferences", "Notifications", "Security", "Billing"];
+  const tabs = ["Account", "Notifications", "Security", "Billing"];
 
   return (
     <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] px-4 md:px-8 py-10">
@@ -39,7 +38,6 @@ export default function ProfileContent({ user }: { user: any }) {
 
         {/* Dynamic Content */}
         {activeTab === "Account" && <AccountTab user={user} />}
-        {activeTab === "Preferences" && <PreferencesTab />}
         {activeTab === "Security" && <SecurityTab />}
         {activeTab === "Notifications" && <NotificationsTab />}
         {activeTab === "Billing" && <BillingTab />}
