@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Portal from "@/components/ui/Portal";
 import LogoutConfirm from "@/components/ui/logOutConfirm";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import ReactCountryFlag from "react-country-flag";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -133,16 +134,16 @@ export default function Header() {
               <Link href="/progress" className="text-gray-300 hover:text-white transition">
                 Progress
               </Link>
-
+              <ThemeToggle />
               <div className="flex items-center gap-3 mr-2">
                 <button
                   onClick={toggleLanguage}
                   className="text-2xl hover:opacity-80 transition"
                   title="Change language"
                 >
-                  {language === "en" ? "🇬🇧" : "🇵🇱"}
+                  {language === "en" ? <ReactCountryFlag countryCode="GB" svg style={{ width: "2.2rem", height: "2.2rem", border:"1px solid black", borderRadius: "50%", objectFit: "cover" }} /> : <ReactCountryFlag countryCode="PL" svg style={{ width: "2.2rem", height: "2.2rem",border:"1px solid black", borderRadius: "50%", objectFit: "cover" }} />}
                 </button>
-                <ThemeToggle />
+                
               </div>
 
               <div className="relative">
