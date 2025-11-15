@@ -5,10 +5,16 @@ import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
 export default function AuthErrorPage() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
   return (
     <div className="flex flex-col items-center justify-center h-screen text-center">
       <h1 className="text-2xl font-bold mb-4">Authentication Error</h1>
       <p>Something went wrong during login.</p>
+      {error && (
+        <p className="text-red-500 mt-2 mb-4">Error: {error}</p>
+      )}
       <a href="/auth/login" className="text-blue-500 underline mt-4">
         Back to Login
       </a>

@@ -79,21 +79,21 @@ export function AccountTab({ user }: { user: any }) {
   }
 
   return (
-    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
-      <div className="flex items-start gap-3 mb-6">
+    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
         <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
           <User size={18} className="text-[var(--color-primary)]" />
         </div>
-        <div>
-          <h4 className="font-semibold text-[var(--color-text)]">Personal Information</h4>
-          <p className="text-sm text-[var(--color-muted)]">
+        <div className="min-w-0">
+          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">Personal Information</h4>
+          <p className="text-xs sm:text-sm text-[var(--color-muted)]">
             Update your personal details and profile information
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
             label="First Name"
             name="firstName"
@@ -135,7 +135,7 @@ export function AccountTab({ user }: { user: any }) {
         <button
           type="submit"
           disabled={saving}
-          className={`bg-[var(--color-primary)] text-[var(--color-white)] font-medium py-2 px-5 rounded-lg shadow-md transition-colors ${
+          className={`w-full sm:w-auto bg-[var(--color-primary)] text-[var(--color-white)] font-medium py-2 px-5 rounded-lg shadow-md transition-colors text-sm sm:text-base ${
             saving
               ? "opacity-70 cursor-not-allowed"
               : "hover:bg-[var(--color-primary-dark)]"
@@ -146,7 +146,7 @@ export function AccountTab({ user }: { user: any }) {
 
         {message && (
           <p
-            className={`text-sm mt-3 ${
+            className={`text-xs sm:text-sm mt-3 ${
               message.startsWith("✅")
                 ? "text-green-600"
                 : "text-red-500"
