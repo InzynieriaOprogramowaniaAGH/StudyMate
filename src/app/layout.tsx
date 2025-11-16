@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import SessionProvider from "@/providers/SessionProvider";
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/icones/icon-192.png",
+  },
   title: "StudyMate — AI-Powered Learning",
   description: "Learn smarter with AI-generated flashcards, quizzes and notes.",
 };
