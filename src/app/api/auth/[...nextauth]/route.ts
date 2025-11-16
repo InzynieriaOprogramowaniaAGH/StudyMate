@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, trigger, session, account }) {
+    async jwt({ token, user, trigger, session }) {
       // First login
       if (user) {
         token.id = user.id;
@@ -81,34 +81,6 @@ export const authOptions: NextAuthOptions = {
         token.lastName = (user as any).lastName || null;
         token.bio = (user as any).bio || null;
         token.university = (user as any).university || null;
-      }
-
-      // OAuth link handling (Google/GitHub)
-      if (account && user) {
-        const existingAccount = await prisma.account.findFirst({
-          where: {
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
-          },
-        });
-
-        if (!existingAccount) {
-          await prisma.account.create({
-            data: {
-              userId: user.id,
-              type: account.type,
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-              access_token: account.access_token,
-              refresh_token: account.refresh_token,
-              expires_at: account.expires_at,
-              token_type: account.token_type,
-              scope: account.scope,
-              id_token: account.id_token,
-              session_state: account.session_state,
-            },
-          });
-        }
       }
 
       // Update session data if edited
@@ -122,30 +94,34 @@ export const authOptions: NextAuthOptions = {
         token.name = session.user.name;
       }
 
-      // Retrieve full DB user info
-      if (!user && !trigger) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: token.email as string },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
-            firstName: true,
-            lastName: true,
-            bio: true,
-            university: true,
-          },
-        });
+      // Retrieve full DB user info on subsequent requests
+      if (!user && !trigger && token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email as string },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              firstName: true,
+              lastName: true,
+              bio: true,
+              university: true,
+            },
+          });
 
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.name = dbUser.name;
-          token.image = dbUser.image;
-          token.firstName = dbUser.firstName;
-          token.lastName = dbUser.lastName;
-          token.bio = dbUser.bio;
-          token.university = dbUser.university;
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.name = dbUser.name;
+            token.image = dbUser.image;
+            token.firstName = dbUser.firstName;
+            token.lastName = dbUser.lastName;
+            token.bio = dbUser.bio;
+            token.university = dbUser.university;
+          }
+        } catch (error) {
+          console.error("[JWT] Error fetching user:", error);
         }
       }
 

@@ -121,43 +121,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--color-border)]"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[var(--color-bg-light)] text-[var(--color-muted)]">
-                OR CONTINUE WITH
-              </span>
-            </div>
-          </div>
-
-          {/* Social Logins */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
-              <Image
-                src="/images/googleLogo.svg"
-                alt="Google"
-                width={22}
-                height={22}
-                className="mr-2"
-              />
-              Google
-            </button>
-
-            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
-              <Image
-                src="/images/githubLogo.svg"
-                alt="GitHub"
-                width={22}
-                height={22}
-                className="mr-2"
-              />
-              GitHub
-            </button>
-          </div>
-
           {/* Signup Link */}
           <div className="mt-6 text-center text-sm text-[var(--color-muted)]">
             <p>
