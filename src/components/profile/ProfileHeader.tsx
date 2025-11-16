@@ -74,25 +74,25 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
   const displayEmail = session?.user?.email || user.email;
 
   return (
-    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 text-center shadow-sm">
-      <div className="flex flex-col items-center space-y-4">
+    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 text-center shadow-sm">
+      <div className="flex flex-col items-center space-y-3 sm:space-y-4">
         {/* Avatar */}
         <div className="relative group cursor-pointer" onClick={handleClick}>
-          <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-[var(--color-bg-darker)] flex items-center justify-center">
+          <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-[var(--color-bg-darker)] flex items-center justify-center flex-shrink-0">
             {uploading ? (
-              <Loader2 className="animate-spin text-[var(--color-primary)] w-8 h-8" />
+              <Loader2 className="animate-spin text-[var(--color-primary)] w-6 h-6 sm:w-8 sm:h-8" />
             ) : (
               <Image
                 src={avatar}
                 alt="Profile photo"
                 width={96}
                 height={96}
-                className="object-cover"
+                className="object-cover w-full h-full"
               />
             )}
           </div>
 
-          <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-sm text-white transition">
+          <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs sm:text-sm text-white transition">
             Change
           </div>
 
@@ -106,30 +106,30 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
         </div>
             
         {/* User Info */}
-        <div>
-          <h2 className="font-semibold text-[var(--color-text)]">
+        <div className="min-w-0 px-2">
+          <h2 className="font-semibold text-sm sm:text-base md:text-lg text-[var(--color-text)] truncate">
             {displayFirstName || displayLastName
               ? `${displayFirstName || ""} ${displayLastName || ""}`.trim()
               : session?.user?.name || user.name || "Unnamed User"}
           </h2>
-          <p className="text-sm text-[var(--color-muted)]">{displayEmail}</p>
+          <p className="text-xs sm:text-sm text-[var(--color-muted)] truncate">{displayEmail}</p>
         </div>
 
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2 mt-2">
-          <span className="px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)]">
+          <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
             {user.role || "Pro Member"}
           </span>
-          <span className="px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)]">
+          <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
             {user.role || "ADMIN"}
           </span>
           {user.level && (
-            <span className="px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)]">
+            <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
               Level {user.level}
             </span>
           )}
           {user.streak && (
-            <span className="px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)]">
+            <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
               {user.streak} Day Streak
             </span>
           )}

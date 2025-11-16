@@ -9,7 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Portal from "@/components/ui/Portal";
 import LogoutConfirm from "@/components/ui/logOutConfirm";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import ReactCountryFlag from "react-country-flag";
+import GB from "country-flag-icons/react/3x2/GB";
+import PL from "country-flag-icons/react/3x2/PL";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -114,7 +115,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="flex justify-between items-center px-6 md:px-8 py-4 border-b border-gray-800 sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
+      <header className="flex justify-between items-center px-6 md:px-8 py-4 border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
         <Link
           href="/"
           className="text-2xl font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition"
@@ -125,25 +126,27 @@ export default function Header() {
         <nav className="hidden md:flex space-x-6 items-center">
           {isAuthenticated ? (
             <>
-              <Link href="/dashboard" className="text-gray-300 hover:text-white transition">
+              <Link href="/dashboard" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
                 Dashboard
               </Link>
-              <Link href="/notes" className="text-gray-300 hover:text-white transition">
+              <Link href="/notes" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
                 Notes
               </Link>
-              <Link href="/progress" className="text-gray-300 hover:text-white transition">
+              <Link href="/progress" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
                 Progress
               </Link>
               <ThemeToggle />
               <div className="flex items-center gap-3 mr-2">
+                <ThemeToggle />
                 <button
                   onClick={toggleLanguage}
-                  className="text-2xl hover:opacity-80 transition"
+                  className="w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden"
                   title="Change language"
                 >
-                  {language === "en" ? <ReactCountryFlag countryCode="GB" svg style={{ width: "2.2rem", height: "2.2rem", border:"1px solid black", borderRadius: "50%", objectFit: "cover" }} /> : <ReactCountryFlag countryCode="PL" svg style={{ width: "2.2rem", height: "2.2rem",border:"1px solid black", borderRadius: "50%", objectFit: "cover" }} />}
+                  <div className="w-full h-full flex items-center justify-center scale-150">
+                    {language === "en" ? <GB /> : <PL />}
+                  </div>
                 </button>
-                
               </div>
 
               <div className="relative">
@@ -152,14 +155,14 @@ export default function Header() {
                   type="button"
                   onMouseDown={(ev) => ev.stopPropagation()}
                   onClick={toggleMenu}
-                  className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 hover:border-[var(--color-primary)] transition"
+                  className="w-10 h-10 rounded-full overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-primary)] transition"
                   aria-expanded={menuOpen}
                   aria-haspopup="true"
                 >
                   {avatarUrl ? (
                     <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-300">
+                    <div className="w-full h-full flex items-center justify-center bg-[var(--color-bg-darker)] text-[var(--color-text)]">
                       <User size={20} />
                     </div>
                   )}
@@ -176,7 +179,7 @@ export default function Header() {
                           left: `${Math.max(8, menuPos.left)}px`,
                           width: 176,
                         }}
-                        className="rounded-xl border border-gray-700/50 bg-[rgba(20,20,25,0.75)] backdrop-blur-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] overflow-hidden z-[99999]"
+                        className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-light)]/95 backdrop-blur-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] overflow-hidden z-[99999]"
                         initial={{ opacity: 0, y: -12, scale: 0.92 }}
                         animate={{
                           opacity: 1,
@@ -192,13 +195,13 @@ export default function Header() {
                         }}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="flex flex-col p-2 bg-gradient-to-b from-transparent to-black/20">
+                        <div className="flex flex-col p-2">
                           {[{ href: "/profile", label: "Profile" }].map((item) => (
                             <GlowItem key={item.href}>
                               <Link
                                 href={item.href}
                                 onClick={() => closeAllMenus()}
-                                className="block px-3 py-2 text-gray-200 rounded-lg transition"
+                                className="block px-3 py-2 text-[var(--color-text)] rounded-lg transition"
                               >
                                 {item.label}
                               </Link>
@@ -222,7 +225,7 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link href="/auth/login" className="text-gray-300 hover:text-white transition">
+              <Link href="/auth/login" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
                 Log in
               </Link>
               <Link
@@ -237,7 +240,7 @@ export default function Header() {
 
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-gray-300 hover:text-white"
+          className="md:hidden text-[var(--color-text)] opacity-70 hover:opacity-100 transition"
           aria-label="Toggle menu"
           type="button"
         >
@@ -307,8 +310,8 @@ function GlowItem({ children }: { children: React.ReactNode }) {
       />
 
       <motion.div
-        className="relative z-10 text-[15px] text-gray-200 px-3 py-1.5 font-medium select-none transition-colors duration-300"
-        animate={{ color: hovered ? "rgb(255,255,255)" : "rgb(229,229,229)" }}
+        className="relative z-10 text-[15px] text-[var(--color-text)] px-3 py-1.5 font-medium select-none transition-colors duration-300 opacity-70 group-hover:opacity-100"
+        animate={{ opacity: hovered ? 1 : 0.7 }}
       >
         {children}
       </motion.div>

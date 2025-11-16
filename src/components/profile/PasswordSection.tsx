@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Lock } from "lucide-react";
 
 export function PasswordSection() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -43,28 +44,39 @@ export function PasswordSection() {
   };
 
   return (
-    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
-      {/* ... header content ... */}
+    <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-5">
+        <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+          <Lock size={18} className="text-[var(--color-primary)]" />
+        </div>
+        <div className="min-w-0">
+          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">Change Password</h4>
+          <p className="text-xs sm:text-sm text-[var(--color-muted)]">
+            Update your password to keep your account secure
+          </p>
+        </div>
+      </div>
 
       <div className="space-y-3">
         <input
           type="password"
           placeholder="Current Password"
-          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-[var(--color-text)] text-sm focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
+          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
         <input
           type="password"
           placeholder="New Password"
-          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-[var(--color-text)] text-sm focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
+          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
         <input
           type="password"
           placeholder="Confirm New Password"
-          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-[var(--color-text)] text-sm focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
+          className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
@@ -72,16 +84,22 @@ export function PasswordSection() {
         <button
           onClick={handleUpdatePassword}
           disabled={loading}
-          className={`px-4 py-2 text-sm font-medium rounded-md ${
+          className={`w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition ${
             loading
               ? "opacity-70 cursor-not-allowed bg-[var(--color-primary)] text-[var(--color-bg)]"
-              : "bg-[var(--color-primary)] text-[var(--color-bg)] hover:bg-[var(--color-primary-dark)] transition"
+              : "bg-[var(--color-primary)] text-[var(--color-bg)] hover:bg-[var(--color-primary-dark)]"
           }`}
         >
           {loading ? "Updating..." : "Update Password"}
         </button>
 
-        {message && <p className="text-sm mt-2">{message}</p>}
+        {message && (
+          <p className={`text-xs sm:text-sm mt-2 ${
+            message.startsWith("✅") ? "text-green-600" : "text-red-500"
+          }`}>
+            {message}
+          </p>
+        )}
       </div>
     </section>
   );
