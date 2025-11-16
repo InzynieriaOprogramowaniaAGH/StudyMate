@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // upewnij się, że masz plik prisma.ts w /lib/
+import { prisma } from "@/lib/prisma";
+<<<<<<< HEAD
 
-// pobiera listę fiszek
+=======
+>>>>>>> 706aa7d057557567126f31231858642e5d5cf938
+
 export async function GET() {
   try {
     const flashcards = await prisma.flashcard.findMany({
@@ -15,7 +18,10 @@ export async function GET() {
   }
 }
 
-// dodaje nową fiszkę
+<<<<<<< HEAD
+
+=======
+>>>>>>> 706aa7d057557567126f31231858642e5d5cf938
 export async function POST(req: Request) {
   try {
     const data = await req.json();

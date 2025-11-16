@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     await prisma.user.create({
   data: {
-    name: fullName, // keep variable name, map to "name"
+    name: fullName,
     email,
     password: hashedPassword,
   },

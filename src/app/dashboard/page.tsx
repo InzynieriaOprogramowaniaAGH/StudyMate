@@ -60,11 +60,11 @@ export default function DashboardPage() {
           {stats.map((s, i) => (
             <Card key={i} className="bg-[var(--color-bg-light)] border-[var(--color-border)] shadow-none p-0">
               <CardHeader className="p-4 sm:p-3 pb-2">
-                <CardTitle className="text-[10px] text-[var(--color-muted)] font-medium">{s.title}</CardTitle>
+                <CardTitle className="text-[10px] text-[var(--color-text)] opacity-70 font-medium">{s.title}</CardTitle>
               </CardHeader>
               <CardContent className="px-4 sm:px-3 pb-3">
-                <div className="text-lg font-semibold leading-tight">{s.value}</div>
-                <div className="text-[10px] text-[var(--color-muted)] mt-0.5">{s.subtitle}</div>
+                <div className="text-lg font-semibold leading-tight text-[var(--color-text)]">{s.value}</div>
+                <div className="text-[10px] text-[var(--color-text)] opacity-60 mt-0.5">{s.subtitle}</div>
               </CardContent>
             </Card>
           ))}
@@ -87,10 +87,10 @@ export default function DashboardPage() {
                     <Button
                       key={i}
                       variant="outline"
-                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 bg-[var(--color-bg-darker)] border-[var(--color-border)] hover:bg-[var(--color-bg)] transition text-sm"
+                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 bg-[var(--color-bg-light)] border-[var(--color-border)] hover:bg-[var(--color-bg-light)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
                       aria-label={a.title}
                     >
-                      <div className="rounded-full w-9 h-9 flex items-center justify-center bg-[rgba(255,255,255,0.02)]">
+                      <div className="rounded-full w-9 h-9 flex items-center justify-center bg-[var(--color-primary)]/10">
                         {a.icon}
                       </div>
                       <span className="mt-1">{a.title}</span>
@@ -100,38 +100,37 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Recent Notes (mobile-friendly, no internal scroll, wrap text) */}
+            {/* Recent Notes*/}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] flex-1">
-              <CardHeader className="flex justify-between items-start p-4 sm:p-3 pb-2">
-                <div>
-                  <CardTitle className="text-sm font-semibold">Recent Notes</CardTitle>
+              <CardHeader className="flex flex-row justify-between items-start p-4 sm:p-3 pb-2">
+                <div className="flex-1">
+                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">Recent Notes</CardTitle>
                   <p className="text-xs text-[var(--color-muted)] mt-1">Your latest study materials</p>
                 </div>
-                <a href="#" className="text-[var(--color-primary)] text-xs hover:underline">View All</a>
+                <a href="#" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">View All</a>
               </CardHeader>
 
-              {/* Removed overflow / max height so the list doesn't scroll internally.
-                  The page will scroll as needed (preferred on mobile). */}
+              {/* Removed overflow */}
               <CardContent className="p-4 sm:p-3 space-y-4">
                 {recentNotes.map((n, i) => (
-                  <article
+                                    <article
                     key={i}
-                    className="bg-[var(--color-bg-darker)] rounded-md p-4 sm:p-3 flex flex-col sm:flex-row gap-3"
+                    className="bg-[var(--color-bg-light)] rounded-md p-4 sm:p-3 flex flex-col sm:flex-row gap-3 border border-[var(--color-border)]"
                   >
                     {/* Icon */}
                     <div className="flex-shrink-0">
-                      <div className="w-9 h-9 rounded-md bg-[rgba(255,255,255,0.02)] flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-md bg-[var(--color-primary)]/10 flex items-center justify-center">
                         <FileText className="w-4 h-4 text-[var(--color-primary)]" />
                       </div>
                     </div>
 
                     {/* Main content */}
                     <div className="flex-1 w-full">
-                      {/* title / subject / time — stack on mobile, inline-ish on sm+ */}
+                      {/* title / subject / time*/}
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
                         <div className="min-w-0">
                           {/* Allow wrapping for long titles/subjects */}
-                          <h3 className="text-sm font-medium leading-snug break-words">
+                          <h3 className="text-sm font-medium leading-snug break-words text-[var(--color-text)]">
                             {n.title}
                           </h3>
                           <p className="text-[11px] text-[var(--color-muted)] mt-1 break-words">
@@ -144,12 +143,12 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      {/* progress row - progress fills remaining width and percentage sits to the right on larger screens */}
+                      {/* progress row*/}
                       <div className="mt-3 flex items-center gap-3">
                         <div className="flex-1">
-                          <Progress value={n.progress} className="h-2 bg-[var(--color-border)] w-full" />
+                          <Progress value={n.progress} className="h-2 bg-[var(--color-progress-bg)]" />
                         </div>
-                        <div className="text-[11px] text-[var(--color-muted)] w-14 text-right">
+                        <div className="text-[11px] text-[var(--color-text)] opacity-70 w-14 text-right font-medium">
                           {n.progress}%
                         </div>
                       </div>
@@ -177,44 +176,34 @@ export default function DashboardPage() {
             </Card>
 
             {/* AI Suggestions */}
-            <div
-              className="rounded-xl mt-4 md:mt-0"
-              style={{
-                boxShadow: "inset 0 0 0 1px rgba(162,120,255,0.30)",
-                borderRadius: "14px",
-              }}
-            >
-              <div className="bg-[var(--color-accent-dark)] rounded-xl overflow-hidden">
-                {/* header */}
-                <div className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
-                    <span className="text-sm font-medium">AI Suggestions</span>
-                  </div>
+            <Card className="bg-[var(--color-accent-dark)] border-[var(--color-accent-border)] mt-4 md:mt-0">
+              <CardHeader className="p-4 sm:p-3 pb-2">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
+                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">AI Suggestions</CardTitle>
                 </div>
+              </CardHeader>
 
-                {/* items */}
-                <div className="px-4 pb-4 pt-1">
-                  <div className="flex flex-col gap-3">
-                    {aiSuggestions.map((s, i) => (
-                      <button
-                        key={i}
-                        className="w-full text-left bg-[var(--color-bg-darker)] border-[var(--color-border)] rounded-lg p-3 flex flex-col gap-1 transition hover:bg-[rgba(255,255,255,0.01)]"
-                        aria-label={s.title}
-                      >
-                        <span className="text-sm font-medium text-white leading-tight">{s.title}</span>
-                        <span className="text-[11px] text-[var(--color-muted)]">{s.desc}</span>
-                      </button>
-                    ))}
-                  </div>
+              <CardContent className="p-4 sm:p-3 pt-1">
+                <div className="flex flex-col gap-3">
+                  {aiSuggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      className="w-full text-left bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg p-3 flex flex-col gap-1 transition hover:border-[var(--color-accent)] hover:shadow-lg hover:shadow-[var(--color-accent)]/20"
+                      aria-label={s.title}
+                    >
+                      <span className="text-sm font-medium text-[var(--color-text)] leading-tight">{s.title}</span>
+                      <span className="text-[11px] text-[var(--color-text)] opacity-70">{s.desc}</span>
+                    </button>
+                  ))}
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Upcoming Reviews */}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] mt-4 md:mt-0">
               <CardHeader className="p-4 sm:p-3 pb-2">
-                <CardTitle className="text-sm font-semibold">Upcoming Reviews</CardTitle>
+                <CardTitle className="text-sm font-semibold text-[var(--color-text)]">Upcoming Reviews</CardTitle>
               </CardHeader>
 
               <CardContent className="p-4 sm:p-3">
@@ -222,12 +211,12 @@ export default function DashboardPage() {
                   {reviews.map((r, i) => (
                     <div
                       key={i}
-                      className="bg-[var(--color-bg-darker)] rounded-xl p-4 sm:p-3 flex items-center justify-between border border-[rgba(255,255,255,0.03)]"
+                      className="bg-[var(--color-bg-light)] rounded-xl p-4 sm:p-3 flex items-center justify-between border border-[var(--color-border)]"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]/90" />
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">{r.subject}</span>
+                          <span className="text-sm font-medium text-[var(--color-text)]">{r.subject}</span>
                           <span className="text-[11px] text-[var(--color-muted)]">{r.count} cards</span>
                         </div>
                       </div>
@@ -257,10 +246,10 @@ function GoalItem({
   return (
     <div>
       <div className="flex justify-between text-xs mb-1">
-        <span className="text-sm">{label}</span>
-        <span className="text-sm">{value} / {total}</span>
+        <span className="text-sm text-[var(--color-text)]">{label}</span>
+        <span className="text-sm text-[var(--color-muted)] font-medium">{value} / {total}</span>
       </div>
-      <Progress value={(value / total) * 100} className="h-2 bg-[var(--color-border)]" />
+      <Progress value={(value / total) * 100} className="h-2 bg-[var(--color-progress-bg)]" />
     </div>
   );
 }

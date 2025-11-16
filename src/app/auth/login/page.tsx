@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getCsrfToken } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Image from "next/image";
@@ -13,31 +13,38 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [csrfToken, setCsrfToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCsrfToken().then((token) => setCsrfToken(token));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setError("");
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-  const result = await signIn("credentials", {
-    redirect: false, // ❗ Prevents auto-redirect loops
-    // redirectTo: "/dashboard",
-    email,
-    password,
-  });
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: "/dashboard",
+    });
 
-  if (result?.error) {
-    setError("Invalid email or password");
-  } else {
-    router.push("/dashboard");
-  }
+    console.log("SIGNIN RESULT:", result);
 
-  setIsLoading(false);
-};
+    if (result?.error) {
+      setError("Invalid email or password");
+    } else {
+      router.push("/dashboard");
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] flex flex-col">
@@ -62,6 +69,9 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Hidden CSRF token */}
+            <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
+
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center">
                 {error}
@@ -103,50 +113,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500  ${
+              className={`w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-black hover:text-white py-3 rounded-xl font-medium transition duration-500 ${
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--color-border)]"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[var(--color-bg-light)] text-[var(--color-muted)]">
-                OR CONTINUE WITH
-              </span>
-            </div>
-          </div>
-
-          {/* Social Logins */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
-              <Image
-                src="/images/googleLogo.svg"
-                alt="Google"
-                width={22}
-                height={22}
-                className="mr-2"
-              />
-              Google
-            </button>
-
-            <button className="flex items-center justify-center flex-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl py-3 text-[var(--color-text)] transition">
-              <Image
-                src="/images/githubLogo.svg"
-                alt="GitHub"
-                width={22}
-                height={22}
-                className="mr-2"
-              />
-              GitHub
-            </button>
-          </div>
 
           {/* Signup Link */}
           <div className="mt-6 text-center text-sm text-[var(--color-muted)]">

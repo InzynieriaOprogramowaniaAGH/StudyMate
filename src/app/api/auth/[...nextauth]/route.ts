@@ -7,101 +7,129 @@ const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // CREDENTIALS LOGIN
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "you@example.com" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-
       async authorize(credentials) {
-        // ✅ Validate input
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing email or password");
         }
 
-        // ✅ Find user by email
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
-          throw new Error("Invalid credentials");
-        }
+        if (!user || !user.password) throw new Error("Invalid credentials");
 
-        // ✅ Verify password
         const isValid = await compare(credentials.password, user.password);
+        if (!isValid) throw new Error("Invalid email or password");
 
-        if (!isValid) {
-          throw new Error("Invalid email or password");
-        }
-
-        // ✅ Return safe user object (exclude password)
         return {
           id: user.id,
-          name: user.name,
           email: user.email,
+          name: user.name,
+          image: user.image,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          bio: user.bio,
+          university: user.university,
         };
       },
     }),
   ],
 
-  // ✅ Use JWT-based sessions
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 60 * 24 * 7,
   },
 
-  // ✅ JWT secret
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
 
-  // ✅ Custom sign-in page
   pages: {
     signIn: "/auth/login",
   },
 
-  // ✅ Cookies config — safer for production
-  cookies: {
-    sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token"
-          : "next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production", // secure only in production
-      },
-    },
-  },
-
-  // ✅ Callbacks — attach user to JWT and session
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // First login
       if (user) {
         token.id = user.id;
-        token.name = user.name;
         token.email = user.email;
+        token.name = user.name;
+        token.image = user.image;
+        token.firstName = (user as any).firstName || null;
+        token.lastName = (user as any).lastName || null;
+        token.bio = (user as any).bio || null;
+        token.university = (user as any).university || null;
       }
+
+      // Update session data if edited
+      if (trigger === "update" && session?.user) {
+        token.firstName = session.user.firstName;
+        token.lastName = session.user.lastName;
+        token.bio = session.user.bio;
+        token.university = session.user.university;
+        token.email = session.user.email;
+        token.image = session.user.image;
+        token.name = session.user.name;
+      }
+
+      // Retrieve full DB user info on subsequent requests
+      if (!user && !trigger && token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email as string },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              firstName: true,
+              lastName: true,
+              bio: true,
+              university: true,
+            },
+          });
+
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.name = dbUser.name;
+            token.image = dbUser.image;
+            token.firstName = dbUser.firstName;
+            token.lastName = dbUser.lastName;
+            token.bio = dbUser.bio;
+            token.university = dbUser.university;
+          }
+        } catch (error) {
+          console.error("[JWT] Error fetching user:", error);
+        }
+      }
+
       return token;
     },
 
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id as string,
-          name: token.name as string,
-          email: token.email as string,
-        };
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.image = token.image as string | null;
+        session.user.firstName = token.firstName as string | null;
+        session.user.lastName = token.lastName as string | null;
+        session.user.bio = token.bio as string | null;
+        session.user.university = token.university as string | null;
       }
+
       return session;
     },
   },
 
-  // ✅ Enable debug mode only in development
   debug: process.env.NODE_ENV === "development",
 };
 

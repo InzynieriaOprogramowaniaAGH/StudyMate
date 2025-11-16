@@ -30,18 +30,42 @@
   /* Brand colors */
   --color-bg: #040609;
   --color-bg-light: #080C0F;
-  --color-bg-darker: #040609;
+  --color-bg-darker: #020305;
   --color-primary: rgb(0 139 255);
   --color-primary-dark: rgb(0 109 204);
   --color-primary-10: rgb(0 139 255 / 0.1);
   --color-primary-30: rgb(0 139 255 / 0.3);
   --color-accent: rgb(162 120 255);
   --color-accent-10: rgb(162 120 255 / 0.1);
+  --color-accent-70: rgb(162 120 255 / 0.7);
+  --color-accent-border: #57428A;
   --color-text: rgb(234 234 234);
   --color-muted: rgb(139 144 149);
   --color-border: #171b1f;
+  --color-progress-bg: #06263F;
   --color-white: rgb(255 255 255);
-  --color-accent-dark: #0C0C16
+  --color-accent-dark: #0C0C16;
+}
+
+.light {
+  /* Brand colors - Light mode */
+  --color-bg: #FFFFFF;
+  --color-bg-light: #F8F9FA;
+  --color-bg-darker: #F1F3F5;
+  --color-primary: rgb(0 109 204);
+  --color-primary-dark: rgb(0 89 168);
+  --color-primary-10: rgb(0 109 204 / 0.1);
+  --color-primary-30: rgb(0 109 204 / 0.3);
+  --color-accent: rgb(124 77 255);
+  --color-accent-10: rgb(124 77 255 / 0.1);
+  --color-accent-70: rgb(124 77 255 / 0.7);
+  --color-text: rgb(15 23 42);
+  --color-muted: rgb(71 85 105);
+  --color-border: #E5E7EB;
+  --color-white: rgb(255 255 255);
+  --color-accent-dark: #F3F0FF;
+  --color-text-strong: rgb(255 255 255);
+
 }
 
 html {
@@ -69,4 +93,73 @@ body {
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ======================
+   Custom Select Styling
+   ====================== */
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  min-width: 180px;
+  height: 40px;
+  padding: 0 2.5rem 0 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.6rem;
+  background-color: var(--color-bg-darker);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23aaaaaa' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.custom-select:hover {
+  border-color: var(--color-primary);
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-10);
+}
+
+.custom-select option {
+  background-color: var(--color-bg-light);
+  color: var(--color-text);
+}
+
+.custom-select:hover {
+  background-color: var(--color-bg-light);
+}
+
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body,
+section,
+div,
+select,
+input,
+button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
+input, textarea {
+  background: var(--color-bg-light);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-10);
 }
