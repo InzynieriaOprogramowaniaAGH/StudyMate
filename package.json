@@ -7,7 +7,8 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "dev:stack": "concurrently \"npm run docker:up\" \"wait-on tcp:5432 && npm run dev\"",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "tauri": "tauri dev"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
