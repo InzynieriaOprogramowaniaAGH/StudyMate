@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { User } from "lucide-react";
+import { User as UserIcon } from "lucide-react";
 import InputField from "@/components/ui/InputField";
 
-export function AccountTab({ user }: { user: any }) {
+export function AccountTab({ user: _user }: { user: any }) {
   const { data: session, update } = useSession();
   const [form, setForm] = useState({
     firstName: "",
@@ -20,12 +20,17 @@ export function AccountTab({ user }: { user: any }) {
 
   useEffect(() => {
     if (session?.user) {
+      const fullName = session.user.name ?? "";
+      const [firstName = "", ...rest] = fullName.trim().split(" ");
+      const lastName = rest.join(" ");
+
       setForm({
-        firstName: session.user.firstName || "",
-        lastName: session.user.lastName || "",
-        email: session.user.email || "",
-        bio: session.user.bio || "",
-        university: session.user.university || "",
+        firstName,
+        lastName,
+        email: session.user.email ?? "",
+        // Te pola nie istnieją w modelu User — utrzymujemy je tylko w UI:
+        bio: "",
+        university: "",
       });
       setLoading(false);
     }
@@ -50,17 +55,27 @@ export function AccountTab({ user }: { user: any }) {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Failed to update profile");
 
+      // Aktualizujemy nazwę i email w sesji (zgodnie z typami NextAuth)
+      const newName = [form.firstName, form.lastName].filter(Boolean).join(" ");
       await update({
         user: {
-          ...session?.user,
-          ...data.user,
-        },
+          ...(session?.user ?? {}),
+          name: newName || session?.user?.name,
+          email: form.email || session?.user?.email,
+        } as any,
       });
 
-      setForm(data.user);
+      // Zostawiamy wartości z backendu (jeśli coś zwrócił) + nasze pola formularza
+      setForm({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        bio: data.user?.bio ?? form.bio ?? "",
+        university: data.user?.university ?? form.university ?? "",
+      });
+
       setMessage("✅ Profile updated successfully!");
     } catch (err: any) {
       console.error(err);
@@ -82,10 +97,12 @@ export function AccountTab({ user }: { user: any }) {
     <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
         <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
-          <User size={18} className="text-[var(--color-primary)]" />
+          <UserIcon size={18} className="text-[var(--color-primary)]" />
         </div>
         <div className="min-w-0">
-          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">Personal Information</h4>
+          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">
+            Personal Information
+          </h4>
           <p className="text-xs sm:text-sm text-[var(--color-muted)]">
             Update your personal details and profile information
           </p>
@@ -147,9 +164,7 @@ export function AccountTab({ user }: { user: any }) {
         {message && (
           <p
             className={`text-xs sm:text-sm mt-3 ${
-              message.startsWith("✅")
-                ? "text-green-600"
-                : "text-red-500"
+              message.startsWith("✅") ? "text-green-600" : "text-red-500"
             }`}
           >
             {message}

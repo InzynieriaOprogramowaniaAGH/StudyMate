@@ -54,9 +54,9 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
         setAvatar(data.url);
         await update({
           user: {
-            ...session?.user,
+            ...(session?.user ?? {}),
             image: data.url,
-          },
+          } as any,
         });
       } else {
         alert("Upload failed.");
@@ -69,9 +69,16 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
     }
   };
 
-  const displayFirstName = session?.user?.firstName || user.firstName;
-  const displayLastName = session?.user?.lastName || user.lastName;
-  const displayEmail = session?.user?.email || user.email;
+  // Rozbijamy name z sesji (jeśli jest) na imię i nazwisko
+  const fullNameFromSession = session?.user?.name ?? "";
+  const [firstFromSession = "", ...restFromSession] = fullNameFromSession
+    .trim()
+    .split(" ");
+  const lastFromSession = restFromSession.join(" ");
+
+  const displayFirstName = firstFromSession || user.firstName || "";
+  const displayLastName = lastFromSession || user.lastName || "";
+  const displayEmail = session?.user?.email ?? user.email;
 
   return (
     <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 text-center shadow-sm">
@@ -104,15 +111,17 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
             className="hidden"
           />
         </div>
-            
+
         {/* User Info */}
         <div className="min-w-0 px-2">
           <h2 className="font-semibold text-sm sm:text-base md:text-lg text-[var(--color-text)] truncate">
             {displayFirstName || displayLastName
-              ? `${displayFirstName || ""} ${displayLastName || ""}`.trim()
+              ? `${displayFirstName} ${displayLastName}`.trim()
               : session?.user?.name || user.name || "Unnamed User"}
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--color-muted)] truncate">{displayEmail}</p>
+          <p className="text-xs sm:text-sm text-[var(--color-muted)] truncate">
+            {displayEmail}
+          </p>
         </div>
 
         {/* Badges */}

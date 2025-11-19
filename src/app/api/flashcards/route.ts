@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-<<<<<<< HEAD
 
-=======
->>>>>>> 706aa7d057557567126f31231858642e5d5cf938
-
+// pobiera listę fiszek
 export async function GET() {
   try {
     const flashcards = await prisma.flashcard.findMany({
@@ -14,14 +11,14 @@ export async function GET() {
     return NextResponse.json(flashcards);
   } catch (error) {
     console.error("Błąd pobierania fiszek:", error);
-    return NextResponse.json({ error: "Nie udało się pobrać fiszek" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Nie udało się pobrać fiszek" },
+      { status: 500 }
+    );
   }
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 706aa7d057557567126f31231858642e5d5cf938
+// dodaje nową fiszkę
 export async function POST(req: Request) {
   try {
     const data = await req.json();
@@ -38,6 +35,9 @@ export async function POST(req: Request) {
     return NextResponse.json(newFlashcard);
   } catch (error) {
     console.error("Błąd tworzenia fiszki:", error);
-    return NextResponse.json({ error: "Nie udało się utworzyć fiszki" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Nie udało się utworzyć fiszki" },
+      { status: 500 }
+    );
   }
 }

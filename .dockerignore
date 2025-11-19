@@ -1,0 +1,34 @@
+# === katalogi i śmieci deweloperskie ===
+node_modules
+.next
+out
+coverage
+dist
+tmp
+.cache
+
+# IDE / system
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# logi
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# === sekrety i środowiska ===
+.env
+.env.*
+!.env.example
+
+# serwerowe pliki (niepotrzebne w buildzie aplikacji)
+server_files/
+
+# git
+.git
+.gitignore
+
+
