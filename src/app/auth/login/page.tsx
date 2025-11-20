@@ -6,7 +6,6 @@ import Link from "next/link";
 import { signIn, getCsrfToken } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
-import Image from "next/image";
 import { fadeInUp } from "@/lib/motionutils";
 
 export default function LoginPage() {
@@ -16,7 +15,7 @@ export default function LoginPage() {
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
   useEffect(() => {
-    getCsrfToken().then((token) => setCsrfToken(token));
+    getCsrfToken().then((token) => setCsrfToken(token ?? null));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,8 +33,6 @@ export default function LoginPage() {
       password,
       callbackUrl: "/dashboard",
     });
-
-    console.log("SIGNIN RESULT:", result);
 
     if (result?.error) {
       setError("Invalid email or password");
