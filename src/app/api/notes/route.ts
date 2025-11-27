@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
 // pobiera wszystkie notatki z bazy
 export async function GET() {
   try {
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     const notes = await prisma.note.findMany({
+      where: { userId: user.id },
       orderBy: { createdAt: "desc" },
-      take: 10, // tylko raz
     });
 
     return NextResponse.json(notes);
@@ -22,13 +37,37 @@ export async function GET() {
 // tworzy nową notatkę
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     const body = await request.json();
+    const { title, subject, description, content } = body;
+
+    if (!title || !subject || !description || !content) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
     const newNote = await prisma.note.create({
       data: {
-        title: body.title,
-        content: body.content,
-        userId: body.userId,
+        title,
+        content,
+        subject,
+        description,
+        userId: user.id,
       },
     });
 

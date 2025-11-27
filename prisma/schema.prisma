@@ -29,6 +29,7 @@ model User {
   quizzes       Quiz[]
   sessions      Session[]
   preferences   UserPreference?
+  stats         Stats[]
 }
 
 model Account {
@@ -69,15 +70,17 @@ model VerificationToken {
 }
 
 model Note {
-  id         String      @id @default(cuid())
-  title      String
-  content    String
-  userId     String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  flashcards Flashcard[]
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quizzes    Quiz[]      @relation("NoteQuizzes")
+  id          String      @id @default(cuid())
+  title       String
+  content     String
+  subject     String?
+  description String?
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  flashcards  Flashcard[]
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizzes     Quiz[]      @relation("NoteQuizzes")
 }
 
 model Flashcard {
@@ -137,4 +140,15 @@ model UserPreference {
   theme        String?
   aiStyle      String?
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Stats {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  action    String   // "quizCompleted", "noteAdded", "login", "flashcardReviewed"
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
 }
