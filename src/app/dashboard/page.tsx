@@ -10,11 +10,11 @@ import { useSession } from "next-auth/react";
 export default function DashboardPage() {
   const user = useSession().data?.user?.name ?? "John";
 
-  const quickActions = [
-    { title: "Create Note", icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" /> },
-    { title: "Take Quiz", icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" /> },
-    { title: "Study Flashcards", icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" /> },
-    { title: "View Progress", icon: <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" /> },
+  const quickActionsConfig = [
+    { title: "Create Note", icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" />, href: "/notes/new" },
+    { title: "Take Quiz", icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" />, href: "#" },
+    { title: "Study Flashcards", icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" />, href: "#" },
+    { title: "View Progress", icon: <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />, href: "/progress" },
   ];
 
   const stats = [
@@ -83,18 +83,17 @@ export default function DashboardPage() {
 
               <CardContent className="p-4 sm:p-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {quickActions.map((a, i) => (
-                    <Button
+                  {quickActionsConfig.map((a, i) => (
+                    <a
                       key={i}
-                      variant="outline"
-                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 bg-[var(--color-bg-light)] border-[var(--color-border)] hover:bg-[var(--color-bg-light)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
-                      aria-label={a.title}
+                      href={a.href}
+                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 px-4 rounded-md bg-[var(--color-bg-light)] border border-[var(--color-border)] hover:bg-[var(--color-bg-light)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
                     >
                       <div className="rounded-full w-9 h-9 flex items-center justify-center bg-[var(--color-primary)]/10">
                         {a.icon}
                       </div>
                       <span className="mt-1">{a.title}</span>
-                    </Button>
+                    </a>
                   ))}
                 </div>
               </CardContent>
@@ -107,7 +106,7 @@ export default function DashboardPage() {
                   <CardTitle className="text-sm font-semibold text-[var(--color-text)]">Recent Notes</CardTitle>
                   <p className="text-xs text-[var(--color-muted)] mt-1">Your latest study materials</p>
                 </div>
-                <a href="#" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">View All</a>
+                <a href="/notes" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">View All</a>
               </CardHeader>
 
               {/* Removed overflow */}
