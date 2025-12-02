@@ -12,8 +12,8 @@ export default function DashboardPage() {
 
   const quickActionsConfig = [
     { title: "Create Note", icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" />, href: "/notes/new" },
-    { title: "Take Quiz", icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" />, href: "#" },
-    { title: "Study Flashcards", icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" />, href: "#" },
+    { title: "Take Quiz", icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" />, href: "/quizzes" },
+    { title: "Study Flashcards", icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" />, href: "/flashcards" },
     { title: "View Progress", icon: <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />, href: "/progress" },
   ];
 
