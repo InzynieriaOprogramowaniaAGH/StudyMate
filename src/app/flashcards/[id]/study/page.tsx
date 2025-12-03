@@ -126,13 +126,13 @@ export default function FlashcardStudyPage() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Easy":
-        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        return "bg-[var(--color-success-10)] text-[var(--color-success)] border-[var(--color-success)]/30";
       case "Medium":
-        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+        return "bg-[var(--color-warning-10)] text-[var(--color-warning)] border-[var(--color-warning)]/30";
       case "Hard":
-        return "bg-red-500/20 text-red-400 border-red-500/30";
+        return "bg-[var(--color-error-10)] text-[var(--color-error)] border-[var(--color-error)]/30";
       default:
-        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        return "bg-[var(--color-muted)]/10 text-[var(--color-muted)] border-[var(--color-muted)]/30";
     }
   };
 
@@ -297,12 +297,12 @@ export default function FlashcardStudyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="grid grid-cols-3 gap-3 mb-6"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"
           >
             {[
-              { label: "Cards Known", value: knowCards.length, icon: CheckCircle2, color: "text-emerald-400" },
-              { label: "Need Study", value: studyCards.length, icon: Layers, color: "text-orange-400" },
-              { label: "Success Rate", value: `${Math.round((knowCards.length / (knowCards.length + studyCards.length)) * 100) || 0}%`, icon: AlertCircle, color: "text-yellow-400" },
+              { label: "Cards Known", value: knowCards.length, icon: CheckCircle2, color: "text-[var(--color-success)]" },
+              { label: "Need Study", value: studyCards.length, icon: Layers, color: "text-[var(--color-warning)]" },
+              { label: "Success Rate", value: `${Math.round((knowCards.length / (knowCards.length + studyCards.length)) * 100) || 0}%`, icon: AlertCircle, color: "text-[var(--color-warning)]" },
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -328,13 +328,13 @@ export default function FlashcardStudyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex gap-3 justify-between mb-4"
+            className="flex flex-col sm:flex-row gap-3 mb-4"
           >
             {/* Previous Button */}
             <button
               onClick={handlePrevious}
               disabled={currentIndex === 0}
-              className="flex items-center gap-2 px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -343,7 +343,7 @@ export default function FlashcardStudyPage() {
             {/* Restart Button */}
             <button
               onClick={handleRestart}
-              className="flex items-center gap-2 px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Restart
@@ -352,7 +352,7 @@ export default function FlashcardStudyPage() {
             {/* Next Button */}
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
               Next
               <ChevronRight className="w-4 h-4" />
@@ -364,18 +364,18 @@ export default function FlashcardStudyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="grid grid-cols-2 gap-3"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           >
             <button
               onClick={handleKnow}
-              className="w-full px-6 py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-medium rounded-lg hover:bg-emerald-500/30 transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-[var(--color-success-10)] border border-[var(--color-success)]/30 text-[var(--color-success)] font-medium rounded-lg hover:bg-[var(--color-success-20)] transition-colors flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               I Know This
             </button>
             <button
               onClick={handleNeedStudy}
-              className="w-full px-6 py-3 bg-orange-500/20 border border-orange-500/30 text-orange-400 font-medium rounded-lg hover:bg-orange-500/30 transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-[var(--color-warning-10)] border border-[var(--color-warning)]/30 text-[var(--color-warning)] font-medium rounded-lg hover:bg-[var(--color-warning-20)] transition-colors flex items-center justify-center gap-2"
             >
               <BookOpen className="w-4 h-4" />
               Need More Study

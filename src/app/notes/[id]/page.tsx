@@ -68,7 +68,7 @@ export default function NoteDetailPage() {
       <>
         <Header />
         <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Link
               href="/notes"
               className="flex items-center gap-2 text-[var(--color-primary)] hover:underline mb-6"
@@ -186,7 +186,7 @@ export default function NoteDetailPage() {
           </motion.div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Left Column - Note Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

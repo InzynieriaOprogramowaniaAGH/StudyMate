@@ -177,9 +177,9 @@ export default function QuizQuestionPage() {
                     disabled={answered}
                     className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                       showCorrect
-                        ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+                        ? "bg-[var(--color-success-10)] border-[var(--color-success)] text-[var(--color-success)]"
                         : showIncorrect
-                          ? "bg-red-500/20 border-red-500 text-red-400"
+                          ? "bg-[var(--color-error-10)] border-[var(--color-error)] text-[var(--color-error)]"
                           : isSelected
                             ? "bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-text)]"
                             : "bg-[var(--color-bg)] border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]/50"
@@ -188,11 +188,11 @@ export default function QuizQuestionPage() {
                     <div className="flex items-center justify-between">
                       <span>{option}</span>
                       {showCorrect && (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <CheckCircle2 className="w-5 h-5 text-[var(--color-success)]" />
                       )}
                       {showIncorrect && (
-                        <div className="w-5 h-5 rounded-full border-2 border-red-400 flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-red-400" />
+                        <div className="w-5 h-5 rounded-full border-2 border-[var(--color-error)] flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-[var(--color-error)]" />
                         </div>
                       )}
                     </div>
@@ -208,8 +208,8 @@ export default function QuizQuestionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`mt-6 p-4 rounded-lg ${
                   isCorrect
-                    ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                    : "bg-red-500/10 border border-red-500/30 text-red-400"
+                    ? "bg-[var(--color-success-10)] border border-[var(--color-success-10)] text-[var(--color-success)]"
+                    : "bg-[var(--color-error-10)] border border-[var(--color-error-10)] text-[var(--color-error)]"
                 }`}
               >
                 <p className="font-medium text-sm">
@@ -225,19 +225,19 @@ export default function QuizQuestionPage() {
           </motion.div>
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
             <button
               onClick={handlePrevious}
               disabled={currentQuestionIdx === 0}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 max-w-sm text-sm font-medium rounded-lg border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
             </button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 order-3 sm:order-2">
               {/* Question Indicators */}
-              <div className="flex gap-1 px-4">
+              <div className="flex gap-1 px-2 sm:px-4">
                 {MOCK_QUIZ.questions.map((_, idx) => (
                   <div
                     key={idx}
@@ -256,7 +256,7 @@ export default function QuizQuestionPage() {
             <button
               onClick={handleNext}
               disabled={!answered}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 max-w-sm text-sm font-medium rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed order-2 sm:order-3"
             >
               {currentQuestionIdx === MOCK_QUIZ.questions.length - 1
                 ? "Finish"

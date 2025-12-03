@@ -149,7 +149,7 @@ export default function EditNotePage() {
       <>
         <Header />
         <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-          <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Link
               href="/notes"
               className="flex items-center gap-2 text-[var(--color-primary)] hover:underline mb-6"

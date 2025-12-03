@@ -79,13 +79,13 @@ const MOCK_QUIZZES: Quiz[] = [
 const getLevelColor = (level: string) => {
   switch (level) {
     case "Beginner":
-      return "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+      return "bg-[var(--color-success-10)] text-[var(--color-success)] border border-[var(--color-success)]/30";
     case "Intermediate":
-      return "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
+      return "bg-[var(--color-warning-10)] text-[var(--color-warning)] border border-[var(--color-warning)]/30";
     case "Advanced":
-      return "bg-red-500/20 text-red-400 border border-red-500/30";
+      return "bg-[var(--color-error-10)] text-[var(--color-error)] border border-[var(--color-error)]/30";
     default:
-      return "bg-gray-500/20 text-gray-400 border border-gray-500/30";
+      return "bg-[var(--color-muted)]/10 text-[var(--color-muted)] border border-[var(--color-muted)]/30";
   }
 };
 
@@ -105,13 +105,13 @@ const getStatusIcon = (status: string) => {
 const getStatusColor = (status: string) => {
   switch (status) {
     case "Not Started":
-      return "text-blue-400";
+      return "text-[var(--color-primary)]";
     case "In Progress":
-      return "text-yellow-400";
+      return "text-[var(--color-warning)]";
     case "Completed":
-      return "text-green-400";
+      return "text-[var(--color-success)]";
     default:
-      return "text-gray-400";
+      return "text-[var(--color-muted)]";
   }
 };
 

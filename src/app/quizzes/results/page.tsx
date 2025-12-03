@@ -121,11 +121,11 @@ export default function QuizResultsPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-emerald-400";
-    if (score >= 80) return "text-emerald-400";
-    if (score >= 70) return "text-yellow-400";
-    if (score >= 60) return "text-orange-400";
-    return "text-red-400";
+    if (score >= 90) return "text-[var(--color-success)]";
+    if (score >= 80) return "text-[var(--color-success)]";
+    if (score >= 70) return "text-[var(--color-warning)]";
+    if (score >= 60) return "text-[var(--color-info)]";
+    return "text-[var(--color-error)]";
   };
 
   return (
@@ -146,7 +146,7 @@ export default function QuizResultsPage() {
               transition={{ delay: 0.2, type: "spring" }}
               className="mb-6"
             >
-              <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto" />
+              <CheckCircle2 className="w-16 h-16 text-[var(--color-success)] mx-auto" />
             </motion.div>
 
             {/* Message */}
@@ -235,8 +235,8 @@ export default function QuizResultsPage() {
             </h2>
             <div className="space-y-3">
               {[
-                { label: "Mastered", value: MOCK_RESULT.correctAnswers, color: "bg-emerald-500" },
-                { label: "Struggling", value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, color: "bg-red-500" },
+                { label: "Mastered", value: MOCK_RESULT.correctAnswers, color: "bg-[var(--color-success)]" },
+                { label: "Struggling", value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, color: "bg-[var(--color-error)]" },
               ].map((item, idx) => {
                 const percentage = (item.value / MOCK_RESULT.totalQuestions) * 100;
                 return (
@@ -290,8 +290,8 @@ export default function QuizResultsPage() {
                   key={q.id}
                   className={`border-l-4 p-3 rounded ${
                     q.isCorrect
-                      ? "border-l-emerald-500 bg-emerald-500/5"
-                      : "border-l-red-500 bg-red-500/5"
+                      ? "border-l-[var(--color-success)] bg-[var(--color-success-10)]"
+                      : "border-l-[var(--color-error)] bg-[var(--color-error-10)]"
                   }`}
                 >
                   <p className="text-xs font-medium text-[var(--color-muted)] mb-1">
@@ -301,8 +301,8 @@ export default function QuizResultsPage() {
                   <p
                     className={`text-xs mt-1 ${
                       q.isCorrect
-                        ? "text-emerald-400"
-                        : "text-red-400"
+                        ? "text-[var(--color-success)]"
+                        : "text-[var(--color-error)]"
                     }`}
                   >
                     {q.userAnswer}
@@ -344,8 +344,8 @@ export default function QuizResultsPage() {
                   transition={{ delay: 0.7 + idx * 0.05 }}
                   className={`bg-[var(--color-bg-light)] border-l-4 rounded-lg p-4 ${
                     question.isCorrect
-                      ? "border-l-emerald-500"
-                      : "border-l-red-500"
+                      ? "border-l-[var(--color-success)]"
+                      : "border-l-[var(--color-error)]"
                   }`}
                 >
                   {/* Question Number and Status */}
@@ -354,14 +354,14 @@ export default function QuizResultsPage() {
                       <div
                         className={`flex items-center justify-center w-6 h-6 rounded-full ${
                           question.isCorrect
-                            ? "bg-emerald-500/20"
-                            : "bg-red-500/20"
+                            ? "bg-[var(--color-success-10)]"
+                            : "bg-[var(--color-error-10)]"
                         }`}
                       >
                         {question.isCorrect ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-red-400" />
+                          <XCircle className="w-4 h-4 text-[var(--color-error)]" />
                         )}
                       </div>
                       <span className="font-medium text-[var(--color-text)]">
@@ -371,8 +371,8 @@ export default function QuizResultsPage() {
                     <span
                       className={`text-xs font-medium px-2 py-1 rounded ${
                         question.isCorrect
-                          ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-red-500/20 text-red-400"
+                          ? "bg-[var(--color-success-10)] text-[var(--color-success)]"
+                          : "bg-[var(--color-error-10)] text-[var(--color-error)]"
                       }`}
                     >
                       {question.isCorrect ? "Correct" : "Incorrect"}
@@ -392,8 +392,8 @@ export default function QuizResultsPage() {
                         <p
                           className={
                             question.isCorrect
-                              ? "text-emerald-400"
-                              : "text-red-400"
+                              ? "text-[var(--color-success)]"
+                              : "text-[var(--color-error)]"
                           }
                         >
                           {question.userAnswer}
@@ -405,7 +405,7 @@ export default function QuizResultsPage() {
                       <div className="flex justify-between items-start bg-[var(--color-bg)] p-3 rounded border border-[var(--color-border)]">
                         <div>
                           <p className="text-[var(--color-muted)] mb-1">Correct answer:</p>
-                          <p className="text-emerald-400">
+                          <p className="text-[var(--color-success)]">
                             {question.correctAnswer}
                           </p>
                         </div>

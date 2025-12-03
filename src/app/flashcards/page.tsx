@@ -77,13 +77,13 @@ export default function FlashcardsPage() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Easy":
-        return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        return "bg-[var(--color-success-10)] text-[var(--color-success)] border-[var(--color-success)]/30";
       case "Medium":
-        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+        return "bg-[var(--color-warning-10)] text-[var(--color-warning)] border-[var(--color-warning)]/30";
       case "Hard":
-        return "bg-red-500/20 text-red-400 border-red-500/30";
+        return "bg-[var(--color-error-10)] text-[var(--color-error)] border-[var(--color-error)]/30";
       default:
-        return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        return "bg-[var(--color-muted)]/10 text-[var(--color-muted)] border-[var(--color-muted)]/30";
     }
   };
 

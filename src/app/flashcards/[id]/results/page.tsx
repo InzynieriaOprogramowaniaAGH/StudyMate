@@ -30,11 +30,11 @@ export default function FlashcardResultsPage() {
   };
 
   const getScoreColor = (percentage: number) => {
-    if (percentage >= 90) return "text-emerald-400";
-    if (percentage >= 80) return "text-emerald-400";
-    if (percentage >= 70) return "text-yellow-400";
-    if (percentage >= 60) return "text-orange-400";
-    return "text-red-400";
+    if (percentage >= 90) return "text-[var(--color-success)]";
+    if (percentage >= 80) return "text-[var(--color-success)]";
+    if (percentage >= 70) return "text-[var(--color-warning)]";
+    if (percentage >= 60) return "text-[var(--color-info)]";
+    return "text-[var(--color-error)]";
   };
 
   return (
@@ -55,8 +55,8 @@ export default function FlashcardResultsPage() {
               transition={{ delay: 0.2, type: "spring" }}
               className="mb-6"
             >
-              <div className="w-20 h-20 rounded-full border-4 border-emerald-400 flex items-center justify-center mx-auto">
-                <Check className="w-10 h-10 text-emerald-400" />
+              <div className="w-20 h-20 rounded-full border-4 border-[var(--color-success)] flex items-center justify-center mx-auto">
+                <Check className="w-10 h-10 text-[var(--color-success)]" />
               </div>
             </motion.div>
 
@@ -106,12 +106,12 @@ export default function FlashcardResultsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="grid grid-cols-3 gap-4 mb-8"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8"
           >
             {[
-              { label: "Cards Known", value: known, icon: Check, color: "text-emerald-400" },
-              { label: "Need Study", value: studied, icon: Layers, color: "text-orange-400" },
-              { label: "Success Rate", value: `${percentage}%`, icon: TrendingUp, color: "text-yellow-400" },
+              { label: "Cards Known", value: known, icon: Check, color: "text-[var(--color-success)]" },
+              { label: "Need Study", value: studied, icon: Layers, color: "text-[var(--color-warning)]" },
+              { label: "Success Rate", value: `${percentage}%`, icon: TrendingUp, color: "text-[var(--color-warning)]" },
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -142,8 +142,8 @@ export default function FlashcardResultsPage() {
             </h2>
             <div className="space-y-3">
               {[
-                { label: "Cards Mastered", value: known, color: "bg-emerald-500" },
-                { label: "Cards to Review", value: studied, color: "bg-orange-500" },
+                { label: "Cards Mastered", value: known, color: "bg-[var(--color-success)]" },
+                { label: "Cards to Review", value: studied, color: "bg-[var(--color-warning)]" },
               ].map((item, idx) => {
                 const percentage = total > 0 ? (item.value / total) * 100 : 0;
                 return (
@@ -200,18 +200,18 @@ export default function FlashcardResultsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="flex gap-3 justify-center sm:justify-end"
+            className="flex flex-col sm:flex-row gap-3 justify-center sm:justify-end"
           >
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-6 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center gap-2"
+              className="px-6 py-2 sm:px-6 sm:py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4" />
               Back to Home
             </button>
             <button
               onClick={() => router.push("/flashcards")}
-              className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
+              className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center"
             >
               Study More Sets
             </button>
