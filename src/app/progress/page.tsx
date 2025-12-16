@@ -212,12 +212,16 @@ export default function ProgressPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
-              Your Progress
-            </h1>
-            <p className="text-sm text-[var(--color-muted)]">
-              Track your learning statistics and achievements
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
+                  Your Progress
+                </h1>
+                <p className="text-sm text-[var(--color-muted)]">
+                  Track your learning statistics and achievements
+                </p>
+              </div>
+            </div>
           </motion.div>
 
           {isLoading ? (
@@ -239,7 +243,7 @@ export default function ProgressPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
               >
                 {[
                   {
@@ -260,12 +264,6 @@ export default function ProgressPage() {
                       stats?.actionStats.find((s) => s.action === "quizCompleted")
                         ?._count.action || 0,
                     icon: CheckCircle2,
-                  },
-                  {
-                    label: "Current Streak",
-                    value: calculateCurrentStreak(),
-                    icon: Flame,
-                    highlight: true,
                   },
                   {
                     label: "Flashcards Reviewed",
@@ -289,25 +287,21 @@ export default function ProgressPage() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.1 + idx * 0.05 }}
-                      className={`bg-[var(--color-bg-light)] border rounded-lg p-6 ${
+                      className={`bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-4 ${
                         stat.highlight
-                          ? "border-[var(--color-primary)]/50 shadow-lg shadow-[var(--color-primary)]/10"
-                          : "border-[var(--color-border)]"
+                          ? "shadow-lg shadow-[var(--color-primary)]/10"
+                          : ""
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-2">
                         <IconComponent
-                          className={`w-8 h-8 ${
-                            stat.highlight
-                              ? "text-[var(--color-primary)] animate-pulse"
-                              : "text-[var(--color-primary)]"
-                          }`}
+                          className={`w-6 h-6 text-[var(--color-primary)]`}
                         />
                       </div>
-                      <h3 className="text-sm text-[var(--color-muted)] font-medium mb-1">
+                      <h3 className="text-xs text-[var(--color-muted)] font-medium mb-1">
                         {stat.label}
                       </h3>
-                      <p className="text-2xl font-bold text-[var(--color-text)]">
+                      <p className="text-xl font-bold text-[var(--color-text)]">
                         {stat.value}
                       </p>
                     </motion.div>

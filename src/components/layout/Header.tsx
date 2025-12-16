@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Flame } from "lucide-react";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -147,8 +147,12 @@ export default function Header() {
                     {language === "en" ? <GB /> : <PL />}
                   </div>
                 </button>
-              </div>
 
+                <div className="flex items-center justify-center w-10 h-10 bg-[var(--color-bg)] rounded-full text-[var(--color-text)] text-base">
+                  <Flame className="w-8 h-8 text-[var(--color-primary)]" /> 3
+
+                </div>
+              </div>
               <div className="relative">
                 <button
                   ref={avatarRef}

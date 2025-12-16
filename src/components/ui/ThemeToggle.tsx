@@ -33,7 +33,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="relative w-8 h-8 flex items-center justify-center text-gray-300 transition-all"
+      className="relative w-10 h-10 flex items-center justify-center text-gray-300 transition-all"
       title="Toggle theme"
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -46,7 +46,7 @@ export default function ThemeToggle() {
             transition={{ duration: 0.2 }}
             className="absolute text-yellow-400"
           >
-            <Sun size={22} />
+            <Sun size={24} />
           </motion.span>
         ) : (
           <motion.span
@@ -57,7 +57,7 @@ export default function ThemeToggle() {
             transition={{ duration: 0.2 }}
             className="absolute text-blue-400"
           >
-            <Moon size={22} />
+            <Moon size={28} />
           </motion.span>
         )}
       </AnimatePresence>
