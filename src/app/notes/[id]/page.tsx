@@ -25,6 +25,36 @@ export default function NoteDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState(false);
+  const [isGeneratingFlashcards, setIsGeneratingFlashcards] = useState(false);
+
+  const generateFlashcards = async () => {
+    if (!noteId || isGeneratingFlashcards) return;
+
+    try {
+      setIsGeneratingFlashcards(true);
+
+      const res = await fetch(`/api/notes/${noteId}/generate/flashcards`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count: 12 }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const msg = typeof data?.error === "string" ? data.error : "Failed to generate flashcards";
+        throw new Error(msg);
+      }
+
+      const createdCount = typeof data?.createdCount === "number" ? data.createdCount : 0;
+      alert(`Wygenerowano ${createdCount} fiszek.`);
+    } catch (err: any) {
+      console.error("Error generating flashcards:", err);
+      alert(`Błąd generowania fiszek: ${err?.message ?? "unknown error"}`);
+    } finally {
+      setIsGeneratingFlashcards(false);
+    }
+  };
 
   useEffect(() => {
     const fetchNoteData = async () => {
@@ -271,8 +301,12 @@ export default function NoteDetailPage() {
                     <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
                       <span>➕</span> New Quiz
                     </button>
-                    <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                      <span>📇</span> More Flashcards
+                    <button
+                      onClick={generateFlashcards}
+                      disabled={isGeneratingFlashcards}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <span>📇</span> {isGeneratingFlashcards ? "Generating..." : "More Flashcards"}
                     </button>
                   </div>
                 </div>
