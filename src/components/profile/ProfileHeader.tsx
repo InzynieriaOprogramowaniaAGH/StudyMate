@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 interface ProfileHeaderProps {
   user: {
@@ -24,6 +25,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
   const [avatar, setAvatar] = useState(user.image || "/default-avatar.png");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations("profile.header");
 
   useEffect(() => {
     if (session?.user?.image) setAvatar(session.user.image);
@@ -59,11 +61,11 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
           } as any,
         });
       } else {
-        alert("Upload failed.");
+        alert(t("photoUpload.error"));
       }
     } catch (err) {
       console.error(err);
-      alert("Error uploading file.");
+      alert(t("photoUpload.error"));
     } finally {
       setUploading(false);
     }
@@ -100,7 +102,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
           </div>
 
           <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs sm:text-sm text-white transition">
-            Change
+            {t("change")}
           </div>
 
           <input
@@ -117,7 +119,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
           <h2 className="font-semibold text-sm sm:text-base md:text-lg text-[var(--color-text)] truncate">
             {displayFirstName || displayLastName
               ? `${displayFirstName} ${displayLastName}`.trim()
-              : session?.user?.name || user.name || "Unnamed User"}
+              : session?.user?.name || user.name || t("unnamedUser")}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--color-muted)] truncate">
             {displayEmail}
@@ -127,19 +129,19 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2 mt-2">
           <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
-            {user.role || "Pro Member"}
+            {user.role || t("proMember")}
           </span>
           <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
             {user.role || "ADMIN"}
           </span>
           {user.level && (
             <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
-              Level {user.level}
+              {t("level", { level: user.level })}
             </span>
           )}
           {user.streak && (
             <span className="px-2 sm:px-3 py-1 text-xs rounded-md bg-[var(--color-bg-darker)] border border-[var(--color-border)] text-[var(--color-text)] whitespace-nowrap">
-              {user.streak} Day Streak
+              {t("dayStreak", { count: user.streak })}
             </span>
           )}
         </div>

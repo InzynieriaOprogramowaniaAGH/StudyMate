@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { User as UserIcon } from "lucide-react";
 import InputField from "@/components/ui/InputField";
+import { useTranslations } from "next-intl";
 
 export function AccountTab({ user: _user }: { user: any }) {
   const { data: session, update } = useSession();
+  const t = useTranslations("profile.account");
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -76,7 +78,7 @@ export function AccountTab({ user: _user }: { user: any }) {
         university: data.user?.university ?? form.university ?? "",
       });
 
-      setMessage("✅ Profile updated successfully!");
+      setMessage(`✅ ${t("successMessage")}`);
     } catch (err: any) {
       console.error(err);
       setMessage("❌ " + err.message);
@@ -88,7 +90,7 @@ export function AccountTab({ user: _user }: { user: any }) {
   if (loading) {
     return (
       <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-6 text-[var(--color-muted)] shadow-sm">
-        Loading profile...
+        {t("loading")}
       </section>
     );
   }
@@ -101,10 +103,10 @@ export function AccountTab({ user: _user }: { user: any }) {
         </div>
         <div className="min-w-0">
           <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">
-            Personal Information
+            {t("title")}
           </h4>
           <p className="text-xs sm:text-sm text-[var(--color-muted)]">
-            Update your personal details and profile information
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -112,13 +114,13 @@ export function AccountTab({ user: _user }: { user: any }) {
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
-            label="First Name"
+            label={t("firstName")}
             name="firstName"
             value={form.firstName}
             onChange={handleChange}
           />
           <InputField
-            label="Last Name"
+            label={t("lastName")}
             name="lastName"
             value={form.lastName}
             onChange={handleChange}
@@ -126,25 +128,25 @@ export function AccountTab({ user: _user }: { user: any }) {
         </div>
 
         <InputField
-          label="Email"
+          label={t("email")}
           name="email"
           value={form.email}
           onChange={handleChange}
         />
 
         <InputField
-          label="Bio"
+          label={t("bio")}
           name="bio"
-          placeholder="Tell us about yourself"
+          placeholder={t("bioPlaceholder")}
           value={form.bio}
           onChange={handleChange}
           textarea
         />
 
         <InputField
-          label="University/School"
+          label={t("university")}
           name="university"
-          placeholder="Your institution"
+          placeholder={t("universityPlaceholder")}
           value={form.university}
           onChange={handleChange}
         />
@@ -158,7 +160,7 @@ export function AccountTab({ user: _user }: { user: any }) {
               : "hover:bg-[var(--color-primary-dark)]"
           }`}
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {saving ? t("saving") : t("saveChanges")}
         </button>
 
         {message && (

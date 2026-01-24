@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Upload, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   currentPhoto?: string;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function ProfilePhotoUploader({ currentPhoto, userId }: Props) {
+  const t = useTranslations("profile.header.photoUpload");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentPhoto || null);
   const [uploading, setUploading] = useState(false);
@@ -40,9 +42,9 @@ export default function ProfilePhotoUploader({ currentPhoto, userId }: Props) {
     if (res.ok) {
       const data = await res.json();
       setPreviewUrl(data.url);
-      alert("Profile photo updated!");
+      alert(t("success"));
     } else {
-      alert("Failed to upload photo.");
+      alert(t("error"));
     }
   };
 
@@ -74,7 +76,7 @@ export default function ProfilePhotoUploader({ currentPhoto, userId }: Props) {
         className="px-4 py-2 bg-[var(--color-primary)] text-black rounded-md font-medium hover:opacity-90 transition flex items-center gap-2 disabled:opacity-50"
       >
         {uploading && <Loader2 className="animate-spin" size={16} />}
-        {uploading ? "Uploading..." : "Upload Photo"}
+        {uploading ? t("uploading") : t("uploadPhoto")}
       </button>
     </div>
   );

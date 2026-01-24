@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Note {
   id: string;
@@ -17,26 +18,27 @@ interface Note {
   updatedAt: string;
 }
 
-const subjects = [
-  "Computer Science",
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "History",
-  "Literature",
-  "Economics",
-  "Psychology",
-  "Art",
-  "Music",
-  "Languages",
-  "Science",
-];
-
 export default function EditNotePage() {
   const params = useParams();
   const router = useRouter();
   const noteId = params.id as string;
+  const t = useTranslations("notes");
+
+  const subjects = [
+    { key: "computerScience", label: t("subjects.computerScience") },
+    { key: "mathematics", label: t("subjects.mathematics") },
+    { key: "physics", label: t("subjects.physics") },
+    { key: "chemistry", label: t("subjects.chemistry") },
+    { key: "biology", label: t("subjects.biology") },
+    { key: "history", label: t("subjects.history") },
+    { key: "literature", label: t("subjects.literature") },
+    { key: "economics", label: t("subjects.economics") },
+    { key: "psychology", label: t("subjects.psychology") },
+    { key: "art", label: t("subjects.art") },
+    { key: "music", label: t("subjects.music") },
+    { key: "languages", label: t("subjects.languages") },
+    { key: "other", label: t("subjects.other") },
+  ];
 
   const [note, setNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -98,12 +100,12 @@ export default function EditNotePage() {
     e.preventDefault();
 
     if (!formData.title.trim()) {
-      setError("Title is required");
+      setError(t("new.validation.titleRequired"));
       return;
     }
 
     if (!formData.content.trim()) {
-      setError("Content is required");
+      setError(t("new.validation.contentRequired"));
       return;
     }
 
@@ -155,7 +157,7 @@ export default function EditNotePage() {
               className="flex items-center gap-2 text-[var(--color-primary)] hover:underline mb-6"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Notes
+              {t("detail.backToNotes")}
             </Link>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -181,7 +183,7 @@ export default function EditNotePage() {
             className="flex items-center gap-2 text-[var(--color-primary)] hover:underline mb-6 w-fit"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Note
+            {t("detail.backToNotes")}
           </Link>
 
           {/* Header */}
@@ -191,10 +193,10 @@ export default function EditNotePage() {
             className="mb-8"
           >
             <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
-              Edit Note
+              {t("edit.title")}
             </h1>
             <p className="text-sm text-[var(--color-muted)]">
-              Update your note content and settings
+              {t("edit.subtitle")}
             </p>
           </motion.div>
 
@@ -220,7 +222,7 @@ export default function EditNotePage() {
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Title
+                {t("new.noteTitle")}
               </label>
               <input
                 type="text"
@@ -228,7 +230,7 @@ export default function EditNotePage() {
                 value={formData.title}
                 onChange={handleInputChange}
                 className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
-                placeholder="Enter note title..."
+                placeholder={t("new.noteTitlePlaceholder")}
                 required
               />
             </div>
@@ -236,7 +238,7 @@ export default function EditNotePage() {
             {/* Subject */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Subject
+                {t("new.subject")}
               </label>
               <select
                 name="subject"
@@ -244,10 +246,10 @@ export default function EditNotePage() {
                 onChange={handleInputChange}
                 className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition"
               >
-                <option value="">Select a subject</option>
+                <option value="">{t("new.selectSubject")}</option>
                 {subjects.map((subj) => (
-                  <option key={subj} value={subj}>
-                    {subj}
+                  <option key={subj.key} value={subj.label}>
+                    {subj.label}
                   </option>
                 ))}
               </select>
@@ -256,14 +258,14 @@ export default function EditNotePage() {
             {/* Description */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Description
+                {t("new.description")}
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
-                placeholder="Brief description of your note..."
+                placeholder={t("new.descriptionPlaceholder")}
                 rows={3}
               />
             </div>
@@ -271,14 +273,14 @@ export default function EditNotePage() {
             {/* Content */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Content
+                {t("new.noteContent")}
               </label>
               <textarea
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
                 className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-vertical font-mono text-sm"
-                placeholder="Enter your note content here..."
+                placeholder={t("new.contentPlaceholder")}
                 rows={12}
                 required
               />
@@ -294,17 +296,17 @@ export default function EditNotePage() {
                 {isSaving ? (
                   <>
                     <Loader className="w-4 h-4 animate-spin" />
-                    Saving...
+                    {t("new.saving")}
                   </>
                 ) : (
-                  "Save Changes"
+                  t("edit.saveChanges")
                 )}
               </button>
               <Link
                 href={`/notes/${noteId}`}
                 className="flex items-center justify-center px-6 py-3 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text)] hover:border-[var(--color-primary)] transition"
               >
-                Cancel
+                {t("new.cancel")}
               </Link>
             </div>
           </motion.form>

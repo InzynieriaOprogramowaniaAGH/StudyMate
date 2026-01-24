@@ -1,38 +1,41 @@
 "use client";
 
 import Header from "@/components/layout/Header";
-import { ArrowLeft, Sparkles, Save } from "lucide-react";
+import { ArrowLeft, Sparkles, Save, Globe, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function NewNotePage() {
   const router = useRouter();
+  const t = useTranslations("notes");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subject: "",
     description: "",
     content: "",
+    isPrivate: true,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subjects = [
-    "Computer Science",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "History",
-    "Literature",
-    "Economics",
-    "Psychology",
-    "Art",
-    "Music",
-    "Languages",
-    "Other",
+    { key: "computerScience", label: t("subjects.computerScience") },
+    { key: "mathematics", label: t("subjects.mathematics") },
+    { key: "physics", label: t("subjects.physics") },
+    { key: "chemistry", label: t("subjects.chemistry") },
+    { key: "biology", label: t("subjects.biology") },
+    { key: "history", label: t("subjects.history") },
+    { key: "literature", label: t("subjects.literature") },
+    { key: "economics", label: t("subjects.economics") },
+    { key: "psychology", label: t("subjects.psychology") },
+    { key: "art", label: t("subjects.art") },
+    { key: "music", label: t("subjects.music") },
+    { key: "languages", label: t("subjects.languages") },
+    { key: "other", label: t("subjects.other") },
   ];
 
   const handleChange = (
@@ -56,25 +59,25 @@ export default function NewNotePage() {
     const newErrors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
+      newErrors.title = t("new.validation.titleRequired");
     } else if (formData.title.length < 3) {
-      newErrors.title = "Title must be at least 3 characters";
+      newErrors.title = t("new.validation.titleMinLength");
     }
 
     if (!formData.subject) {
-      newErrors.subject = "Subject is required";
+      newErrors.subject = t("new.validation.subjectRequired");
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = "Description is required";
+      newErrors.description = t("new.validation.descriptionRequired");
     } else if (formData.description.length < 10) {
-      newErrors.description = "Description must be at least 10 characters";
+      newErrors.description = t("new.validation.descriptionMinLength");
     }
 
     if (!formData.content.trim()) {
-      newErrors.content = "Note content is required";
+      newErrors.content = t("new.validation.contentRequired");
     } else if (formData.content.length < 20) {
-      newErrors.content = "Content must be at least 20 characters";
+      newErrors.content = t("new.validation.contentMinLength");
     }
 
     return newErrors;
@@ -107,7 +110,7 @@ export default function NewNotePage() {
       router.push("/notes");
     } catch (error) {
       console.error("Error creating note:", error);
-      setErrors({ submit: "Failed to create note. Please try again." });
+      setErrors({ submit: t("new.failedCreate") });
     } finally {
       setIsLoading(false);
     }
@@ -130,7 +133,7 @@ export default function NewNotePage() {
               className="flex items-center gap-2 text-[var(--color-text)] opacity-70 hover:opacity-100 transition p-2 rounded-lg hover:bg-[var(--color-bg-light)]"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="text-sm font-medium">Back to Notes</span>
+              <span className="text-sm font-medium">{t("new.backToNotes")}</span>
             </Link>
           </motion.div>
 
@@ -145,12 +148,12 @@ export default function NewNotePage() {
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)]">
-                  Create a New Note
+                  {t("new.title")}
                 </h1>
                 <Sparkles className="w-8 h-8 text-[var(--color-primary)]" />
               </div>
               <p className="text-sm text-[var(--color-muted)]">
-                Create and organize your study materials with AI assistance
+                {t("new.subtitle")}
               </p>
             </div>
 
@@ -170,7 +173,7 @@ export default function NewNotePage() {
               {/* Title Field */}
               <div className="space-y-2">
                 <label htmlFor="title" className="block text-sm font-medium text-[var(--color-text)]">
-                  Note Title *
+                  {t("new.noteTitle")} *
                 </label>
                 <input
                   id="title"
@@ -178,7 +181,7 @@ export default function NewNotePage() {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="e.g., Introduction to Machine Learning"
+                  placeholder={t("new.noteTitlePlaceholder")}
                   className={`w-full px-4 py-3 bg-[var(--color-bg)] border rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition ${
                     errors.title ? "border-red-500" : "border-[var(--color-border)]"
                   }`}
@@ -191,7 +194,7 @@ export default function NewNotePage() {
               {/* Subject Field */}
               <div className="space-y-2">
                 <label htmlFor="subject" className="block text-sm font-medium text-[var(--color-text)]">
-                  Subject *
+                  {t("new.subject")} *
                 </label>
                 <select
                   id="subject"
@@ -202,10 +205,10 @@ export default function NewNotePage() {
                     errors.subject ? "border-red-500" : "border-[var(--color-border)]"
                   }`}
                 >
-                  <option value="">Select a subject...</option>
+                  <option value="">{t("new.selectSubject")}</option>
                   {subjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject}
+                    <option key={subject.key} value={subject.label}>
+                      {subject.label}
                     </option>
                   ))}
                 </select>
@@ -217,14 +220,14 @@ export default function NewNotePage() {
               {/* Description Field */}
               <div className="space-y-2">
                 <label htmlFor="description" className="block text-sm font-medium text-[var(--color-text)]">
-                  Description *
+                  {t("new.description")} *
                 </label>
                 <textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Brief description of what this note is about..."
+                  placeholder={t("new.descriptionPlaceholder")}
                   rows={3}
                   className={`w-full px-4 py-3 bg-[var(--color-bg)] border rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition resize-none ${
                     errors.description ? "border-red-500" : "border-[var(--color-border)]"
@@ -238,14 +241,14 @@ export default function NewNotePage() {
               {/* Content Field */}
               <div className="space-y-2">
                 <label htmlFor="content" className="block text-sm font-medium text-[var(--color-text)]">
-                  Note Content *
+                  {t("new.noteContent")} *
                 </label>
                 <textarea
                   id="content"
                   name="content"
                   value={formData.content}
                   onChange={handleChange}
-                  placeholder="Write your note content here. Include key points, definitions, examples, and any important information you want to remember..."
+                  placeholder={t("new.contentPlaceholder")}
                   rows={10}
                   className={`w-full px-4 py-3 bg-[var(--color-bg)] border rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition resize-none ${
                     errors.content ? "border-red-500" : "border-[var(--color-border)]"
@@ -255,7 +258,43 @@ export default function NewNotePage() {
                   <p className="text-xs text-red-400">{errors.content}</p>
                 )}
                 <p className="text-xs text-[var(--color-muted)]">
-                  {formData.content.length} / 10000 characters
+                  {formData.content.length} / 10000 {t("new.characters")}
+                </p>
+              </div>
+
+              {/* Privacy Toggle */}
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-[var(--color-text)]">
+                  {t("new.visibility")}
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, isPrivate: true }))}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition ${
+                      formData.isPrivate
+                        ? "bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-primary)]"
+                        : "bg-[var(--color-bg)] border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-primary)]"
+                    }`}
+                  >
+                    <Lock className="w-4 h-4" />
+                    <span className="font-medium">{t("new.private")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, isPrivate: false }))}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition ${
+                      !formData.isPrivate
+                        ? "bg-[var(--color-success)]/20 border-[var(--color-success)] text-[var(--color-success)]"
+                        : "bg-[var(--color-bg)] border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-success)]"
+                    }`}
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span className="font-medium">{t("new.public")}</span>
+                  </button>
+                </div>
+                <p className="text-xs text-[var(--color-muted)]">
+                  {formData.isPrivate ? t("new.privateDescription") : t("new.publicDescription")}
                 </p>
               </div>
 
@@ -269,7 +308,7 @@ export default function NewNotePage() {
                   className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-primary)] text-black px-6 py-3 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save className="w-5 h-5" />
-                  {isLoading ? "Saving..." : "Save Note"}
+                  {isLoading ? t("new.saving") : t("new.saveNote")}
                 </motion.button>
 
                 <motion.button
@@ -279,7 +318,7 @@ export default function NewNotePage() {
                   onClick={() => router.push("/notes")}
                   className="flex-1 px-6 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text)] hover:border-[var(--color-primary)] transition"
                 >
-                  Cancel
+                  {t("new.cancel")}
                 </motion.button>
               </div>
             </form>
@@ -293,14 +332,14 @@ export default function NewNotePage() {
             className="mt-8 p-4 bg-[var(--color-bg-light)]/50 border border-[var(--color-border)] rounded-lg"
           >
             <h3 className="text-sm font-medium text-[var(--color-text)] mb-2">
-              💡 Tips for creating effective notes:
+              {t("new.tips.title")}
             </h3>
             <ul className="text-xs text-[var(--color-muted)] space-y-1">
-              <li>• Use clear and descriptive titles for easy searching</li>
-              <li>• Organize content with bullet points or numbered lists</li>
-              <li>• Include key terms and definitions</li>
-              <li>• Add examples and use cases for better understanding</li>
-              <li>• Review and update your notes regularly</li>
+              <li>• {t("new.tips.tip1")}</li>
+              <li>• {t("new.tips.tip2")}</li>
+              <li>• {t("new.tips.tip3")}</li>
+              <li>• {t("new.tips.tip4")}</li>
+              <li>• {t("new.tips.tip5")}</li>
             </ul>
           </motion.div>
         </div>

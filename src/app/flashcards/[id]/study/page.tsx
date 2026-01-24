@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Volume2, RotateCcw, Check, BookOpen, CheckCircle2, Layers, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Flashcard {
   id: string;
@@ -62,6 +63,7 @@ const MOCK_FLASHCARD_SET: FlashcardSetStudy = {
 
 export default function FlashcardStudyPage() {
   const router = useRouter();
+  const t = useTranslations("flashcards.studyPage");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [knowCards, setKnowCards] = useState<string[]>([]);
@@ -149,7 +151,7 @@ export default function FlashcardStudyPage() {
             className="flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Flashcards
+            {t("backToFlashcards")}
           </motion.button>
 
           {/* Header */}
@@ -168,7 +170,7 @@ export default function FlashcardStudyPage() {
                 </p>
               </div>
               <span className="text-sm text-[var(--color-muted)]">
-                Card
+                {t("card")}
                 <br />
                 <span className="text-xl font-bold text-[var(--color-text)]">
                   {currentIndex + 1} / {MOCK_FLASHCARD_SET.cards.length}
@@ -222,13 +224,13 @@ export default function FlashcardStudyPage() {
                 >
                   <div>
                     <p className="text-xs text-[var(--color-muted)] mb-4 uppercase tracking-wider font-medium">
-                      Question
+                      {t("question")}
                     </p>
                     <p className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] leading-relaxed">
                       {currentCard.front}
                     </p>
                     <p className="text-xs text-[var(--color-muted)] mt-8">
-                      Click to reveal answer
+                      {t("clickToReveal")}
                     </p>
                   </div>
                 </motion.div>
@@ -243,7 +245,7 @@ export default function FlashcardStudyPage() {
                 >
                   <div>
                     <p className="text-xs text-[var(--color-primary)] mb-4 uppercase tracking-wider font-medium">
-                      Answer
+                      {t("answer")}
                     </p>
                     <p className="text-xl sm:text-2xl font-medium text-[var(--color-text)] leading-relaxed">
                       {currentCard.back}
@@ -260,7 +262,7 @@ export default function FlashcardStudyPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
               >
                 <Volume2 className="w-4 h-4" />
-                Listen
+                {t("listen")}
               </button>
             </div>
           </motion.div>
@@ -300,9 +302,9 @@ export default function FlashcardStudyPage() {
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"
           >
             {[
-              { label: "Cards Known", value: knowCards.length, icon: CheckCircle2, color: "text-[var(--color-success)]" },
-              { label: "Need Study", value: studyCards.length, icon: Layers, color: "text-[var(--color-warning)]" },
-              { label: "Success Rate", value: `${Math.round((knowCards.length / (knowCards.length + studyCards.length)) * 100) || 0}%`, icon: AlertCircle, color: "text-[var(--color-warning)]" },
+              { label: t("cardsKnown"), value: knowCards.length, icon: CheckCircle2, color: "text-[var(--color-success)]" },
+              { label: t("needStudy"), value: studyCards.length, icon: Layers, color: "text-[var(--color-warning)]" },
+              { label: t("successRate"), value: `${Math.round((knowCards.length / (knowCards.length + studyCards.length)) * 100) || 0}%`, icon: AlertCircle, color: "text-[var(--color-warning)]" },
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -337,7 +339,7 @@ export default function FlashcardStudyPage() {
               className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
-              Previous
+              {t("previous")}
             </button>
 
             {/* Restart Button */}
@@ -346,7 +348,7 @@ export default function FlashcardStudyPage() {
               className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
-              Restart
+              {t("restart")}
             </button>
 
             {/* Next Button */}
@@ -354,7 +356,7 @@ export default function FlashcardStudyPage() {
               onClick={handleNext}
               className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
-              Next
+              {t("next")}
               <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>
@@ -371,14 +373,14 @@ export default function FlashcardStudyPage() {
               className="w-full px-6 py-3 bg-[var(--color-success-10)] border border-[var(--color-success)]/30 text-[var(--color-success)] font-medium rounded-lg hover:bg-[var(--color-success-20)] transition-colors flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
-              I Know This
+              {t("iKnowThis")}
             </button>
             <button
               onClick={handleNeedStudy}
               className="w-full px-6 py-3 bg-[var(--color-warning-10)] border border-[var(--color-warning)]/30 text-[var(--color-warning)] font-medium rounded-lg hover:bg-[var(--color-warning-20)] transition-colors flex items-center justify-center gap-2"
             >
               <BookOpen className="w-4 h-4" />
-              Need More Study
+              {t("needMoreStudy")}
             </button>
           </motion.div>
         </div>

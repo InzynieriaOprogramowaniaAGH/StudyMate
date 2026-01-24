@@ -325,23 +325,149 @@ Key Concepts:
   console.log("🎴 Flashcards added");
 
   // ----- QUIZZES -----
-  await prisma.quiz.createMany({
-  data: [
-    {
-      title: "Photosynthesis Quiz",
-      score: 85,
+  const quiz1 = await prisma.quiz.create({
+    data: {
+      title: "Machine Learning Fundamentals",
+      userId: adminUser.id,
+      totalQuestions: 5,
+      questions: {
+        create: [
+          {
+            question: "What is supervised learning?",
+            options: ["Learning from labeled data", "Learning without labels", "Learning through games", "Learning from images"],
+            correctAnswer: "Learning from labeled data",
+          },
+          {
+            question: "Which of the following is an example of unsupervised learning?",
+            options: ["Classification", "Regression", "Clustering", "Prediction"],
+            correctAnswer: "Clustering",
+          },
+          {
+            question: "What does a neural network consist of?",
+            options: ["Layers and neurons", "Only inputs", "Only outputs", "Activation functions only"],
+            correctAnswer: "Layers and neurons",
+          },
+          {
+            question: "What is overfitting in machine learning?",
+            options: ["Model learns too well and fails on new data", "Model doesn't learn well", "Too many features", "Too few samples"],
+            correctAnswer: "Model learns too well and fails on new data",
+          },
+          {
+            question: "Which metric is used for classification problems?",
+            options: ["Accuracy", "Mean Squared Error", "R-squared", "All above"],
+            correctAnswer: "Accuracy",
+          },
+        ],
+      },
+    },
+  });
+
+  const quiz2 = await prisma.quiz.create({
+    data: {
+      title: "Web Development Basics",
       userId: user1.id,
+      totalQuestions: 4,
+      questions: {
+        create: [
+          {
+            question: "What does HTML stand for?",
+            options: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"],
+            correctAnswer: "Hyper Text Markup Language",
+          },
+          {
+            question: "Which language is used for styling web pages?",
+            options: ["CSS", "JavaScript", "HTML", "Python"],
+            correctAnswer: "CSS",
+          },
+          {
+            question: "What is React?",
+            options: ["A JavaScript library for UI", "A CSS framework", "A backend language", "A database"],
+            correctAnswer: "A JavaScript library for UI",
+          },
+          {
+            question: "Which of these is a state management library for React?",
+            options: ["Redux", "Bootstrap", "Webpack", "Babel"],
+            correctAnswer: "Redux",
+          },
+        ],
+      },
     },
-    {
-      title: "Physics Fundamentals Quiz",
-      score: 90,
+  });
+
+  const quiz3 = await prisma.quiz.create({
+    data: {
+      title: "Physics Fundamentals",
       userId: user2.id,
+      totalQuestions: 5,
+      questions: {
+        create: [
+          {
+            question: "What is Newton's First Law of Motion?",
+            options: ["An object in motion stays in motion unless acted upon by a force", "Force equals mass times acceleration", "For every action there is an equal reaction", "Energy is conserved"],
+            correctAnswer: "An object in motion stays in motion unless acted upon by a force",
+          },
+          {
+            question: "What is the SI unit of force?",
+            options: ["Newton (N)", "Kilogram (kg)", "Joule (J)", "Pascal (Pa)"],
+            correctAnswer: "Newton (N)",
+          },
+          {
+            question: "What is the speed of light?",
+            options: ["3 × 10^8 m/s", "3 × 10^6 m/s", "3 × 10^10 m/s", "3 × 10^4 m/s"],
+            correctAnswer: "3 × 10^8 m/s",
+          },
+          {
+            question: "What is kinetic energy?",
+            options: ["Energy of motion", "Energy of position", "Total energy", "Potential energy"],
+            correctAnswer: "Energy of motion",
+          },
+          {
+            question: "What is the formula for gravitational force?",
+            options: ["F = G(m1*m2)/r²", "F = ma", "F = kx", "F = μN"],
+            correctAnswer: "F = G(m1*m2)/r²",
+          },
+        ],
+      },
     },
-  ],
-});
+  });
 
+  const quiz4 = await prisma.quiz.create({
+    data: {
+      title: "English Literature Quiz",
+      userId: adminUser.id,
+      totalQuestions: 4,
+      questions: {
+        create: [
+          {
+            question: "Who wrote 'To Kill a Mockingbird'?",
+            options: ["Harper Lee", "Mark Twain", "F. Scott Fitzgerald", "Ernest Hemingway"],
+            correctAnswer: "Harper Lee",
+          },
+          {
+            question: "What is the main theme of 'Great Gatsby'?",
+            options: ["The American Dream", "Love and betrayal", "Death and dying", "Revenge"],
+            correctAnswer: "The American Dream",
+          },
+          {
+            question: "In which year was 'Pride and Prejudice' published?",
+            options: ["1813", "1823", "1803", "1833"],
+            correctAnswer: "1813",
+          },
+          {
+            question: "Who is the author of '1984'?",
+            options: ["George Orwell", "Aldous Huxley", "Ray Bradbury", "Philip K. Dick"],
+            correctAnswer: "George Orwell",
+          },
+        ],
+      },
+    },
+  });
 
-  console.log("🧠 Quizzes added");
+  console.log("🧠 Quizzes created with questions:");
+  console.log(`   - Machine Learning Fundamentals (admin@juwekrk.pl)`);
+  console.log(`   - Web Development Basics (alice@example.com)`);
+  console.log(`   - Physics Fundamentals (bob@example.com)`);
+  console.log(`   - English Literature Quiz (admin@juwekrk.pl)`);
 
   // ----- PROGRESS -----
   await prisma.progress.createMany({

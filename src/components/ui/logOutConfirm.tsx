@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { signOut as nextAuthSignOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type Props = {
   onClose?: () => void;
@@ -24,6 +25,7 @@ export default function LogoutConfirm({
   triggerClassName,
   triggerChildren,
 }: Props) {
+  const t = useTranslations("logout");
   const [internalOpen, setInternalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -106,7 +108,7 @@ export default function LogoutConfirm({
         "w-full text-left px-3 py-2 text-red-400 hover:bg-gray-800 rounded-lg transition"
       }
     >
-      {triggerChildren ?? "Logout"}
+      {triggerChildren ?? t("button")}
     </button>
   );
 
@@ -124,8 +126,8 @@ export default function LogoutConfirm({
         className="relative z-10 w-[min(92%,520px)] mx-4 rounded-2xl bg-[var(--color-bg-light)] p-6 shadow-2xl"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-semibold mb-2 text-[var(--color-text)]">Confirm sign out</h3>
-        <p className="text-sm text-[var(--color-muted)] mb-4">Are you sure you want to sign out?</p>
+        <h3 className="text-lg font-semibold mb-2 text-[var(--color-text)]">{t("title")}</h3>
+        <p className="text-sm text-[var(--color-muted)] mb-4">{t("message")}</p>
 
         <div className="flex justify-end gap-3">
           <button
@@ -135,7 +137,7 @@ export default function LogoutConfirm({
             className="px-4 py-2 rounded-lg border border-[var(--color-border)]"
             disabled={loading}
           >
-            Cancel
+            {t("cancel")}
           </button>
 
           <button
@@ -145,7 +147,7 @@ export default function LogoutConfirm({
             className="px-4 py-2 rounded-lg bg-[var(--color-accent)] text-black hover:bg-[var(--color-accent-70)] transition duration-400 hover:text-[var(--color-text)]"
             disabled={loading}
           >
-            {loading ? "Signing out..." : "Sign out"}
+            {loading ? t("signingOut") : t("signOut")}
           </button>
         </div>
       </div>

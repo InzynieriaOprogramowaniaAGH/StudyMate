@@ -7,12 +7,14 @@ import { signIn, getCsrfToken } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import { fadeInUp } from "@/lib/motionutils";
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
+  const t = useTranslations("auth.login");
 
   useEffect(() => {
     getCsrfToken().then((token) => setCsrfToken(token ?? null));
@@ -35,7 +37,7 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError(t("error"));
     } else {
       router.push("/dashboard");
     }
@@ -57,10 +59,10 @@ export default function LoginPage() {
           {/* Title */}
           <div className="mb-8 text-center">
             <h1 className="text-xl sm:text-2xl font-semibold text-[var(--color-text)]">
-              Welcome back
+              {t("title")}
             </h1>
             <p className="text-sm text-[var(--color-muted)] mt-1">
-              Enter your credentials to access your account
+              {t("subtitle")}
             </p>
           </div>
 
@@ -81,7 +83,7 @@ export default function LoginPage() {
                 type="email"
                 name="email"
                 required
-                placeholder="name@example.com"
+                placeholder={t("emailPlaceholder")}
                 className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
               />
             </div>
@@ -92,7 +94,7 @@ export default function LoginPage() {
                 type="password"
                 name="password"
                 required
-                placeholder="Password"
+                placeholder={t("passwordPlaceholder")}
                 className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
               />
             </div>
@@ -102,7 +104,7 @@ export default function LoginPage() {
                 href="/auth/forgot-password"
                 className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
               >
-                Forgot password?
+                {t("forgotPassword")}
               </Link>
             </div>
 
@@ -114,19 +116,19 @@ export default function LoginPage() {
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? t("submitting") : t("submit")}
             </button>
           </form>
 
           {/* Signup Link */}
           <div className="mt-6 text-center text-sm text-[var(--color-muted)]">
             <p>
-              Don’t have an account?{" "}
+              {t("noAccount")}{" "}
               <Link
                 href="/auth/register"
                 className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
               >
-                Sign up
+                {t("signUp")}
               </Link>
             </p>
           </div>

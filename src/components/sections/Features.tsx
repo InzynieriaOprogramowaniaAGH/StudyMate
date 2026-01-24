@@ -8,38 +8,41 @@ import {
   Edit3,
   Target,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Features() {
+  const t = useTranslations("features");
+
   const features = [
     {
       icon: <Sparkles className="w-6 h-6" />,
-      title: "AI-Generated Quizzes",
-      desc: "Automatically create practice questions from your notes using advanced AI.",
+      title: t("aiQuizzes.title"),
+      desc: t("aiQuizzes.desc"),
     },
     {
       icon: <Layers className="w-6 h-6" />,
-      title: "Smart Flashcards",
-      desc: "Generate flashcards instantly and study with spaced repetition algorithms.",
+      title: t("flashcards.title"),
+      desc: t("flashcards.desc"),
     },
     {
       icon: <BookOpen className="w-6 h-6" />,
-      title: "AI Summaries",
-      desc: "Get concise summaries of your notes to quickly review key concepts.",
+      title: t("summaries.title"),
+      desc: t("summaries.desc"),
     },
     {
       icon: <LineChart className="w-6 h-6" />,
-      title: "Progress Tracking",
-      desc: "Monitor your learning journey with detailed analytics and insights.",
+      title: t("progress.title"),
+      desc: t("progress.desc"),
     },
     {
       icon: <Edit3 className="w-6 h-6" />,
-      title: "Quick Note Taking",
-      desc: "Capture ideas fast with our intuitive note editor and organization system.",
+      title: t("notes.title"),
+      desc: t("notes.desc"),
     },
     {
       icon: <Target className="w-6 h-6" />,
-      title: "Personalized Learning",
-      desc: "AI adapts to your learning style and focuses on areas that need improvement.",
+      title: t("personalized.title"),
+      desc: t("personalized.desc"),
     },
   ];
 
@@ -56,8 +59,8 @@ export default function Features() {
           transition={{ duration: 0.6 }}
           className="text-4xl sm:text-5xl font-bold mb-4"
         >
-          Everything You Need to{" "}
-          <span className="text-[var(--color-accent)]">Excel</span>
+          {t("title")}{" "}
+          <span className="text-[var(--color-accent)]">{t("titleHighlight")}</span>
         </motion.h2>
 
         <motion.p
@@ -67,7 +70,7 @@ export default function Features() {
          
           className="text-[var(--color-muted)] mb-16 text-lg max-w-2xl mx-auto"
         >
-          Powerful features designed to make studying more effective and engaging
+          {t("subtitle")}
         </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">

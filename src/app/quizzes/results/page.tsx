@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/layout/Header";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, Share2, RotateCcw, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -64,13 +65,14 @@ const MOCK_RESULT: QuizResult = {
 };
 
 export default function QuizResultsPage() {
+  const t = useTranslations("quizzes.results");
   const router = useRouter();
   const exportCardRef = useRef<HTMLDivElement>(null);
 
   const handleShare = async () => {
     try {
       if (!exportCardRef.current) {
-        alert("Export card not found");
+        alert(t("exportCardNotFound"));
         return;
       }
 
@@ -100,7 +102,7 @@ export default function QuizResultsPage() {
       });
     } catch (error) {
       console.error("Error sharing result:", error);
-      alert("Error exporting result. Please try again.");
+      alert(t("exportError"));
     }
   };
 
@@ -113,11 +115,11 @@ export default function QuizResultsPage() {
   };
 
   const getScoreMessage = (score: number) => {
-    if (score >= 90) return "Excellent!";
-    if (score >= 80) return "Great Job!";
-    if (score >= 70) return "Good Work!";
-    if (score >= 60) return "Not Bad!";
-    return "Keep Practicing!";
+    if (score >= 90) return t("messages.excellent");
+    if (score >= 80) return t("messages.greatJob");
+    if (score >= 70) return t("messages.goodWork");
+    if (score >= 60) return t("messages.notBad");
+    return t("messages.keepPracticing");
   };
 
   const getScoreColor = (score: number) => {
@@ -168,7 +170,7 @@ export default function QuizResultsPage() {
                 {MOCK_RESULT.score}%
               </p>
               <p className="text-sm text-[var(--color-muted)]">
-                {MOCK_RESULT.correctAnswers} out of {MOCK_RESULT.totalQuestions} correct
+                {t("outOf", { correct: MOCK_RESULT.correctAnswers, total: MOCK_RESULT.totalQuestions })}
               </p>
             </motion.div>
 
@@ -178,21 +180,21 @@ export default function QuizResultsPage() {
                 onClick={handleContinue}
                 className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
               >
-                Continue
+                {t("continue")}
               </button>
               <button 
                 onClick={handleShare}
                 className="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
-                Share
+                {t("share")}
               </button>
               <button 
                 onClick={handleRetake}
                 className="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center gap-2"
               >
                 <RotateCcw className="w-4 h-4" />
-                Retake
+                {t("retake")}
               </button>
             </div>
           </motion.div>
@@ -205,10 +207,10 @@ export default function QuizResultsPage() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"
           >
             {[
-              { label: "Correct Answers", value: MOCK_RESULT.correctAnswers, icon: "✓" },
-              { label: "Incorrect Answers", value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, icon: "✕" },
-              { label: "Time Spent", value: MOCK_RESULT.timeSpent, icon: "⏱" },
-              { label: "Improvement", value: `+${MOCK_RESULT.improvement}%`, icon: "📈" },
+              { label: t("stats.correctAnswers"), value: MOCK_RESULT.correctAnswers, icon: "✓" },
+              { label: t("stats.incorrectAnswers"), value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, icon: "✕" },
+              { label: t("stats.timeSpent"), value: MOCK_RESULT.timeSpent, icon: "⏱" },
+              { label: t("stats.improvement"), value: `+${MOCK_RESULT.improvement}%`, icon: "📈" },
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
@@ -231,12 +233,12 @@ export default function QuizResultsPage() {
             className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 mb-8"
           >
             <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-              Performance Breakdown
+              {t("performanceBreakdown")}
             </h2>
             <div className="space-y-3">
               {[
-                { label: "Mastered", value: MOCK_RESULT.correctAnswers, color: "bg-[var(--color-success)]" },
-                { label: "Struggling", value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, color: "bg-[var(--color-error)]" },
+                { label: t("mastered"), value: MOCK_RESULT.correctAnswers, color: "bg-[var(--color-success)]" },
+                { label: t("struggling"), value: MOCK_RESULT.totalQuestions - MOCK_RESULT.correctAnswers, color: "bg-[var(--color-error)]" },
               ].map((item, idx) => {
                 const percentage = (item.value / MOCK_RESULT.totalQuestions) * 100;
                 return (
@@ -328,10 +330,10 @@ export default function QuizResultsPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-[var(--color-text)]">
-                Review Your Answers
+                {t("reviewAnswers")}
               </h2>
               <a href="#" className="text-xs text-[var(--color-primary)] hover:underline">
-                Export Results
+                {t("exportResults")}
               </a>
             </div>
 
@@ -365,7 +367,7 @@ export default function QuizResultsPage() {
                         )}
                       </div>
                       <span className="font-medium text-[var(--color-text)]">
-                        Question {idx + 1}
+                        {t("questionLabel")} {idx + 1}
                       </span>
                     </div>
                     <span
@@ -375,7 +377,7 @@ export default function QuizResultsPage() {
                           : "bg-[var(--color-error-10)] text-[var(--color-error)]"
                       }`}
                     >
-                      {question.isCorrect ? "Correct" : "Incorrect"}
+                      {question.isCorrect ? t("correct") : t("incorrect")}
                     </span>
                   </div>
 
@@ -388,7 +390,7 @@ export default function QuizResultsPage() {
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between items-start bg-[var(--color-bg)] p-3 rounded border border-[var(--color-border)]">
                       <div>
-                        <p className="text-[var(--color-muted)] mb-1">Your answer:</p>
+                        <p className="text-[var(--color-muted)] mb-1">{t("yourAnswer")}</p>
                         <p
                           className={
                             question.isCorrect
@@ -404,7 +406,7 @@ export default function QuizResultsPage() {
                     {!question.isCorrect && (
                       <div className="flex justify-between items-start bg-[var(--color-bg)] p-3 rounded border border-[var(--color-border)]">
                         <div>
-                          <p className="text-[var(--color-muted)] mb-1">Correct answer:</p>
+                          <p className="text-[var(--color-muted)] mb-1">{t("correctAnswer")}</p>
                           <p className="text-[var(--color-success)]">
                             {question.correctAnswer}
                           </p>
@@ -429,13 +431,13 @@ export default function QuizResultsPage() {
               className="px-6 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
-              Back to Home
+              {t("backToHome")}
             </button>
             <button
               onClick={() => router.push("/quizzes")}
               className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
             >
-              Try Another Quiz
+              {t("tryAnotherQuiz")}
             </button>
           </motion.div>
         </div>

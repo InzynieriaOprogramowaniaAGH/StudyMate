@@ -1,37 +1,36 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession();
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
 
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
+      include: {
+        user: {
+          select: { id: true, email: true }
+        }
+      }
     });
 
     if (!note) {
       return NextResponse.json({ error: "Note not found" }, { status: 404 });
     }
 
-    // Verify that the note belongs to the current user
-    if (note.userId !== user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    // Check if note is private and user is not the owner
+    if (note.isPrivate) {
+      const currentUserEmail = session?.user?.email;
+      
+      if (!currentUserEmail || note.user?.email !== currentUserEmail) {
+        return NextResponse.json({ error: "Note not found" }, { status: 404 });
+      }
     }
 
     return NextResponse.json(note);
@@ -46,10 +45,11 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession();
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -64,7 +64,7 @@ export async function PUT(
     }
 
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!note) {
@@ -79,7 +79,7 @@ export async function PUT(
     const { title, subject, description, content } = body;
 
     const updatedNote = await prisma.note.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title: title || note.title,
         content: content || note.content,
@@ -100,10 +100,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession();
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -118,7 +119,7 @@ export async function DELETE(
     }
 
     const note = await prisma.note.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!note) {
@@ -130,7 +131,7 @@ export async function DELETE(
     }
 
     await prisma.note.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Note deleted successfully" });

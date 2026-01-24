@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/layout/Header";
+import { useTranslations } from "next-intl";
 import {
   Loader,
   TrendingUp,
@@ -114,7 +115,8 @@ const getMonthCalendarData = () => {
   const firstDay = new Date(currentYear, currentMonth, 1);
   const lastDay = new Date(currentYear, currentMonth + 1, 0);
   const daysInMonth = lastDay.getDate();
-  const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday
+  // Convert to Monday-first week (0=Mon, 1=Tue, ..., 6=Sun)
+  const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
   
   const calendarDays = [];
   
@@ -150,6 +152,7 @@ const getActivityColor = (activity: number) => {
 };
 
 export default function ProgressPage() {
+  const t = useTranslations("progress");
   const [stats, setStats] = useState<Stats | null>(MOCK_STATS);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -201,6 +204,23 @@ export default function ProgressPage() {
     0
   ) || 0;
 
+  // Translated weekly scores
+  const translatedWeeklyScores = MOCK_WEEKLY_SCORES.map((item, index) => ({
+    ...item,
+    week: t("charts.week", { number: index + 1 }),
+  }));
+
+  // Get translated month name
+  const getTranslatedMonthYear = () => {
+    const today = new Date();
+    const monthNames = [
+      "january", "february", "march", "april", "may", "june",
+      "july", "august", "september", "october", "november", "december"
+    ];
+    const monthKey = monthNames[today.getMonth()];
+    return `${t(`calendar.months.${monthKey}`)} ${today.getFullYear()}`;
+  };
+
   return (
     <>
       <Header />
@@ -215,10 +235,10 @@ export default function ProgressPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
-                  Your Progress
+                  {t("title")}
                 </h1>
                 <p className="text-sm text-[var(--color-muted)]">
-                  Track your learning statistics and achievements
+                  {t("subtitle")}
                 </p>
               </div>
             </div>
@@ -247,26 +267,26 @@ export default function ProgressPage() {
               >
                 {[
                   {
-                    label: "Total Actions",
+                    label: t("stats.totalActions"),
                     value: totalActions,
                     icon: TrendingUp,
                   },
                   {
-                    label: "Notes Created",
+                    label: t("stats.notesCreated"),
                     value:
                       stats?.actionStats.find((s) => s.action === "noteAdded")
                         ?._count.action || 0,
                     icon: FileText,
                   },
                   {
-                    label: "Quizzes Completed",
+                    label: t("stats.quizzesCompleted"),
                     value:
                       stats?.actionStats.find((s) => s.action === "quizCompleted")
                         ?._count.action || 0,
                     icon: CheckCircle2,
                   },
                   {
-                    label: "Flashcards Reviewed",
+                    label: t("stats.flashcardsReviewed"),
                     value:
                       stats?.actionStats.find(
                         (s) => s.action === "flashcardReviewed"
@@ -274,7 +294,7 @@ export default function ProgressPage() {
                     icon: Layers,
                   },
                   {
-                    label: "Longest Streak",
+                    label: t("stats.longestStreak"),
                     value: calculateLongestStreak(),
                     icon: Flame,
                     highlight: true,
@@ -309,55 +329,7 @@ export default function ProgressPage() {
                 })}
               </motion.div>
 
-              {/* Bar Chart - Study Time This Week */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
-              >
-                <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-                  Study Time This Week
-                </h2>
-                {barChartData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barChartData}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="var(--color-border)"
-                      />
-                      <XAxis
-                        dataKey="action"
-                        stroke="var(--color-muted)"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <YAxis
-                        stroke="var(--color-muted)"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "var(--color-bg-light)",
-                          border: "1px solid var(--color-border)",
-                          borderRadius: "8px",
-                          color: "var(--color-text)",
-                        }}
-                        cursor={false}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="var(--color-primary)"
-                        radius={[8, 8, 0, 0]}
-                        isAnimationActive={false}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-64 flex items-center justify-center text-[var(--color-muted)]">
-                    No data available
-                  </div>
-                )}
-              </motion.div>
+            
 
               {/* Line Chart - Quiz Scores Trend */}
               <motion.div
@@ -367,11 +339,11 @@ export default function ProgressPage() {
                 className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
               >
                 <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-                  Quiz Scores Trend
+                  {t("charts.quizScoresTrend")}
                 </h2>
-                {MOCK_WEEKLY_SCORES.length > 0 ? (
+                {translatedWeeklyScores.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={MOCK_WEEKLY_SCORES}>
+                    <LineChart data={translatedWeeklyScores}>
                       <CartesianGrid
                         strokeDasharray="3 3"
                         stroke="var(--color-border)"
@@ -407,7 +379,7 @@ export default function ProgressPage() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="h-64 flex items-center justify-center text-[var(--color-muted)]">
-                    No quiz data available
+                    {t("charts.noQuizData")}
                   </div>
                 )}
               </motion.div>
@@ -422,20 +394,25 @@ export default function ProgressPage() {
                 <div className="flex items-center gap-2 mb-6">
                   <Calendar className="w-5 h-5 text-[var(--color-primary)]" />
                   <h2 className="text-lg font-semibold text-[var(--color-text)]">
-                    Activity Calendar - {(() => {
-                      const today = new Date();
-                      return `${today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
-                    })()}
+                    {t("calendar.title")} - {getTranslatedMonthYear()}
                   </h2>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full table-fixed">
                     <thead>
                       <tr className="mb-4">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                          <th key={day} className="text-center text-xs font-semibold text-[var(--color-muted)] p-2">
-                            {day}
+                        {[
+                          { key: 'Mon', label: t('calendar.days.mon') },
+                          { key: 'Tue', label: t('calendar.days.tue') },
+                          { key: 'Wed', label: t('calendar.days.wed') },
+                          { key: 'Thu', label: t('calendar.days.thu') },
+                          { key: 'Fri', label: t('calendar.days.fri') },
+                          { key: 'Sat', label: t('calendar.days.sat') },
+                          { key: 'Sun', label: t('calendar.days.sun') },
+                        ].map((day) => (
+                          <th key={day.key} className="text-center text-xs font-semibold text-[var(--color-muted)] p-2 w-[14.28%]">
+                            {day.label}
                           </th>
                         ))}
                       </tr>
@@ -461,7 +438,7 @@ export default function ProgressPage() {
                                       initial={{ opacity: 0, scale: 0 }}
                                       animate={{ opacity: 1, scale: 1 }}
                                       transition={{ delay: (weekIdx * 7 + dayIdx) * 0.01 }}
-                                      className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all hover:ring-2 hover:ring-[var(--color-primary)] ${getActivityColor(day.activity)}`}
+                                      className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center cursor-pointer transition-all hover:ring-2 hover:ring-[var(--color-primary)] ${getActivityColor(day.activity)}`}
                                       title={`${new Date(day.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}: ${day.activity} activities`}
                                     >
                                       <span className={`text-sm font-medium ${day.activity > 0 ? 'text-white' : 'text-[var(--color-text)]'}`}>
@@ -485,11 +462,11 @@ export default function ProgressPage() {
                 <div className="mt-8 flex items-center gap-6 text-xs">
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600" />
-                    <span className="text-[var(--color-muted)]">No activity</span>
+                    <span className="text-[var(--color-muted)]">{t("calendar.noActivity")}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-[var(--color-primary)]" />
-                    <span className="text-[var(--color-muted)]">Active</span>
+                    <span className="text-[var(--color-muted)]">{t("calendar.active")}</span>
                   </div>
                 </div>
               </motion.div>

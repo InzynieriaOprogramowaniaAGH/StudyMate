@@ -6,8 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NotesPage() {
+  const t = useTranslations("notes");
   const [hoveredNoteId, setHoveredNoteId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [notes, setNotes] = useState<any[]>([]);
@@ -57,10 +59,10 @@ export default function NotesPage() {
   const subjects = Array.from(new Set(notes.map((note) => note.subject).filter(Boolean)));
 
   const menuOptions = [
-    { label: "Edit", color: "text-[var(--color-text)]" },
-    { label: "Generate Quiz", color: "text-[var(--color-text)]" },
-    { label: "Create Flashcards", color: "text-[var(--color-text)]" },
-    { label: "Delete", color: "text-red-500" },
+    { label: t("menu.edit"), color: "text-[var(--color-text)]" },
+    { label: t("menu.generateQuiz"), color: "text-[var(--color-text)]" },
+    { label: t("menu.createFlashcards"), color: "text-[var(--color-text)]" },
+    { label: t("menu.delete"), color: "text-red-500" },
   ];
 
   return (
@@ -71,11 +73,11 @@ export default function NotesPage() {
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">My Notes</h1>
-              <p className="text-xs sm:text-sm text-[var(--color-muted)] mt-1">Manage and organize your study materials</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">{t("title")}</h1>
+              <p className="text-xs sm:text-sm text-[var(--color-muted)] mt-1">{t("subtitle")}</p>
             </div>
             <Link href="/notes/new" className="bg-[var(--color-primary)] text-black px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition flex items-center gap-2 w-fit">
-              <span>+</span> Create Note
+              <span>+</span> {t("createNote")}
             </Link>
           </div>
 
@@ -85,7 +87,7 @@ export default function NotesPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-muted)]" />
               <input
                 type="text"
-                placeholder="Search notes..."
+                placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg pl-10 pr-4 py-2 text-sm text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
@@ -97,7 +99,7 @@ export default function NotesPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] hover:border-[var(--color-primary)] transition whitespace-nowrap"
               >
                 <Filter className="w-4 h-4" />
-                Filter
+                {t("filter")}
               </button>
 
               {/* Filter Dropdown */}
@@ -121,7 +123,7 @@ export default function NotesPage() {
                           : "text-[var(--color-text)]"
                       }`}
                     >
-                      All Subjects
+                      {t("allSubjects")}
                     </motion.button>
                     {subjects.map((subject) => (
                       <motion.button
@@ -158,7 +160,7 @@ export default function NotesPage() {
               className="p-6 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-center"
             >
               <p className="font-medium">{error}</p>
-              <p className="text-sm mt-2">Please try refreshing the page</p>
+              <p className="text-sm mt-2">{t("refreshPage")}</p>
             </motion.div>
           ) : filteredNotes.length === 0 ? (
             <motion.div
@@ -168,19 +170,19 @@ export default function NotesPage() {
             >
               <BookOpen className="w-12 h-12 text-[var(--color-muted)] mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-[var(--color-text)] mb-2">
-                {searchQuery ? "No notes found" : "No notes yet"}
+                {searchQuery ? t("noNotesFound") : t("noNotesYet")}
               </h3>
               <p className="text-sm text-[var(--color-muted)] mb-4">
                 {searchQuery
-                  ? "Try a different search query"
-                  : "Create your first note to get started"}
+                  ? t("tryDifferentSearch")
+                  : t("createFirstNote")}
               </p>
               {!searchQuery && (
                 <Link
                   href="/notes/new"
                   className="inline-block bg-[var(--color-primary)] text-black px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition"
                 >
-                  + Create Note
+                  + {t("createNote")}
                 </Link>
               )}
             </motion.div>
@@ -205,7 +207,7 @@ export default function NotesPage() {
                       {/* Header with subject and menu */}
                       <div className="flex justify-between items-start mb-4">
                         <span className="text-xs font-medium text-[var(--color-primary)]">
-                          {note.subject || "General"}
+                          {note.subject || t("general")}
                         </span>
                         <div className="relative">
                           <button
@@ -250,7 +252,7 @@ export default function NotesPage() {
 
                       {/* Description */}
                       <p className="text-xs text-[var(--color-muted)] mb-4 line-clamp-2 flex-1">
-                        {note.description || note.content?.substring(0, 100) || "No description"}
+                        {note.description || note.content?.substring(0, 100) || t("noDescription")}
                       </p>
 
                       {/* Timestamp */}
@@ -263,7 +265,7 @@ export default function NotesPage() {
                       <div className="flex gap-4 text-xs text-[var(--color-text)]">
                         <div className="flex items-center gap-1">
                           <Clipboard className="w-4 h-4" />
-                          <span>{note.content?.length || 0} chars</span>
+                          <span>{note.content?.length || 0} {t("chars")}</span>
                         </div>
                       </div>
                     </CardContent>

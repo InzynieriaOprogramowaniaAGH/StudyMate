@@ -1,21 +1,24 @@
 "use client";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function HowItWorks() {
+  const t = useTranslations("howItWorks");
+
   const steps = [
     {
-      title: "Create Your Notes",
-      desc: "Write or paste your study material into our intuitive note editor.",
+      title: t("step1.title"),
+      desc: t("step1.desc"),
       color: "var(--color-primary)",
     },
     {
-      title: "AI Does the Work",
-      desc: "Our AI automatically generates quizzes, flashcards, and summaries.",
+      title: t("step2.title"),
+      desc: t("step2.desc"),
       color: "var(--color-accent)",
     },
     {
-      title: "Study & Excel",
-      desc: "Practice with interactive quizzes and track your progress over time.",
+      title: t("step3.title"),
+      desc: t("step3.desc"),
       color: "var(--color-primary)",
     },
   ];
@@ -33,7 +36,7 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="text-4xl sm:text-5xl font-bold mb-3"
         >
-          How <span className="text-[var(--color-accent)]">StudyMate</span> Works
+          {t("title")} <span className="text-[var(--color-accent)]">{t("titleHighlight")}</span> {t("titleEnd")}
         </motion.h2>
 
         <motion.p
@@ -43,7 +46,7 @@ export default function HowItWorks() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-[var(--color-muted)] mb-16 text-lg"
         >
-          Three simple steps to supercharge your learning
+          {t("subtitle")}
         </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">

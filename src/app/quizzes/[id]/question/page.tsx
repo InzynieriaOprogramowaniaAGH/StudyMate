@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/layout/Header";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, CheckCircle2, Clock } from "lucide-react";
 import { useState } from "react";
@@ -63,6 +64,7 @@ const MOCK_QUIZ = {
 };
 
 export default function QuizQuestionPage() {
+  const t = useTranslations("quizzes.questionPage");
   const router = useRouter();
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>(
@@ -125,7 +127,7 @@ export default function QuizQuestionPage() {
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-[var(--color-muted)] mb-1">Question</p>
+                <p className="text-xs text-[var(--color-muted)] mb-1">{t("question")}</p>
                 <p className="text-2xl font-bold text-[var(--color-primary)]">
                   {currentQuestionIdx + 1} / {MOCK_QUIZ.totalQuestions}
                 </p>
@@ -213,12 +215,12 @@ export default function QuizQuestionPage() {
                 }`}
               >
                 <p className="font-medium text-sm">
-                  {isCorrect ? "✓ Correct!" : "✗ Incorrect"}
+                  {isCorrect ? `✓ ${t("correct")}` : `✗ ${t("incorrect")}`}
                 </p>
                 <p className="text-xs mt-1 opacity-80">
                   {isCorrect
-                    ? "Great job! You selected the right answer."
-                    : `The correct answer is: ${currentQuestion.options[currentQuestion.correctAnswer]}`}
+                    ? t("correctFeedback")
+                    : `${t("incorrectFeedback")} ${currentQuestion.options[currentQuestion.correctAnswer]}`}
                 </p>
               </motion.div>
             )}
@@ -232,7 +234,7 @@ export default function QuizQuestionPage() {
               className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 max-w-sm text-sm font-medium rounded-lg border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
-              Previous
+              {t("previous")}
             </button>
 
             <div className="flex items-center gap-2 order-3 sm:order-2">
@@ -259,8 +261,8 @@ export default function QuizQuestionPage() {
               className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 max-w-sm text-sm font-medium rounded-lg bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed order-2 sm:order-3"
             >
               {currentQuestionIdx === MOCK_QUIZ.questions.length - 1
-                ? "Finish"
-                : "Next"}
+                ? t("finish")
+                : t("next")}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

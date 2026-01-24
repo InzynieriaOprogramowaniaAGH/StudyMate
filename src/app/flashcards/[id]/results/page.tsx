@@ -4,10 +4,13 @@ import Header from "@/components/layout/Header";
 import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, Home, RotateCcw, BookOpen, Check, Layers, TrendingUp } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function FlashcardResultsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("flashcards.results");
+  const tStudy = useTranslations("flashcards.studyPage");
   const known = parseInt(searchParams.get("known") || "0");
   const studied = parseInt(searchParams.get("studied") || "0");
   const total = known + studied;
@@ -22,11 +25,11 @@ export default function FlashcardResultsPage() {
   };
 
   const getMessage = (percentage: number) => {
-    if (percentage >= 90) return "Outstanding!";
-    if (percentage >= 80) return "Great Job!";
-    if (percentage >= 70) return "Good Work!";
-    if (percentage >= 60) return "Not Bad!";
-    return "Keep Practicing!";
+    if (percentage >= 90) return t("messages.outstanding");
+    if (percentage >= 80) return t("messages.greatJob");
+    if (percentage >= 70) return t("messages.goodWork");
+    if (percentage >= 60) return t("messages.notBad");
+    return t("messages.keepPracticing");
   };
 
   const getScoreColor = (percentage: number) => {
@@ -65,7 +68,7 @@ export default function FlashcardResultsPage() {
               {getMessage(percentage)}
             </h1>
             <p className="text-sm text-[var(--color-muted)] mb-6">
-              Flashcard Study Session Complete
+              {t("sessionComplete")}
             </p>
 
             {/* Score */}
@@ -79,7 +82,7 @@ export default function FlashcardResultsPage() {
                 {percentage}%
               </p>
               <p className="text-sm text-[var(--color-muted)]">
-                {known} cards mastered out of {total}
+                {t("cardsMastered", { known, total })}
               </p>
             </motion.div>
 
@@ -89,14 +92,14 @@ export default function FlashcardResultsPage() {
                 onClick={handleContinue}
                 className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
               >
-                Continue
+                {t("continue")}
               </button>
               <button
                 onClick={handleRetry}
                 className="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center gap-2"
               >
                 <RotateCcw className="w-4 h-4" />
-                Try Again
+                {t("tryAgain")}
               </button>
             </div>
           </motion.div>
@@ -109,9 +112,9 @@ export default function FlashcardResultsPage() {
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8"
           >
             {[
-              { label: "Cards Known", value: known, icon: Check, color: "text-[var(--color-success)]" },
-              { label: "Need Study", value: studied, icon: Layers, color: "text-[var(--color-warning)]" },
-              { label: "Success Rate", value: `${percentage}%`, icon: TrendingUp, color: "text-[var(--color-warning)]" },
+              { label: tStudy("cardsKnown"), value: known, icon: Check, color: "text-[var(--color-success)]" },
+              { label: tStudy("needStudy"), value: studied, icon: Layers, color: "text-[var(--color-warning)]" },
+              { label: tStudy("successRate"), value: `${percentage}%`, icon: TrendingUp, color: "text-[var(--color-warning)]" },
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -138,12 +141,12 @@ export default function FlashcardResultsPage() {
             className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 mb-8"
           >
             <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-              Study Breakdown
+              {t("studyBreakdown.title")}
             </h2>
             <div className="space-y-3">
               {[
-                { label: "Cards Mastered", value: known, color: "bg-[var(--color-success)]" },
-                { label: "Cards to Review", value: studied, color: "bg-[var(--color-warning)]" },
+                { label: t("studyBreakdown.cardsMastered"), value: known, color: "bg-[var(--color-success)]" },
+                { label: t("studyBreakdown.cardsToReview"), value: studied, color: "bg-[var(--color-warning)]" },
               ].map((item, idx) => {
                 const percentage = total > 0 ? (item.value / total) * 100 : 0;
                 return (
@@ -177,20 +180,20 @@ export default function FlashcardResultsPage() {
           >
             <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
-              Study Tips
+              {t("tips.title")}
             </h2>
             <ul className="space-y-2 text-sm text-[var(--color-muted)]">
               <li className="flex items-start gap-2">
                 <span className="text-[var(--color-primary)] mt-0.5">•</span>
-                <span>Review the cards you marked as "Need Study" more frequently</span>
+                <span>{t("tips.tip1")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[var(--color-primary)] mt-0.5">•</span>
-                <span>Space out your study sessions for better long-term retention</span>
+                <span>{t("tips.tip2")}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[var(--color-primary)] mt-0.5">•</span>
-                <span>Try studying in different environments to improve memory</span>
+                <span>{t("tips.tip3")}</span>
               </li>
             </ul>
           </motion.div>
@@ -207,13 +210,13 @@ export default function FlashcardResultsPage() {
               className="px-6 py-2 sm:px-6 sm:py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4" />
-              Back to Home
+              {t("backToHome")}
             </button>
             <button
               onClick={() => router.push("/flashcards")}
               className="px-6 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors flex items-center justify-center"
             >
-              Study More Sets
+              {t("studyMoreSets")}
             </button>
           </motion.div>
         </div>

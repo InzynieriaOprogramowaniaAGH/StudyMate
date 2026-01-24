@@ -3,30 +3,30 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Quote } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Testimonials() {
+  const t = useTranslations("testimonials");
+
   const testimonials = [
     {
       name: "Ava Johnson",
-      role: "Medical Student",
-      quote:
-        "StudyMate completely changed the way I review my notes. The AI flashcards are scary accurate and save me hours!",
+      role: t("person1.role"),
+      quote: t("person1.quote"),
       image: "/images/avatar1.jpg",
       rating: 5,
     },
     {
       name: "Liam Chen",
-      role: "Computer Science Major",
-      quote:
-        "The quiz generator makes it so easy to test myself before exams. My grades have never been better.",
+      role: t("person2.role"),
+      quote: t("person2.quote"),
       image: "/images/avatar2.jpg",
       rating: 4,
     },
     {
       name: "Sofia Martínez",
-      role: "High School Student",
-      quote:
-        "I love how simple and clean it feels. I use StudyMate every day on my phone — totally seamless!",
+      role: t("person3.role"),
+      quote: t("person3.quote"),
       image: "/images/avatar3.jpg",
       rating: 5,
     },
@@ -54,7 +54,7 @@ export default function Testimonials() {
         transition={{ duration: 0.5 }}
         className="text-3xl sm:text-4xl font-bold mb-10 sm:mb-16"
       >
-        What <span className="text-accent">Students</span> Say
+        {t("title")} <span className="text-accent">{t("titleHighlight")}</span> {t("titleEnd")}
       </motion.h2>
 
       <motion.div

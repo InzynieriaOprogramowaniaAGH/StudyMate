@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Note {
   id: string;
@@ -20,6 +21,7 @@ interface Note {
 export default function NoteDetailPage() {
   const params = useParams();
   const noteId = params.id as string;
+  const t = useTranslations("notes.detail");
   
   const [note, setNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,14 +76,14 @@ export default function NoteDetailPage() {
               className="flex items-center gap-2 text-[var(--color-primary)] hover:underline mb-6"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Notes
+              {t("backToNotes")}
             </Link>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="p-6 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-center"
             >
-              <p className="font-medium">{error || "Note not found"}</p>
+              <p className="font-medium">{error || t("noteNotFound")}</p>
             </motion.div>
           </div>
         </main>
@@ -104,7 +106,7 @@ export default function NoteDetailPage() {
               className="flex items-center gap-2 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition mb-6 w-fit"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Notes
+              {t("backToNotes")}
             </Link>
           </motion.div>
 
@@ -124,7 +126,7 @@ export default function NoteDetailPage() {
                 {note.title}
               </h1>
               <p className="text-sm text-[var(--color-muted)]">
-                Last edited {new Date(note.updatedAt).toLocaleDateString()}
+                {t("lastEdited")} {new Date(note.updatedAt).toLocaleDateString()}
               </p>
             </div>
 
@@ -134,7 +136,7 @@ export default function NoteDetailPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-black rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition whitespace-nowrap"
               >
                 <Edit2 className="w-4 h-4" />
-                Edit
+                {t("edit")}
               </Link>
               <button 
                 onClick={() => setOpenMenu(!openMenu)}
@@ -161,7 +163,7 @@ export default function NoteDetailPage() {
                       }}
                     >
                       <Copy className="w-4 h-4" />
-                      Duplicate
+                      {t("duplicate")}
                     </motion.button>
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
@@ -169,7 +171,7 @@ export default function NoteDetailPage() {
                       onClick={() => setOpenMenu(false)}
                     >
                       <Download className="w-4 h-4" />
-                      Export
+                      {t("export")}
                     </motion.button>
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
@@ -177,7 +179,7 @@ export default function NoteDetailPage() {
                       onClick={() => setOpenMenu(false)}
                     >
                       <Trash2 className="w-4 h-4" />
-                      Delete
+                      {t("delete")}
                     </motion.button>
                   </motion.div>
                 )}
@@ -196,7 +198,7 @@ export default function NoteDetailPage() {
             >
               {/* Note Content Card */}
               <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 sm:p-8">
-                <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Note Content</h2>
+                <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">{t("noteContent")}</h2>
                 <div className="text-[var(--color-text)] whitespace-pre-wrap leading-relaxed text-sm sm:text-base">
                   {note.content}
                 </div>
@@ -211,10 +213,10 @@ export default function NoteDetailPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Sparkles className="w-5 h-5 text-[var(--color-accent)]" />
-                  <h3 className="font-semibold text-[var(--color-text)]">AI-Generated Summary</h3>
+                  <h3 className="font-semibold text-[var(--color-text)]">{t("aiSummary")}</h3>
                 </div>
                 <p className="text-[var(--color-text)] leading-relaxed text-sm sm:text-base">
-                  {note.description || "A comprehensive summary of your note content would appear here once AI processing is complete."}
+                  {note.description || t("aiSummaryPlaceholder")}
                 </p>
               </motion.div>
             </motion.div>
@@ -228,9 +230,9 @@ export default function NoteDetailPage() {
             >
               {/* Study Materials Card */}
               <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 sticky top-24">
-                <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">Study Materials</h3>
+                <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">{t("studyMaterials")}</h3>
                 <p className="text-xs text-[var(--color-muted)] mb-6">
-                  AI-generated from this note
+                  {t("aiGenerated")}
                 </p>
 
                 {/* Study Items */}
@@ -242,9 +244,9 @@ export default function NoteDetailPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-[var(--color-text)]">
-                        Quiz
+                        {t("quiz")}
                       </p>
-                      <p className="text-xs text-[var(--color-muted)]">5 Questions</p>
+                      <p className="text-xs text-[var(--color-muted)]">5 {t("questions")}</p>
                     </div>
                   </div>
 
@@ -255,9 +257,9 @@ export default function NoteDetailPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-[var(--color-text)]">
-                        Flashcards
+                        {t("flashcards")}
                       </p>
-                      <p className="text-xs text-[var(--color-muted)]">24 cards</p>
+                      <p className="text-xs text-[var(--color-muted)]">24 {t("cards")}</p>
                     </div>
                   </div>
                 </div>
@@ -265,14 +267,14 @@ export default function NoteDetailPage() {
                 {/* Generate More Section */}
                 <div className="border-t border-[var(--color-border)] pt-4 mb-6">
                   <h4 className="text-xs font-semibold text-[var(--color-text)] mb-3 uppercase tracking-wide">
-                    Generate More
+                    {t("generateMore")}
                   </h4>
                   <div className="space-y-2">
                     <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                      <span>➕</span> New Quiz
+                      <span>➕</span> {t("newQuiz")}
                     </button>
                     <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                      <span>📇</span> More Flashcards
+                      <span>📇</span> {t("moreFlashcards")}
                     </button>
                   </div>
                 </div>
@@ -280,27 +282,27 @@ export default function NoteDetailPage() {
                 {/* Statistics */}
                 <div className="border-t border-[var(--color-border)] pt-4">
                   <h4 className="text-xs font-semibold text-[var(--color-text)] mb-4 uppercase tracking-wide">
-                    Statistics
+                    {t("statistics")}
                   </h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-[var(--color-muted)]">Words</span>
+                      <span className="text-xs text-[var(--color-muted)]">{t("words")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">
                         {note.content.split(/\s+/).length}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-[var(--color-muted)]">Reading time</span>
+                      <span className="text-xs text-[var(--color-muted)]">{t("readingTime")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">
-                        {Math.ceil(note.content.split(/\s+/).length / 200)} min
+                        {Math.ceil(note.content.split(/\s+/).length / 200)} {t("min")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-[var(--color-muted)]">Times reviewed</span>
+                      <span className="text-xs text-[var(--color-muted)]">{t("timesReviewed")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">7</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-[var(--color-muted)]">Quiz avg score</span>
+                      <span className="text-xs text-[var(--color-muted)]">{t("quizAvgScore")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">85%</span>
                     </div>
                   </div>

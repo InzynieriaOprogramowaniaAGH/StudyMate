@@ -6,22 +6,24 @@ import { Button } from "@/components/ui/custom_button";
 import { FileText, Clipboard, Layers, BarChart3, Sparkles } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 export default function DashboardPage() {
   const user = useSession().data?.user?.name ?? "John";
+  const t = useTranslations("dashboard");
 
   const quickActionsConfig = [
-    { title: "Create Note", icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" />, href: "/notes/new" },
-    { title: "Take Quiz", icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" />, href: "/quizzes" },
-    { title: "Study Flashcards", icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" />, href: "/flashcards" },
-    { title: "View Progress", icon: <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />, href: "/progress" },
+    { title: t("quickActions.createNote"), icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" />, href: "/notes/new" },
+    { title: t("quickActions.takeQuiz"), icon: <Clipboard className="w-5 h-5 text-[var(--color-primary)]" />, href: "/quizzes" },
+    { title: t("quickActions.studyFlashcards"), icon: <Layers className="w-5 h-5 text-[var(--color-primary)]" />, href: "/flashcards" },
+    { title: t("quickActions.viewProgress"), icon: <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />, href: "/progress" },
   ];
 
   const stats = [
-    { title: "Total Notes", value: "24", subtitle: "+3 from last week" },
-    { title: "Quizzes Taken", value: "47", subtitle: "+12 from last week" },
-    { title: "Study Streak", value: "7 days", subtitle: "Keep it up!" },
-    { title: "Avg. Score", value: "87%", subtitle: "+5% from last week" },
+    { title: t("stats.totalNotes"), value: "24", subtitle: `+3 ${t("stats.fromLastWeek")}` },
+    { title: t("stats.quizzesTaken"), value: "47", subtitle: `+12 ${t("stats.fromLastWeek")}` },
+    { title: t("stats.studyStreak"), value: `7 ${t("stats.days")}`, subtitle: t("stats.keepItUp") },
+    { title: t("stats.avgScore"), value: "87%", subtitle: `+5% ${t("stats.fromLastWeek")}` },
   ];
 
   const recentNotes = [
@@ -50,8 +52,8 @@ export default function DashboardPage() {
         {/* Top header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold leading-tight">Welcome back, {user}!</h1>
-            <p className="text-xs text-[var(--color-muted)] mt-1">Here’s your learning progress today</p>
+            <h1 className="text-2xl font-semibold leading-tight">{t("welcomeBack", { name: user })}</h1>
+            <p className="text-xs text-[var(--color-muted)] mt-1">{t("progressToday")}</p>
           </div>
         </div>
 
@@ -77,8 +79,8 @@ export default function DashboardPage() {
             {/* Quick Actions */}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)]">
               <CardHeader className="p-4 sm:p-3 pb-2">
-                <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
-                <p className="text-xs text-[var(--color-muted)] mt-1">Start studying or create new content</p>
+                <CardTitle className="text-sm font-semibold">{t("quickActions.title")}</CardTitle>
+                <p className="text-xs text-[var(--color-muted)] mt-1">{t("quickActions.subtitle")}</p>
               </CardHeader>
 
               <CardContent className="p-4 sm:p-3">
@@ -103,10 +105,10 @@ export default function DashboardPage() {
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] flex-1">
               <CardHeader className="flex flex-row justify-between items-start p-4 sm:p-3 pb-2">
                 <div className="flex-1">
-                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">Recent Notes</CardTitle>
-                  <p className="text-xs text-[var(--color-muted)] mt-1">Your latest study materials</p>
+                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("recentNotes.title")}</CardTitle>
+                  <p className="text-xs text-[var(--color-muted)] mt-1">{t("recentNotes.subtitle")}</p>
                 </div>
-                <a href="/notes" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">View All</a>
+                <a href="/notes" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">{t("recentNotes.viewAll")}</a>
               </CardHeader>
 
               {/* Removed overflow */}
@@ -163,13 +165,13 @@ export default function DashboardPage() {
             {/* Today's Goal */}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)]">
               <CardHeader className="p-4 sm:p-3 pb-2">
-                <CardTitle className="text-sm font-semibold">Today's Goal</CardTitle>
+                <CardTitle className="text-sm font-semibold">{t("todaysGoal.title")}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-3">
                 <div className="flex flex-col gap-4">
-                  <GoalItem label="Study Time" value={45} total={60} />
-                  <GoalItem label="Quizzes" value={2} total={3} />
-                  <GoalItem label="Flashcards" value={15} total={20} />
+                  <GoalItem label={t("todaysGoal.studyTime")} value={45} total={60} />
+                  <GoalItem label={t("todaysGoal.quizzes")} value={2} total={3} />
+                  <GoalItem label={t("todaysGoal.flashcards")} value={15} total={20} />
                 </div>
               </CardContent>
             </Card>
@@ -179,7 +181,7 @@ export default function DashboardPage() {
               <CardHeader className="p-4 sm:p-3 pb-2">
                 <div className="flex items-center gap-3">
                   <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
-                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">AI Suggestions</CardTitle>
+                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("aiSuggestions.title")}</CardTitle>
                 </div>
               </CardHeader>
 
@@ -202,7 +204,7 @@ export default function DashboardPage() {
             {/* Upcoming Reviews */}
             <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] mt-4 md:mt-0">
               <CardHeader className="p-4 sm:p-3 pb-2">
-                <CardTitle className="text-sm font-semibold text-[var(--color-text)]">Upcoming Reviews</CardTitle>
+                <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("upcomingReviews.title")}</CardTitle>
               </CardHeader>
 
               <CardContent className="p-4 sm:p-3">
@@ -216,7 +218,7 @@ export default function DashboardPage() {
                         <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]/90" />
                         <div className="flex flex-col">
                           <span className="text-sm font-medium text-[var(--color-text)]">{r.subject}</span>
-                          <span className="text-[11px] text-[var(--color-muted)]">{r.count} cards</span>
+                          <span className="text-[11px] text-[var(--color-muted)]">{r.count} {t("upcomingReviews.cards")}</span>
                         </div>
                       </div>
 

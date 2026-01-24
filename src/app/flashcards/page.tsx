@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Search, Filter, RotateCcw, Layers, CheckCircle2, BookMarked } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface FlashcardSet {
   id: string;
@@ -57,6 +58,7 @@ const MOCK_FLASHCARDS: FlashcardSet[] = [
 
 export default function FlashcardsPage() {
   const router = useRouter();
+  const t = useTranslations("flashcards");
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<"All" | "Easy" | "Medium" | "Hard">("All");
 
@@ -99,10 +101,10 @@ export default function FlashcardsPage() {
             className="mb-8"
           >
             <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
-              Study Flashcards
+              {t("title")}
             </h1>
             <p className="text-[var(--color-muted)]">
-              Review and master your flashcard sets
+              {t("subtitle")}
             </p>
           </motion.div>
 
@@ -114,9 +116,9 @@ export default function FlashcardsPage() {
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
           >
             {[
-              { label: "Flashcard Sets", value: stats.total, icon: Layers },
-              { label: "Cards Reviewed", value: stats.reviewed, icon: CheckCircle2 },
-              { label: "Total Cards", value: stats.totalCards, icon: BookMarked },
+              { label: t("stats.flashcardSets"), value: stats.total, icon: Layers },
+              { label: t("stats.cardsReviewed"), value: stats.reviewed, icon: CheckCircle2 },
+              { label: t("stats.totalCards"), value: stats.totalCards, icon: BookMarked },
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -147,7 +149,7 @@ export default function FlashcardsPage() {
               <Search className="absolute left-3 top-3 w-5 h-5 text-[var(--color-muted)]" />
               <input
                 type="text"
-                placeholder="Search flashcard sets..."
+                placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
@@ -157,17 +159,22 @@ export default function FlashcardsPage() {
             {/* Difficulty Filter */}
             <div className="flex gap-2 flex-wrap">
               <Filter className="w-5 h-5 text-[var(--color-muted)] mt-2" />
-              {["All", "Easy", "Medium", "Hard"].map((difficulty) => (
+              {[
+                { key: "All", label: t("difficulty.all") },
+                { key: "Easy", label: t("difficulty.easy") },
+                { key: "Medium", label: t("difficulty.medium") },
+                { key: "Hard", label: t("difficulty.hard") },
+              ].map((difficulty) => (
                 <button
-                  key={difficulty}
-                  onClick={() => setDifficultyFilter(difficulty as any)}
+                  key={difficulty.key}
+                  onClick={() => setDifficultyFilter(difficulty.key as any)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    difficultyFilter === difficulty
+                    difficultyFilter === difficulty.key
                       ? "bg-[var(--color-primary)] text-white"
                       : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
                   }`}
                 >
-                  {difficulty}
+                  {difficulty.label}
                 </button>
               ))}
             </div>
@@ -214,7 +221,7 @@ export default function FlashcardsPage() {
                   {/* Stats */}
                   <div className="space-y-2 mb-4 pb-4 border-b border-[var(--color-border)]">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-[var(--color-muted)]">Cards</span>
+                      <span className="text-[var(--color-muted)]">{t("cards")}</span>
                       <span className="font-medium text-[var(--color-text)]">
                         {card.reviewed} / {card.cardCount}
                       </span>
@@ -228,7 +235,7 @@ export default function FlashcardsPage() {
                       />
                     </div>
                     <p className="text-xs text-[var(--color-muted)]">
-                      Last reviewed: {card.lastReviewed}
+                      {t("lastReviewed")}: {card.lastReviewed}
                     </p>
                   </div>
 
@@ -241,7 +248,7 @@ export default function FlashcardsPage() {
                       }}
                       className="flex-1 px-4 py-2 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors text-sm"
                     >
-                      Study
+                      {t("study")}
                     </button>
                     <button
                       onClick={(e) => {
@@ -262,10 +269,10 @@ export default function FlashcardsPage() {
                 className="col-span-full text-center py-12"
               >
                 <p className="text-[var(--color-muted)] mb-2">
-                  No flashcard sets found
+                  {t("noSetsFound")}
                 </p>
                 <p className="text-sm text-[var(--color-muted)]">
-                  Try adjusting your filters or search query
+                  {t("adjustFilters")}
                 </p>
               </motion.div>
             )}

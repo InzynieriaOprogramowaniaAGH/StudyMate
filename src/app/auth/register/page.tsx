@@ -8,11 +8,13 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const t = useTranslations("auth.register");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,13 +29,13 @@ export default function RegisterPage() {
     const agreedToTerms = formData.get("terms") === "on";
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("errorPasswordMatch"));
       setIsLoading(false);
       return;
     }
 
     if (!agreedToTerms) {
-      setError("You must agree to the Terms of Service and Privacy Policy");
+      setError(t("errorTerms"));
       setIsLoading(false);
       return;
     }
@@ -66,7 +68,7 @@ export default function RegisterPage() {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      setError("An error occurred. Please try again.");
+      setError(t("errorGeneric"));
     } finally {
       setIsLoading(false);
     }
@@ -84,10 +86,10 @@ export default function RegisterPage() {
         <div className="w-full max-w-md bg-[var(--color-bg-light)] rounded-2xl border border-[var(--color-border)] p-8 shadow-lg">
           <div className="text-center mb-8">
             <h1 className="text-xl sm:text-2xl font-semibold text-[var(--color-text)]">
-              Create an account
+              {t("title")}
             </h1>
             <p className="text-sm text-[var(--color-muted)] mt-1">
-              Start your journey to smarter studying
+              {t("subtitle")}
             </p>
           </div>
 
@@ -102,7 +104,7 @@ export default function RegisterPage() {
               type="text"
               name="fullName"
               required
-              placeholder="John Doe"
+              placeholder={t("namePlaceholder")}
               className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
             />
 
@@ -110,7 +112,7 @@ export default function RegisterPage() {
               type="email"
               name="email"
               required
-              placeholder="name@example.com"
+              placeholder={t("emailPlaceholder")}
               className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
             />
 
@@ -118,7 +120,7 @@ export default function RegisterPage() {
               type="password"
               name="password"
               required
-              placeholder="Create a strong password"
+              placeholder={t("passwordPlaceholder")}
               className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
             />
 
@@ -126,7 +128,7 @@ export default function RegisterPage() {
               type="password"
               name="confirmPassword"
               required
-              placeholder="Re-enter your password"
+              placeholder={t("confirmPasswordPlaceholder")}
               className="w-full px-4 py-3 bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
             />
 
@@ -137,19 +139,19 @@ export default function RegisterPage() {
                 className="w-4 h-4 accent-[var(--color-primary)] border border-[var(--color-border)] rounded-sm bg-[var(--color-bg-darker)] focus:ring-[var(--color-primary)] cursor-pointer"
               />
               <span>
-                I agree to the{" "}
+                {t("termsAgree")}{" "}
                 <Link
                   href="/terms"
                   className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
                 >
-                  Terms of Service
+                  {t("termsOfService")}
                 </Link>{" "}
-                and{" "}
+                {t("and")}{" "}
                 <Link
                   href="/privacy"
                   className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
                 >
-                  Privacy Policy
+                  {t("privacyPolicy")}
                 </Link>
               </span>
             </label>
@@ -161,18 +163,18 @@ export default function RegisterPage() {
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {isLoading ? t("submitting") : t("submit")}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-[var(--color-muted)]">
             <p>
-              Already have an account?{" "}
+              {t("hasAccount")}{" "}
               <Link
                 href="/auth/login"
                 className="text-[var(--color-primary)] hover:text-[var(--color-accent)] transition"
               >
-                Sign in
+                {t("signIn")}
               </Link>
             </p>
           </div>

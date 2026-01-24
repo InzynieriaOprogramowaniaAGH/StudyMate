@@ -4,10 +4,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 
 
 export default function Hero() {
+  const t = useTranslations("hero");
+
   return (
     <section className="flex flex-col items-center text-center py-20 sm:py-24 px-4 sm:px-6 bg-bg">
     <motion.span
@@ -21,7 +24,7 @@ export default function Hero() {
         }}
       >
         <Sparkles className="w-4 h-4" />         
-        AI-Powered Learning
+        {t("badge")}
     </motion.span>
 
 
@@ -33,7 +36,7 @@ export default function Hero() {
         className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight"
       >
         <span className="bg-[radial-gradient(circle_at_center,var(--color-primary),var(--color-accent))] bg-clip-text text-transparent">
-          Study Smarter with Your AI Assistant
+          {t("title")}
         </span>
       </motion.h1>
 
@@ -43,7 +46,7 @@ export default function Hero() {
         transition={{ delay: 0.4, duration: 0.6 }}
         className="text-muted max-w-md sm:max-w-xl mb-8 text-sm sm:text-base"
       >
-        Transform your notes into interactive quizzes and flashcards automatically.
+        {t("subtitle")}
       </motion.p>
 
       <motion.div
@@ -56,13 +59,13 @@ export default function Hero() {
           href="/auth/register"
           className="bg-primary hover:bg-accent text-white px-6 py-3 rounded-xl font-medium transition-transform hover:scale-105"
         >
-          Start Learning Free
+          {t("cta")}
         </Link>
         <Link
           href="#how"
           className="border border-border hover:border-primary px-6 py-3 rounded-xl font-medium text-white transition-transform hover:scale-105"
         >
-          See How It Works
+          {t("secondaryCta")}
         </Link>
       </motion.div>
 
@@ -75,7 +78,7 @@ export default function Hero() {
        <div className="size-max">
           <Image
             src="/images/hero-dashboard2.webp"
-            alt="StudyMate Dashboard"
+            alt={t("imageAlt")}
             width={600}
             height={300}
             className="rounded-2xl shadow-xl border border-border w-full h-auto"

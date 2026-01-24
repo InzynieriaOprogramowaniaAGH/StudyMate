@@ -1,0 +1,644 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "previous": "Poprzedni",
+    "search": "Szukaj",
+    "submit": "Wyślij"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "dashboard": "Panel",
+    "notes": "Notatki",
+    "flashcards": "Fiszki",
+    "quizzes": "Quizy",
+    "progress": "Postępy",
+    "profile": "Profil",
+    "login": "Zaloguj się",
+    "register": "Rozpocznij",
+    "logout": "Wyloguj się",
+    "changeLanguage": "Zmień język"
+  },
+  "hero": {
+    "badge": "Nauka wspierana przez AI",
+    "title": "Ucz się mądrzej ze swoim asystentem AI",
+    "subtitle": "Automatycznie przekształcaj notatki w interaktywne quizy i fiszki.",
+    "cta": "Zacznij za darmo",
+    "secondaryCta": "Zobacz jak to działa",
+    "imageAlt": "Panel StudyMate"
+  },
+  "features": {
+    "title": "Wszystko czego potrzebujesz by",
+    "titleHighlight": "osiągnąć sukces",
+    "subtitle": "Potężne funkcje zaprojektowane, aby nauka była bardziej efektywna i angażująca",
+    "aiQuizzes": {
+      "title": "Quizy generowane przez AI",
+      "desc": "Automatycznie twórz pytania treningowe z notatek za pomocą zaawansowanej AI."
+    },
+    "flashcards": {
+      "title": "Inteligentne fiszki",
+      "desc": "Generuj fiszki natychmiastowo i ucz się z algorytmami powtórek rozłożonych w czasie."
+    },
+    "summaries": {
+      "title": "Podsumowania AI",
+      "desc": "Otrzymuj zwięzłe podsumowania notatek, aby szybko powtórzyć kluczowe pojęcia."
+    },
+    "progress": {
+      "title": "Śledzenie postępów",
+      "desc": "Monitoruj swoją podróż edukacyjną dzięki szczegółowym analizom i statystykom."
+    },
+    "notes": {
+      "title": "Szybkie notatki",
+      "desc": "Zapisuj pomysły szybko dzięki intuicyjnemu edytorowi notatek i systemowi organizacji."
+    },
+    "personalized": {
+      "title": "Spersonalizowana nauka",
+      "desc": "AI dostosowuje się do Twojego stylu uczenia i koncentruje na obszarach wymagających poprawy."
+    }
+  },
+  "howItWorks": {
+    "title": "Jak działa",
+    "titleHighlight": "StudyMate",
+    "titleEnd": "",
+    "subtitle": "Trzy proste kroki, aby przyspieszyć naukę",
+    "step1": {
+      "title": "Stwórz swoje notatki",
+      "desc": "Napisz lub wklej materiał do nauki w naszym intuicyjnym edytorze notatek."
+    },
+    "step2": {
+      "title": "AI wykonuje pracę",
+      "desc": "Nasza AI automatycznie generuje quizy, fiszki i podsumowania."
+    },
+    "step3": {
+      "title": "Ucz się i osiągaj sukcesy",
+      "desc": "Ćwicz z interaktywnymi quizami i śledź swoje postępy w czasie."
+    }
+  },
+  "testimonials": {
+    "title": "Co mówią",
+    "titleHighlight": "studenci",
+    "titleEnd": "",
+    "person1": {
+      "role": "Studentka medycyny",
+      "quote": "StudyMate całkowicie zmienił sposób, w jaki przeglądam notatki. Fiszki AI są niesamowicie trafne i oszczędzają mi godziny!"
+    },
+    "person2": {
+      "role": "Student informatyki",
+      "quote": "Generator quizów sprawia, że testowanie się przed egzaminami jest bardzo łatwe. Moje oceny nigdy nie były lepsze."
+    },
+    "person3": {
+      "role": "Uczennica liceum",
+      "quote": "Uwielbiam jak prosta i czysta jest ta aplikacja. Używam StudyMate codziennie na telefonie — totalnie bezproblemowo!"
+    }
+  },
+  "cta": {
+    "title": "Gotowy przekształcić swoje nawyki nauki?",
+    "subtitle": "Dołącz do tysięcy studentów, którzy uczą się mądrzej z StudyMate.",
+    "button": "Zacznij za darmo"
+  },
+  "auth": {
+    "login": {
+      "title": "Witaj ponownie",
+      "subtitle": "Wprowadź dane logowania, aby uzyskać dostęp do konta",
+      "emailPlaceholder": "Twój adres email",
+      "passwordPlaceholder": "Hasło",
+      "forgotPassword": "Zapomniałeś hasła?",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie...",
+      "noAccount": "Nie masz konta?",
+      "signUp": "Zarejestruj się",
+      "error": "Nieprawidłowy email lub hasło"
+    },
+    "register": {
+      "title": "Utwórz konto",
+      "subtitle": "Rozpocznij swoją drogę do mądrzejszej nauki",
+      "namePlaceholder": "Jan Kowalski",
+      "emailPlaceholder": "Twój adres email",
+      "passwordPlaceholder": "Utwórz silne hasło",
+      "confirmPasswordPlaceholder": "Potwierdź hasło",
+      "termsAgree": "Zgadzam się z",
+      "termsOfService": "Regulaminem",
+      "and": "i",
+      "privacyPolicy": "Polityką prywatności",
+      "submit": "Utwórz konto",
+      "submitting": "Tworzenie konta...",
+      "hasAccount": "Masz już konto?",
+      "signIn": "Zaloguj się",
+      "errorPasswordMatch": "Hasła nie są zgodne",
+      "errorTerms": "Musisz zaakceptować Regulamin i Politykę prywatności",
+      "errorGeneric": "Wystąpił błąd. Spróbuj ponownie."
+    },
+    "error": {
+      "title": "Błąd logowania",
+      "reason": "Powód:",
+      "backToLogin": "Powrót do logowania",
+      "loading": "Ładowanie…"
+    }
+  },
+  "logout": {
+    "button": "Wyloguj",
+    "title": "Potwierdź wylogowanie",
+    "message": "Czy na pewno chcesz się wylogować?",
+    "cancel": "Anuluj",
+    "signingOut": "Wylogowywanie...",
+    "signOut": "Wyloguj się"
+  },
+  "footer": {
+    "copyright": "© 2025 StudyMate. Wszelkie prawa zastrzeżone.",
+    "privacy": "Prywatność",
+    "terms": "Regulamin"
+  },
+  "notes": {
+    "title": "Moje notatki",
+    "subtitle": "Zarządzaj i organizuj swoje materiały do nauki",
+    "createNote": "Utwórz notatkę",
+    "searchPlaceholder": "Szukaj notatek...",
+    "filter": "Filtruj",
+    "allSubjects": "Wszystkie przedmioty",
+    "noDescription": "Brak opisu",
+    "chars": "znaków",
+    "general": "Ogólne",
+    "noNotesFound": "Nie znaleziono notatek",
+    "noNotesYet": "Brak notatek",
+    "tryDifferentSearch": "Spróbuj innego zapytania",
+    "createFirstNote": "Stwórz swoją pierwszą notatkę, aby zacząć",
+    "refreshPage": "Spróbuj odświeżyć stronę",
+    "menu": {
+      "edit": "Edytuj",
+      "generateQuiz": "Generuj quiz",
+      "createFlashcards": "Utwórz fiszki",
+      "delete": "Usuń"
+    },
+    "new": {
+      "backToNotes": "Powrót do notatek",
+      "title": "Utwórz nową notatkę",
+      "subtitle": "Twórz i organizuj materiały do nauki z pomocą AI",
+      "noteTitle": "Tytuł notatki",
+      "noteTitlePlaceholder": "np. Wprowadzenie do uczenia maszynowego",
+      "subject": "Przedmiot",
+      "selectSubject": "Wybierz przedmiot...",
+      "description": "Opis",
+      "descriptionPlaceholder": "Krótki opis zawartości notatki...",
+      "noteContent": "Treść notatki",
+      "contentPlaceholder": "Napisz treść notatki. Dodaj kluczowe informacje, definicje, przykłady i wszystko, co chcesz zapamiętać...",
+      "characters": "znaków",
+      "saveNote": "Zapisz notatkę",
+      "saving": "Zapisywanie...",
+      "cancel": "Anuluj",
+      "failedCreate": "Nie udało się utworzyć notatki. Spróbuj ponownie.",
+      "validation": {
+        "titleRequired": "Tytuł jest wymagany",
+        "titleMinLength": "Tytuł musi mieć co najmniej 3 znaki",
+        "subjectRequired": "Przedmiot jest wymagany",
+        "descriptionRequired": "Opis jest wymagany",
+        "descriptionMinLength": "Opis musi mieć co najmniej 10 znaków",
+        "contentRequired": "Treść notatki jest wymagana",
+        "contentMinLength": "Treść musi mieć co najmniej 20 znaków"
+      },
+      "tips": {
+        "title": "💡 Wskazówki do tworzenia skutecznych notatek:",
+        "tip1": "Używaj jasnych i opisowych tytułów do łatwego wyszukiwania",
+        "tip2": "Organizuj treść za pomocą wypunktowań lub list numerowanych",
+        "tip3": "Dodawaj kluczowe terminy i definicje",
+        "tip4": "Dodawaj przykłady i przypadki użycia dla lepszego zrozumienia",
+        "tip5": "Regularnie przeglądaj i aktualizuj notatki"
+      },
+      "visibility": "Widoczność",
+      "private": "Prywatna",
+      "public": "Publiczna",
+      "privateDescription": "Tylko Ty możesz zobaczyć tę notatkę",
+      "publicDescription": "Każdy może zobaczyć tę notatkę"
+    },
+    "subjects": {
+      "computerScience": "Informatyka",
+      "mathematics": "Matematyka",
+      "physics": "Fizyka",
+      "chemistry": "Chemia",
+      "biology": "Biologia",
+      "history": "Historia",
+      "literature": "Literatura",
+      "economics": "Ekonomia",
+      "psychology": "Psychologia",
+      "art": "Sztuka",
+      "music": "Muzyka",
+      "languages": "Języki obce",
+      "other": "Inne"
+    },
+    "detail": {
+      "backToNotes": "Powrót do notatek",
+      "edit": "Edytuj",
+      "duplicate": "Duplikuj",
+      "export": "Eksportuj",
+      "delete": "Usuń",
+      "lastEdited": "Ostatnio edytowano",
+      "noteContent": "Treść notatki",
+      "aiSummary": "Podsumowanie AI",
+      "aiSummaryPlaceholder": "Kompleksowe podsumowanie treści notatki pojawi się tutaj po przetworzeniu przez AI.",
+      "studyMaterials": "Materiały do nauki",
+      "aiGenerated": "Wygenerowane przez AI z tej notatki",
+      "quiz": "Quiz",
+      "questions": "Pytań",
+      "flashcards": "Fiszki",
+      "cards": "kart",
+      "generateMore": "Generuj więcej",
+      "newQuiz": "Nowy quiz",
+      "moreFlashcards": "Więcej fiszek",
+      "statistics": "Statystyki",
+      "words": "Słowa",
+      "readingTime": "Czas czytania",
+      "min": "min",
+      "timesReviewed": "Przejrzano razy",
+      "quizAvgScore": "Śr. wynik quizu",
+      "noteNotFound": "Nie znaleziono notatki"
+    },
+    "edit": {
+      "title": "Edytuj notatkę",
+      "subtitle": "Zaktualizuj treść i ustawienia notatki",
+      "saveChanges": "Zapisz zmiany"
+    }
+  },
+  "dashboard": {
+    "welcomeBack": "Witaj ponownie, {name}!",
+    "progressToday": "Oto Twoje postępy w nauce",
+    "stats": {
+      "totalNotes": "Wszystkie notatki",
+      "quizzesTaken": "Rozwiązane quizy",
+      "studyStreak": "Seria nauki",
+      "avgScore": "Śr. wynik",
+      "days": "dni",
+      "fromLastWeek": "od zeszłego tygodnia",
+      "keepItUp": "Tak trzymaj!"
+    },
+    "quickActions": {
+      "title": "Szybkie akcje",
+      "subtitle": "Zacznij się uczyć lub stwórz nową treść",
+      "createNote": "Utwórz notatkę",
+      "takeQuiz": "Rozwiąż quiz",
+      "studyFlashcards": "Ucz się fiszek",
+      "viewProgress": "Zobacz postępy"
+    },
+    "recentNotes": {
+      "title": "Ostatnie notatki",
+      "subtitle": "Twoje najnowsze materiały do nauki",
+      "viewAll": "Zobacz wszystko"
+    },
+    "todaysGoal": {
+      "title": "Cel na dziś",
+      "studyTime": "Czas nauki",
+      "quizzes": "Quizy",
+      "flashcards": "Fiszki"
+    },
+    "aiSuggestions": {
+      "title": "Sugestie AI"
+    },
+    "upcomingReviews": {
+      "title": "Nadchodzące powtórki",
+      "cards": "kart"
+    },
+    "time": {
+      "hoursAgo": "godzin temu",
+      "yesterday": "Wczoraj",
+      "daysAgo": "dni temu",
+      "inHours": "za {count} godzin",
+      "tomorrow": "Jutro",
+      "inDays": "za {count} dni"
+    }
+  },
+  "profile": {
+    "tabs": {
+      "account": "Konto",
+      "security": "Bezpieczeństwo",
+      "billing": "Płatności",
+      "preferences": "Preferencje"
+    },
+    "preferences": {
+      "title": "Preferencje",
+      "comingSoon": "Panel preferencji będzie dostępny wkrótce."
+    },
+    "header": {
+      "change": "Zmień",
+      "unnamedUser": "Użytkownik bez nazwy",
+      "proMember": "Członek Pro",
+      "level": "Poziom {level}",
+      "dayStreak": "{count} dni serii",
+      "photoUpload": {
+        "uploading": "Przesyłanie...",
+        "uploadPhoto": "Prześlij zdjęcie",
+        "success": "Zdjęcie profilowe zaktualizowane!",
+        "error": "Nie udało się przesłać zdjęcia."
+      }
+    },
+    "account": {
+      "title": "Dane osobowe",
+      "subtitle": "Zaktualizuj swoje dane osobowe i informacje profilowe",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "email": "Email",
+      "bio": "O mnie",
+      "bioPlaceholder": "Opowiedz nam o sobie",
+      "university": "Uczelnia/Szkoła",
+      "universityPlaceholder": "Twoja instytucja",
+      "saveChanges": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "loading": "Ładowanie profilu...",
+      "successMessage": "Profil zaktualizowany pomyślnie!",
+      "errorUpload": "Przesyłanie nie powiodło się.",
+      "errorUploadGeneric": "Błąd podczas przesyłania pliku."
+    },
+    "security": {
+      "title": "Zmień hasło",
+      "subtitle": "Zaktualizuj hasło, aby zachować bezpieczeństwo konta",
+      "currentPassword": "Aktualne hasło",
+      "newPassword": "Nowe hasło",
+      "confirmPassword": "Potwierdź nowe hasło",
+      "updatePassword": "Zmień hasło",
+      "updating": "Aktualizowanie...",
+      "fillAllFields": "Proszę wypełnić wszystkie pola.",
+      "passwordsNoMatch": "Nowe hasła nie są zgodne.",
+      "successMessage": "Hasło zaktualizowane pomyślnie!"
+    },
+    "billing": {
+      "subscription": {
+        "title": "Subskrypcja",
+        "subtitle": "Zarządzaj swoją subskrypcją StudyMate",
+        "proPlan": "Plan Pro",
+        "price": "9,99$/miesiąc",
+        "nextBilling": "Następna data rozliczenia: 15 listopada 2024",
+        "active": "Aktywna",
+        "changePlan": "Zmień plan",
+        "cancel": "Anuluj",
+        "proFeatures": "Funkcje Pro",
+        "features": {
+          "unlimitedQuizzes": "Nieograniczone quizy generowane przez AI",
+          "advancedAnalytics": "Zaawansowane analizy i statystyki",
+          "prioritySupport": "Priorytetowe wsparcie",
+          "customSchedules": "Niestandardowe harmonogramy nauki",
+          "exportNotes": "Eksport notatek i fiszek"
+        }
+      },
+      "paymentMethod": {
+        "title": "Metoda płatności",
+        "subtitle": "Zarządzaj informacjami o płatnościach",
+        "expires": "Wygasa 12/25",
+        "update": "Aktualizuj",
+        "addMethod": "Dodaj metodę płatności"
+      },
+      "billingHistory": {
+        "title": "Historia płatności",
+        "subtitle": "Zobacz poprzednie faktury i płatności",
+        "paid": "Opłacone",
+        "download": "Pobierz"
+      }
+    }
+  },
+  "quizzes": {
+    "title": "Moje quizy",
+    "subtitle": "Sprawdź swoją wiedzę i śledź postępy",
+    "searchPlaceholder": "Szukaj quizów...",    "loading": "Ładowanie...",    "stats": {
+      "totalQuizzes": "Wszystkie quizy",
+      "averageScore": "Średni wynik",
+      "perfectScores": "Idealne wyniki"
+    },
+    "filters": {
+      "allSubjects": "Wszystkie przedmioty",
+      "allLevels": "Wszystkie poziomy"
+    },
+    "tabs": {
+      "allQuizzes": "Wszystkie quizy",
+      "completed": "Ukończone",
+      "inProgress": "W trakcie",
+      "new": "Nowe"
+    },
+    "level": {
+      "beginner": "Początkujący",
+      "intermediate": "Średniozaawansowany",
+      "advanced": "Zaawansowany"
+    },
+    "status": {
+      "notStarted": "Nie rozpoczęty",
+      "inProgress": "W trakcie",
+      "completed": "Ukończony"
+    },
+    "privacy": {
+      "private": "Prywatny",
+      "public": "Publiczny"
+    },
+    "validation": {
+      "titleRequired": "Tytuł quizu jest wymagany",
+      "allQuestionsRequired": "Wszystkie pytania muszą mieć tekst",
+      "allOptionsRequired": "Wszystkie opcje odpowiedzi muszą być wypełnione",
+      "correctAnswerRequired": "Wybierz poprawną odpowiedź dla wszystkich pytań"
+    },
+    "creation": {
+      "title": "Stwórz nowy quiz",
+      "subtitle": "Dodaj pytania i odpowiedzi, aby stworzyć własny quiz",
+      "back": "Wróć do quizzów",
+      "createButton": "Stwórz quiz",
+      "cancelButton": "Anuluj",
+      "quizInfo": "Informacje o quizie",
+      "quizTitle": "Tytuł quizu",
+      "titlePlaceholder": "Wpisz tytuł quizu",
+      "description": "Opis (Opcjonalnie)",
+      "descriptionPlaceholder": "Opisz swój quiz",
+      "questionsHeading": "Pytania",
+      "questionLabel": "Pytanie",
+      "questionPlaceholder": "Wpisz swoje pytanie",
+      "answerOptions": "Opcje odpowiedzi",
+      "option": "Opcja",
+      "addQuestion": "Dodaj pytanie",
+      "creating": "Tworzenie...",
+      "privacy": "Prywatność",
+      "uploadImage": "Prześlij obraz",
+      "changeImage": "Zmień obraz",
+      "textMode": "Tekst",
+      "imageMode": "Obraz"
+    },
+    "loading": "Ładowanie...",
+    "questions": "pytań",
+    "attempts": "prób",
+    "lastScore": "Ostatni wynik",
+    "bestScore": "Najlepszy wynik",
+    "startQuiz": "Rozpocznij quiz",
+    "retake": "Powtórz",
+    "noQuizzesFound": "Nie znaleziono quizów",
+    "questionPage": {
+      "question": "Pytanie",
+      "correct": "Poprawnie!",
+      "incorrect": "Niepoprawnie",
+      "correctFeedback": "Świetnie! Wybrałeś poprawną odpowiedź.",
+      "incorrectFeedback": "Poprawna odpowiedź to:",
+      "previous": "Poprzednie",
+      "next": "Następne",
+      "finish": "Zakończ",
+      "delete": "Usuń",
+      "deleteConfirm": "Usuń quiz",
+      "deleteMessage": "Czy na pewno chcesz usunąć ten quiz? Tej akcji nie można cofnąć.",
+      "cancel": "Anuluj",
+      "loading": "Ładowanie...",
+      "deleting": "Usuwanie...",
+      "uploadFailed": "Nie udało się przesłać obrazu",
+      "remove": "Usuń"
+    },
+    "results": {
+      "retakeQuiz": "Powtórz Quiz",
+      "viewNotes": "Przeglądaj Notatki",
+      "dashboard": "Dashboard",
+      "correct": "Poprawne",
+      "incorrect": "Błędne",
+      "time": "Czas",
+      "performanceAnalysis": "Analiza wyników",
+      "detailedAnalysis": "Szczegółowa analiza Twojego quizu",
+      "accuracy": "Dokładność",
+      "reviewAnswers": "Przejrzyj odpowiedzi",
+      "yourAnswer": "Twoja odpowiedź:",
+      "correctAnswer": "Poprawna odpowiedź:",
+      "question": "Pytanie",
+      "noAnswer": "Brak odpowiedzi",
+      "failedToLoad": "Nie udało się załadować wyników",
+      "messages": {
+        "excellent": "Doskonale!",
+        "greatJob": "Świetna robota!",
+        "goodWork": "Dobra robota!",
+        "notBad": "Nieźle!",
+        "keepPracticing": "Ćwicz dalej!",
+        "tryAgain": "Spróbuj ponownie!"
+      },
+      "correctAnswersLabel": "poprawnych odpowiedzi",
+      "outOf": "{correct} z {total} poprawnych",
+      "continue": "Kontynuuj",
+      "share": "Udostępnij",
+      "retake": "Powtórz",
+      "exportCardNotFound": "Nie znaleziono karty eksportu",
+      "exportError": "Błąd eksportu wyniku. Spróbuj ponownie.",
+      "stats": {
+        "correctAnswers": "Poprawne odpowiedzi",
+        "incorrectAnswers": "Niepoprawne odpowiedzi",
+        "timeSpent": "Czas",
+        "improvement": "Poprawa"
+      },
+      "performanceBreakdown": "Podsumowanie wyników",
+      "mastered": "Opanowane",
+      "struggling": "Do poprawy",
+      "exportResults": "Eksportuj wyniki",
+      "questionLabel": "Pytanie",
+      "backToHome": "Powrót do strony głównej",
+      "tryAnotherQuiz": "Spróbuj innego quizu"
+    }
+  },
+  "flashcards": {
+    "title": "Fiszki do nauki",
+    "subtitle": "Przeglądaj i opanuj swoje zestawy fiszek",
+    "searchPlaceholder": "Szukaj zestawów fiszek...",
+    "stats": {
+      "flashcardSets": "Zestawy fiszek",
+      "cardsReviewed": "Przejrzane karty",
+      "totalCards": "Wszystkie karty"
+    },
+    "difficulty": {
+      "all": "Wszystkie",
+      "easy": "Łatwy",
+      "medium": "Średni",
+      "hard": "Trudny"
+    },
+    "cards": "Karty",
+    "lastReviewed": "Ostatnio przeglądane",
+    "study": "Ucz się",
+    "noSetsFound": "Nie znaleziono zestawów fiszek",
+    "adjustFilters": "Spróbuj dostosować filtry lub zapytanie",
+    "studyPage": {
+      "backToFlashcards": "Powrót do fiszek",
+      "card": "Karta",
+      "question": "Pytanie",
+      "answer": "Odpowiedź",
+      "clickToReveal": "Kliknij, aby zobaczyć odpowiedź",
+      "listen": "Słuchaj",
+      "cardsKnown": "Znane karty",
+      "needStudy": "Do nauki",
+      "successRate": "Skuteczność",
+      "previous": "Poprzednia",
+      "restart": "Od nowa",
+      "next": "Następna",
+      "iKnowThis": "Znam to",
+      "needMoreStudy": "Wymaga nauki"
+    },
+    "results": {
+      "sessionComplete": "Sesja nauki fiszek zakończona",
+      "cardsMastered": "{known} kart opanowanych z {total}",
+      "continue": "Kontynuuj",
+      "tryAgain": "Spróbuj ponownie",
+      "studyBreakdown": {
+        "title": "Podsumowanie nauki",
+        "cardsMastered": "Opanowane karty",
+        "cardsToReview": "Karty do powtórki"
+      },
+      "tips": {
+        "title": "Wskazówki do nauki",
+        "tip1": "Częściej przeglądaj karty oznaczone jako \"Do nauki\"",
+        "tip2": "Rozkładaj sesje nauki w czasie dla lepszego zapamiętywania",
+        "tip3": "Spróbuj uczyć się w różnych miejscach, aby poprawić pamięć"
+      },
+      "backToHome": "Powrót do strony głównej",
+      "studyMoreSets": "Ucz się więcej",
+      "messages": {
+        "outstanding": "Wybitnie!",
+        "greatJob": "Świetna robota!",
+        "goodWork": "Dobra robota!",
+        "notBad": "Nieźle!",
+        "keepPracticing": "Ćwicz dalej!"
+      }
+    }
+  },
+  "progress": {
+    "title": "Twoje postępy",
+    "subtitle": "Śledź swoje statystyki nauki i osiągnięcia",
+    "stats": {
+      "totalActions": "Wszystkie akcje",
+      "notesCreated": "Utworzone notatki",
+      "quizzesCompleted": "Ukończone quizy",
+      "flashcardsReviewed": "Przejrzane fiszki",
+      "longestStreak": "Najdłuższa seria"
+    },
+    "charts": {
+      "studyTimeThisWeek": "Czas nauki w tym tygodniu",
+      "quizScoresTrend": "Trend wyników quizów",
+      "noData": "Brak danych",
+      "noQuizData": "Brak danych quizów",
+      "week": "Tydzień {number}"
+    },
+    "calendar": {
+      "title": "Kalendarz aktywności",
+      "days": {
+        "sun": "Nd",
+        "mon": "Pn",
+        "tue": "Wt",
+        "wed": "Śr",
+        "thu": "Cz",
+        "fri": "Pt",
+        "sat": "Sb"
+      },
+      "months": {
+        "january": "Styczeń",
+        "february": "Luty",
+        "march": "Marzec",
+        "april": "Kwiecień",
+        "may": "Maj",
+        "june": "Czerwiec",
+        "july": "Lipiec",
+        "august": "Sierpień",
+        "september": "Wrzesień",
+        "october": "Październik",
+        "november": "Listopad",
+        "december": "Grudzień"
+      },
+      "activities": "aktywności",
+      "noActivity": "Brak aktywności",
+      "active": "Aktywny"
+    }
+  }
+}

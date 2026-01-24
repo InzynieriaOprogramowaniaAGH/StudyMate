@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Lock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function PasswordSection() {
+  const t = useTranslations("profile.security");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -12,12 +14,12 @@ export function PasswordSection() {
     setMessage("");
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setMessage("Please fill in all fields.");
+      setMessage(`❌ ${t("fillAllFields")}`);
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setMessage("New passwords do not match.");
+      setMessage(`❌ ${t("passwordsNoMatch")}`);
       return;
     }
 
@@ -32,7 +34,7 @@ export function PasswordSection() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong");
 
-      setMessage("✅ Password updated successfully!");
+      setMessage(`✅ ${t("successMessage")}`);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -51,9 +53,9 @@ export function PasswordSection() {
           <Lock size={18} className="text-[var(--color-primary)]" />
         </div>
         <div className="min-w-0">
-          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">Change Password</h4>
+          <h4 className="font-semibold text-sm sm:text-base text-[var(--color-text)]">{t("title")}</h4>
           <p className="text-xs sm:text-sm text-[var(--color-muted)]">
-            Update your password to keep your account secure
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -61,21 +63,21 @@ export function PasswordSection() {
       <div className="space-y-3">
         <input
           type="password"
-          placeholder="Current Password"
+          placeholder={t("currentPassword")}
           className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
         <input
           type="password"
-          placeholder="New Password"
+          placeholder={t("newPassword")}
           className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
         <input
           type="password"
-          placeholder="Confirm New Password"
+          placeholder={t("confirmPassword")}
           className="w-full bg-[var(--color-bg-darker)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-xs sm:text-sm text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
@@ -90,7 +92,7 @@ export function PasswordSection() {
               : "bg-[var(--color-primary)] text-[var(--color-bg)] hover:bg-[var(--color-primary-dark)]"
           }`}
         >
-          {loading ? "Updating..." : "Update Password"}
+          {loading ? t("updating") : t("updatePassword")}
         </button>
 
         {message && (

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { Menu, X, User, Flame } from "lucide-react";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -11,11 +11,14 @@ import LogoutConfirm from "@/components/ui/logOutConfirm";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import GB from "country-flag-icons/react/3x2/GB";
 import PL from "country-flag-icons/react/3x2/PL";
+import { useLocale, useTranslations } from "next-intl";
+import { locales, type Locale } from "@/i18n/config";
 
 export default function Header() {
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,17 +27,15 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
 
-  const [language, setLanguage] = useState<"en" | "pl">("en");
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("language") as "en" | "pl" | null;
-    if (savedLang) setLanguage(savedLang);
-  }, []);
+  const locale = useLocale() as Locale;
+  const [isPending, startTransition] = useTransition();
 
   const toggleLanguage = () => {
-    const newLang = language === "en" ? "pl" : "en";
-    setLanguage(newLang);
-    localStorage.setItem("language", newLang);
+    const newLocale: Locale = locale === "en" ? "pl" : "en";
+    startTransition(() => {
+      document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+      window.location.reload();
+    });
   };
 
   const closeAllMenus = () => {
@@ -127,24 +128,31 @@ export default function Header() {
           {isAuthenticated ? (
             <>
               <Link href="/dashboard" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                Dashboard
+                {t("dashboard")}
               </Link>
               <Link href="/notes" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                Notes
+                {t("notes")}
+              </Link>
+              <Link href="/flashcards" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
+                {t("flashcards")}
+              </Link>
+              <Link href="/quizzes" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
+                {t("quizzes")}
               </Link>
               <Link href="/progress" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                Progress
+                {t("progress")}
               </Link>
               <ThemeToggle />
               <div className="flex items-center gap-3 mr-2">
 
                 <button
                   onClick={toggleLanguage}
-                  className="w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden"
-                  title="Change language"
+                  disabled={isPending}
+                  className={`w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
+                  title={t("changeLanguage")}
                 >
                   <div className="w-full h-full flex items-center justify-center scale-150">
-                    {language === "en" ? <GB /> : <PL />}
+                    {locale === "en" ? <GB /> : <PL />}
                   </div>
                 </button>
 
@@ -200,7 +208,7 @@ export default function Header() {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="flex flex-col p-2">
-                          {[{ href: "/profile", label: "Profile" }].map((item) => (
+                          {[{ href: "/profile", label: t("profile") }].map((item) => (
                             <GlowItem key={item.href}>
                               <Link
                                 href={item.href}
@@ -217,7 +225,7 @@ export default function Header() {
                               onClick={requestLogout}
                               className="w-full text-left px-3 py-2 text-red-400 rounded-lg transition"
                             >
-                              Logout
+                              {t("logout")}
                             </button>
                           </GlowItem>
                         </div>
@@ -230,13 +238,13 @@ export default function Header() {
           ) : (
             <>
               <Link href="/auth/login" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                Log in
+                {t("login")}
               </Link>
               <Link
                 href="/auth/register"
                 className="text-black bg-[var(--color-primary)] px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition"
               >
-                Get Started
+                {t("register")}
               </Link>
             </>
           )}
@@ -251,6 +259,107 @@ export default function Header() {
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </header>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-[var(--color-bg)] border-b border-[var(--color-border)] overflow-hidden"
+          >
+            <nav className="flex flex-col px-6 py-4 space-y-3">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("dashboard")}
+                  </Link>
+                  <Link
+                    href="/notes"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("notes")}
+                  </Link>
+                  <Link
+                    href="/flashcards"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("flashcards")}
+                  </Link>
+                  <Link
+                    href="/quizzes"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("quizzes")}
+                  </Link>
+                  <Link
+                    href="/progress"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("progress")}
+                  </Link>
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("profile")}
+                  </Link>
+                  <div className="flex items-center gap-4 py-2">
+                    <ThemeToggle />
+                    <button
+                      onClick={toggleLanguage}
+                      disabled={isPending}
+                      className={`w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
+                      title={t("changeLanguage")}
+                    >
+                      <div className="w-full h-full flex items-center justify-center scale-150">
+                        {locale === "en" ? <GB /> : <PL />}
+                      </div>
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      requestLogout();
+                    }}
+                    className="text-red-400 opacity-70 hover:opacity-100 transition py-2 text-left"
+                  >
+                    {t("logout")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setOpen(false)}
+                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                  >
+                    {t("login")}
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    onClick={() => setOpen(false)}
+                    className="text-black bg-[var(--color-primary)] px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition text-center"
+                  >
+                    {t("register")}
+                  </Link>
+                </>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {logoutRequested && (
         <Portal>
