@@ -1,16 +1,80 @@
-"use client";
+﻿"use client";
 
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/custom_button";
-import { FileText, Clipboard, Layers, BarChart3, Sparkles } from "lucide-react";
+import { FileText, Clipboard, Layers, BarChart3 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+
+interface DashboardStats {
+  notesCount: number;
+  quizzesCount: number;
+  currentStreak: number;
+  avgScore: number;
+}
+
+interface RecentNote {
+  id: string;
+  title: string;
+  subject: string;
+  updatedAt: string;
+}
+
+interface UpcomingReview {
+  subject: string;
+  count: number;
+  dueDate: string | null;
+}
+
+interface TodayActivity {
+  quiz_completed?: number;
+  flashcard_reviewed?: number;
+  note_created?: number;
+  [key: string]: number | undefined;
+}
 
 export default function DashboardPage() {
-  const user = useSession().data?.user?.name ?? "John";
+  const { data: session, status } = useSession();
+  const user = session?.user?.name ?? "John";
   const t = useTranslations("dashboard");
+
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
+    notesCount: 0,
+    quizzesCount: 0,
+    currentStreak: 0,
+    avgScore: 0,
+  });
+  const [recentNotes, setRecentNotes] = useState<RecentNote[]>([]);
+  const [upcomingReviews, setUpcomingReviews] = useState<UpcomingReview[]>([]);
+  const [todayActivity, setTodayActivity] = useState<TodayActivity>({});
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/stats")
+        .then((res) => res.json())
+        .then((data) => {
+          // Calculate average score from weekly scores
+          const weeklyScores = data.weeklyScores || [];
+          const avgScore = weeklyScores.length > 0
+            ? Math.round(weeklyScores.reduce((sum: number, w: { avgScore?: number; score?: number }) => sum + (w.avgScore ?? w.score ?? 0), 0) / weeklyScores.length)
+            : 0;
+
+          setDashboardStats({
+            notesCount: data.counts?.notes || 0,
+            quizzesCount: data.counts?.quizzes || 0,
+            currentStreak: data.currentStreak || 0,
+            avgScore: isNaN(avgScore) ? 0 : avgScore,
+          });
+
+          setRecentNotes(data.recentNotes || []);
+          setUpcomingReviews(data.upcomingReviews || []);
+          setTodayActivity(data.todayActivity || {});
+        })
+        .catch((err) => console.error("Failed to fetch dashboard stats:", err));
+    }
+  }, [status]);
 
   const quickActionsConfig = [
     { title: t("quickActions.createNote"), icon: <FileText className="w-5 h-5 text-[var(--color-primary)]" />, href: "/notes/new" },
@@ -20,29 +84,49 @@ export default function DashboardPage() {
   ];
 
   const stats = [
-    { title: t("stats.totalNotes"), value: "24", subtitle: `+3 ${t("stats.fromLastWeek")}` },
-    { title: t("stats.quizzesTaken"), value: "47", subtitle: `+12 ${t("stats.fromLastWeek")}` },
-    { title: t("stats.studyStreak"), value: `7 ${t("stats.days")}`, subtitle: t("stats.keepItUp") },
-    { title: t("stats.avgScore"), value: "87%", subtitle: `+5% ${t("stats.fromLastWeek")}` },
+    { title: t("stats.totalNotes"), value: String(dashboardStats.notesCount), subtitle: t("stats.total") },
+    { title: t("stats.quizzesTaken"), value: String(dashboardStats.quizzesCount), subtitle: t("stats.completed") },
+    { title: t("stats.studyStreak"), value: `${dashboardStats.currentStreak} ${t("stats.days")}`, subtitle: dashboardStats.currentStreak > 0 ? t("stats.keepItUp") : t("stats.startStreak") },
+    { title: t("stats.avgScore"), value: `${dashboardStats.avgScore}%`, subtitle: t("stats.overall") },
   ];
 
-  const recentNotes = [
-    { title: "Introduction to Machine Learning — A very long title to show wrapping behavior on mobile and ensure it breaks to multiple lines nicely", subject: "Computer Science — Advanced Topics and Subsections", time: "2 hours ago", progress: 85 },
-    { title: "World War II Timeline", subject: "History", time: "Yesterday", progress: 60 },
-    { title: "Organic Chemistry Basics", subject: "Chemistry", time: "2 days ago", progress: 45 },
-  ];
+  // Calculate today's goals based on actual activity
+  const todayQuizzes = todayActivity.quiz_completed || 0;
+  const todayFlashcards = todayActivity.flashcard_reviewed || 0;
+  const todayNotes = todayActivity.note_created || 0;
 
-  const aiSuggestions = [
-    { title: "Review Chemistry Notes", desc: "You haven’t reviewed these in 3 days" },
-    { title: "Practice ML Concepts", desc: "Your quiz score was 75%, try again!" },
-    { title: "Create History Flashcards", desc: "Generate cards from your WWII notes" },
-  ];
+  // Helper function to format relative time
+  const formatRelativeTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
 
-  const reviews = [
-    { subject: "Biology", count: 12, time: "in 2 hours" },
-    { subject: "Physics", count: 8, time: "Tomorrow" },
-    { subject: "Literature", count: 15, time: "in 2 days" },
-  ];
+    if (diffMins < 60) return t("time.minutesAgo", { count: diffMins });
+    if (diffHours < 24) return t("time.hoursAgo", { count: diffHours });
+    if (diffDays === 1) return t("time.yesterday");
+    return t("time.daysAgo", { count: diffDays });
+  };
+
+  // Helper function to format due time
+  const formatDueTime = (dateStr: string | null) => {
+    if (!dateStr) return t("time.anytime");
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = date.getTime() - now.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMs < 0) return t("time.overdue");
+    if (diffHours < 1) return t("time.soon");
+    if (diffHours < 24) return t("time.inHours", { count: diffHours });
+    if (diffDays === 1) return t("time.tomorrow");
+    return t("time.inDays", { count: diffDays });
+  };
+
+
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] font-sans">
@@ -113,9 +197,9 @@ export default function DashboardPage() {
 
               {/* Removed overflow */}
               <CardContent className="p-4 sm:p-3 space-y-4">
-                {recentNotes.map((n, i) => (
+                {recentNotes.length > 0 ? recentNotes.map((n, i) => (
                                     <article
-                    key={i}
+                    key={n.id}
                     className="bg-[var(--color-bg-light)] rounded-md p-4 sm:p-3 flex flex-col sm:flex-row gap-3 border border-[var(--color-border)]"
                   >
                     {/* Icon */}
@@ -131,31 +215,25 @@ export default function DashboardPage() {
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
                         <div className="min-w-0">
                           {/* Allow wrapping for long titles/subjects */}
-                          <h3 className="text-sm font-medium leading-snug break-words text-[var(--color-text)]">
+                          <a href={`/notes/${n.id}`} className="text-sm font-medium leading-snug break-words text-[var(--color-text)] hover:underline">
                             {n.title}
-                          </h3>
+                          </a>
                           <p className="text-[11px] text-[var(--color-muted)] mt-1 break-words">
                             {n.subject}
                           </p>
                         </div>
 
                         <div className="text-[11px] text-[var(--color-muted)] mt-2 sm:mt-0 sm:ml-3 whitespace-nowrap">
-                          {n.time}
-                        </div>
-                      </div>
-
-                      {/* progress row*/}
-                      <div className="mt-3 flex items-center gap-3">
-                        <div className="flex-1">
-                          <Progress value={n.progress} className="h-2 bg-[var(--color-progress-bg)]" />
-                        </div>
-                        <div className="text-[11px] text-[var(--color-text)] opacity-70 w-14 text-right font-medium">
-                          {n.progress}%
+                          {formatRelativeTime(n.updatedAt)}
                         </div>
                       </div>
                     </div>
                   </article>
-                ))}
+                )) : (
+                  <div className="text-center text-sm text-[var(--color-muted)] py-4">
+                    {t("recentNotes.noNotes")}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -169,34 +247,9 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="p-4 sm:p-3">
                 <div className="flex flex-col gap-4">
-                  <GoalItem label={t("todaysGoal.studyTime")} value={45} total={60} />
-                  <GoalItem label={t("todaysGoal.quizzes")} value={2} total={3} />
-                  <GoalItem label={t("todaysGoal.flashcards")} value={15} total={20} />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* AI Suggestions */}
-            <Card className="bg-[var(--color-accent-dark)] border-[var(--color-accent-border)] mt-4 md:mt-0">
-              <CardHeader className="p-4 sm:p-3 pb-2">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
-                  <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("aiSuggestions.title")}</CardTitle>
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-4 sm:p-3 pt-1">
-                <div className="flex flex-col gap-3">
-                  {aiSuggestions.map((s, i) => (
-                    <button
-                      key={i}
-                      className="w-full text-left bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg p-3 flex flex-col gap-1 transition hover:border-[var(--color-accent)] hover:shadow-lg hover:shadow-[var(--color-accent)]/20"
-                      aria-label={s.title}
-                    >
-                      <span className="text-sm font-medium text-[var(--color-text)] leading-tight">{s.title}</span>
-                      <span className="text-[11px] text-[var(--color-text)] opacity-70">{s.desc}</span>
-                    </button>
-                  ))}
+                  <GoalItem label={t("todaysGoal.notes")} value={todayNotes} total={3} />
+                  <GoalItem label={t("todaysGoal.quizzes")} value={todayQuizzes} total={3} />
+                  <GoalItem label={t("todaysGoal.flashcards")} value={todayFlashcards} total={20} />
                 </div>
               </CardContent>
             </Card>
@@ -209,7 +262,7 @@ export default function DashboardPage() {
 
               <CardContent className="p-4 sm:p-3">
                 <div className="flex flex-col gap-4 sm:gap-3">
-                  {reviews.map((r, i) => (
+                  {upcomingReviews.length > 0 ? upcomingReviews.map((r, i) => (
                     <div
                       key={i}
                       className="bg-[var(--color-bg-light)] rounded-xl p-4 sm:p-3 flex items-center justify-between border border-[var(--color-border)]"
@@ -222,9 +275,13 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      <div className="text-[11px] text-[var(--color-muted)]">{r.time}</div>
+                      <div className="text-[11px] text-[var(--color-muted)]">{formatDueTime(r.dueDate)}</div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center text-sm text-[var(--color-muted)] py-4">
+                      {t("upcomingReviews.noReviews")}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -88,10 +88,18 @@ model Flashcard {
   id         String    @id @default(cuid())
   front      String
   back       String
+  frontImage String?
+  backImage  String?
   noteId     String?
   userId     String
+  setId      String?   // Groups standalone flashcards into sets
+  setTitle   String?   // Title for standalone sets (when no noteId)
+  setDescription String? // Description for standalone sets
+  isPrivate  Boolean   @default(true)
   nextReview DateTime?
   easeFactor Float?
+  timesReviewed Int     @default(0)
+  lastReviewedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   note       Note?     @relation(fields: [noteId], references: [id])

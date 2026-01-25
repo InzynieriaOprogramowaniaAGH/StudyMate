@@ -23,6 +23,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutRequested, setLogoutRequested] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
   const avatarRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
@@ -47,6 +48,25 @@ export default function Header() {
   useEffect(() => {
     closeAllMenus();
   }, [pathname]);
+
+  // Fetch current streak from stats API
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchStreak = async () => {
+        try {
+          const response = await fetch("/api/stats");
+          if (response.ok) {
+            const data = await response.json();
+            setCurrentStreak(data.currentStreak || 0);
+          }
+        } catch (error) {
+          console.error("Failed to fetch streak:", error);
+        }
+      };
+
+      fetchStreak();
+    }
+  }, [isAuthenticated]);
 
   const openMenuAtAvatar = () => {
     const btn = avatarRef.current;
@@ -157,7 +177,7 @@ export default function Header() {
                 </button>
 
                 <div className="flex items-center justify-center w-10 h-10 bg-[var(--color-bg)] rounded-full text-[var(--color-text)] text-base">
-                  <Flame className="w-8 h-8 text-[var(--color-primary)]" /> 3
+                  <Flame className="w-8 h-8 text-[var(--color-primary)]" /> {currentStreak}
 
                 </div>
               </div>

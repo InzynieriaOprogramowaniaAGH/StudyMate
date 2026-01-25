@@ -298,7 +298,11 @@
       "avgScore": "Śr. wynik",
       "days": "dni",
       "fromLastWeek": "od zeszłego tygodnia",
-      "keepItUp": "Tak trzymaj!"
+      "keepItUp": "Tak trzymaj!",
+      "total": "Łącznie",
+      "completed": "Ukończone",
+      "overall": "Ogólnie",
+      "startStreak": "Zacznij swoją serię!"
     },
     "quickActions": {
       "title": "Szybkie akcje",
@@ -311,11 +315,13 @@
     "recentNotes": {
       "title": "Ostatnie notatki",
       "subtitle": "Twoje najnowsze materiały do nauki",
-      "viewAll": "Zobacz wszystko"
+      "viewAll": "Zobacz wszystko",
+      "noNotes": "Brak notatek. Utwórz swoją pierwszą notatkę!"
     },
     "todaysGoal": {
       "title": "Cel na dziś",
       "studyTime": "Czas nauki",
+      "notes": "Utworzone notatki",
       "quizzes": "Quizy",
       "flashcards": "Fiszki"
     },
@@ -324,12 +330,17 @@
     },
     "upcomingReviews": {
       "title": "Nadchodzące powtórki",
-      "cards": "kart"
+      "cards": "kart",
+      "noReviews": "Brak nadchodzących powtórek"
     },
     "time": {
-      "hoursAgo": "godzin temu",
+      "minutesAgo": "{count} min temu",
+      "hoursAgo": "{count} godzin temu",
       "yesterday": "Wczoraj",
-      "daysAgo": "dni temu",
+      "daysAgo": "{count} dni temu",
+      "anytime": "W dowolnym momencie",
+      "overdue": "Zaległe",
+      "soon": "Wkrótce",
       "inHours": "za {count} godzin",
       "tomorrow": "Jutro",
       "inDays": "za {count} dni"
@@ -489,7 +500,8 @@
       "uploadImage": "Prześlij obraz",
       "changeImage": "Zmień obraz",
       "textMode": "Tekst",
-      "imageMode": "Obraz"
+      "imageMode": "Obraz",
+      "selectCorrect": "Zaznacz przycisk obok poprawnej odpowiedzi"
     },
     "loading": "Ładowanie...",
     "questions": "pytań",
@@ -499,6 +511,15 @@
     "startQuiz": "Rozpocznij quiz",
     "retake": "Powtórz",
     "noQuizzesFound": "Nie znaleziono quizów",
+    "edit": {
+      "title": "Edytuj quiz",
+      "subtitle": "Zaktualizuj pytania i ustawienia quizu",
+      "edit": "Edytuj",
+      "delete": "Usuń",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "cancel": "Anuluj"
+    },
     "questionPage": {
       "question": "Pytanie",
       "correct": "Poprawnie!",
@@ -564,9 +585,52 @@
     }
   },
   "flashcards": {
-    "title": "Fiszki do nauki",
+    "title": "Ucz się fiszek!",
     "subtitle": "Przeglądaj i opanuj swoje zestawy fiszek",
     "searchPlaceholder": "Szukaj zestawów fiszek...",
+    "createNew": "Utwórz fiszki",
+    "loading": "Ładowanie fiszek...",
+    "reviewed": "Przejrzane",
+    "today": "Dzisiaj",
+    "yesterday": "Wczoraj",
+    "daysAgo": "dni temu",
+    "weeksAgo": "tygodni temu",
+    "monthsAgo": "miesięcy temu",
+    "neverReviewed": "Nigdy",
+    "createFromNotes": "Utwórz fiszki z notatek",
+    "creation": {
+      "title": "Utwórz fiszki",
+      "subtitle": "Utwórz nowy zestaw fiszek do nauki",
+      "back": "Powrót do fiszek",
+      "setInfo": "Informacje o zestawie",
+      "setTitle": "Tytuł zestawu",
+      "titlePlaceholder": "np. Biologia rozdział 5",
+      "description": "Opis (opcjonalnie)",
+      "descriptionPlaceholder": "O czym są te fiszki?",
+      "privacy": "Widoczność",
+      "cardsHeading": "Fiszki",
+      "cardLabel": "Karta",
+      "front": "Przód (Pytanie)",
+      "frontPlaceholder": "Wpisz pytanie lub termin",
+      "backLabel": "Tył (Odpowiedź)",
+      "backPlaceholder": "Wpisz odpowiedź lub definicję",
+      "addCard": "Dodaj kartę",
+      "createSet": "Utwórz zestaw fiszek",
+      "creating": "Tworzenie...",
+      "textMode": "Tekst",
+      "imageMode": "Obrazek",
+      "uploadImage": "Prześlij obrazek",
+      "changeImage": "Zmień obrazek"
+    },
+    "privacy": {
+      "private": "Prywatne",
+      "public": "Publiczne"
+    },
+    "validation": {
+      "titleRequired": "Tytuł jest wymagany",
+      "frontRequired": "Wszystkie karty muszą mieć tekst lub obrazek z przodu",
+      "backRequired": "Wszystkie karty muszą mieć tekst lub obrazek z tyłu"
+    },
     "stats": {
       "flashcardSets": "Zestawy fiszek",
       "cardsReviewed": "Przejrzane karty",
@@ -581,10 +645,24 @@
     "cards": "Karty",
     "lastReviewed": "Ostatnio przeglądane",
     "study": "Ucz się",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "confirmDelete": "Czy na pewno chcesz usunąć ten zestaw fiszek?",
+    "save": "Zapisz zmiany",
+    "saving": "Zapisywanie...",
+    "cancel": "Anuluj",
     "noSetsFound": "Nie znaleziono zestawów fiszek",
     "adjustFilters": "Spróbuj dostosować filtry lub zapytanie",
+    "edit": {
+      "title": "Edytuj fiszki",
+      "subtitle": "Zaktualizuj swój zestaw fiszek",
+      "edit": "Edytuj",
+      "delete": "Usuń"
+    },
     "studyPage": {
+      "loading": "Ładowanie...",
       "backToFlashcards": "Powrót do fiszek",
+      "backToNote": "Powrót do notatki",
       "card": "Karta",
       "question": "Pytanie",
       "answer": "Odpowiedź",
@@ -593,6 +671,9 @@
       "cardsKnown": "Znane karty",
       "needStudy": "Do nauki",
       "successRate": "Skuteczność",
+      "known": "Znane",
+      "review": "Do powtórki",
+      "remaining": "Pozostałe",
       "previous": "Poprzednia",
       "restart": "Od nowa",
       "next": "Następna",
@@ -604,6 +685,14 @@
       "cardsMastered": "{known} kart opanowanych z {total}",
       "continue": "Kontynuuj",
       "tryAgain": "Spróbuj ponownie",
+      "viewNotes": "Przeglądaj Notatki",
+      "dashboard": "Dashboard",
+      "known": "Opanowane",
+      "needsReview": "Do powtórki",
+      "time": "Czas",
+      "performanceAnalysis": "Analiza wyników",
+      "detailedAnalysis": "Szczegółowa analiza Twojej sesji fiszek",
+      "mastery": "Opanowanie",
       "studyBreakdown": {
         "title": "Podsumowanie nauki",
         "cardsMastered": "Opanowane karty",
@@ -634,6 +723,7 @@
       "notesCreated": "Utworzone notatki",
       "quizzesCompleted": "Ukończone quizy",
       "flashcardsReviewed": "Przejrzane fiszki",
+      "currentStreak": "Aktualna seria",
       "longestStreak": "Najdłuższa seria"
     },
     "charts": {

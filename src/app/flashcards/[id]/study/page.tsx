@@ -2,15 +2,17 @@
 
 import Header from "@/components/layout/Header";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Volume2, RotateCcw, Check, BookOpen, CheckCircle2, Layers, AlertCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ChevronLeft, Volume2, RotateCcw, Check, BookOpen, AlertCircle, Loader2 } from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 interface Flashcard {
   id: string;
   front: string;
   back: string;
+  frontImage?: string | null;
+  backImage?: string | null;
   createdAt: string;
 }
 
@@ -18,125 +20,226 @@ interface FlashcardSetStudy {
   id: string;
   title: string;
   noteTitle: string;
-  difficulty: "Easy" | "Medium" | "Hard";
   cards: Flashcard[];
+  cardCount: number;
 }
-
-const MOCK_FLASHCARD_SET: FlashcardSetStudy = {
-  id: "1",
-  title: "Biology Basics",
-  noteTitle: "Introduction to Biology",
-  difficulty: "Easy",
-  cards: [
-    {
-      id: "c1",
-      front: "What is the basic unit of life?",
-      back: "The cell is the basic unit of life. All living organisms are composed of one or more cells.",
-      createdAt: "2024-01-15",
-    },
-    {
-      id: "c2",
-      front: "Define photosynthesis",
-      back: "Photosynthesis is the process by which plants and other organisms convert light energy into chemical energy stored in glucose.",
-      createdAt: "2024-01-15",
-    },
-    {
-      id: "c3",
-      front: "What are mitochondria?",
-      back: "mitochondria to fabryka energii komorkowej, która produkuje ATP poprzez oddychanie komórkowe.",
-      createdAt: "2024-01-16",
-    },
-    {
-      id: "c4",
-      front: "Explain DNA",
-      back: "DNA (deoxyribonucleic acid) is a molecule that carries genetic instructions for life. It contains four bases: adenine, thymine, guanine, and cytosine.",
-      createdAt: "2024-01-16",
-    },
-    {
-      id: "c5",
-      front: "What is homeostasis?",
-      back: "Homeostasis is the process by which organisms maintain a stable internal environment despite external changes.",
-      createdAt: "2024-01-17",
-    },
-  ],
-};
 
 export default function FlashcardStudyPage() {
   const router = useRouter();
+  const params = useParams();
+  const setId = params.id as string;
   const t = useTranslations("flashcards.studyPage");
-  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const [flashcardSet, setFlashcardSet] = useState<FlashcardSetStudy | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [knowCards, setKnowCards] = useState<string[]>([]);
-  const [studyCards, setStudyCards] = useState<string[]>([]);
+  
+  // Study queue - cards that still need to be reviewed
+  const [studyQueue, setStudyQueue] = useState<Flashcard[]>([]);
+  // Cards marked as known
+  const [knownCards, setKnownCards] = useState<Set<string>>(new Set());
+  // Cards marked for review (will be reshuffled)
+  const [reviewCards, setReviewCards] = useState<Set<string>>(new Set());
+  // Total cards in set (for stats)
+  const [totalCards, setTotalCards] = useState(0);
+  // Timer for tracking study time
+  const [timeElapsed, setTimeElapsed] = useState(0);
 
-  const currentCard = MOCK_FLASHCARD_SET.cards[currentIndex];
-  const progress = ((currentIndex + 1) / MOCK_FLASHCARD_SET.cards.length) * 100;
+  // Timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeElapsed((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-  const handleNext = () => {
-    if (currentIndex < MOCK_FLASHCARD_SET.cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setIsFlipped(false);
-    } else {
-      // Study complete
-      handleStudyComplete();
+  useEffect(() => {
+    const fetchFlashcardSet = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/flashcards/${setId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch flashcard set");
+        }
+        const data = await response.json();
+        setFlashcardSet(data);
+        setStudyQueue([...data.cards]);
+        setTotalCards(data.cards.length);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (setId) {
+      fetchFlashcardSet();
     }
-  };
+  }, [setId]);
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setIsFlipped(false);
-    }
-  };
+  // Save reviewed cards when study is complete
+  useEffect(() => {
+    const saveReviewedCards = async () => {
+      if (studyQueue.length === 0 && knownCards.size > 0 && flashcardSet) {
+        // Save known cards as reviewed
+        const knownCardIds = Array.from(knownCards);
+        const reviewCardIds = Array.from(reviewCards);
+        
+        try {
+          // Save known cards with 'known' flag
+          if (knownCardIds.length > 0) {
+            await fetch("/api/flashcards/review", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ cardIds: knownCardIds, known: true }),
+            });
+          }
+          
+          // Save review cards (studied but not known)
+          if (reviewCardIds.length > 0) {
+            await fetch("/api/flashcards/review", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ cardIds: reviewCardIds, known: false }),
+            });
+          }
+        } catch (error) {
+          console.error("Failed to save review progress:", error);
+        }
+        
+        router.push(`/flashcards/${flashcardSet.id}/results?known=${knownCards.size}&studied=${reviewCards.size}&time=${timeElapsed}`);
+      }
+    };
+    
+    saveReviewedCards();
+  }, [studyQueue.length, knownCards.size, reviewCards.size, flashcardSet, router, knownCards, reviewCards, timeElapsed]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
+            <p className="text-[var(--color-muted)]">{t("loading") || "Loading..."}</p>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  // Error state
+  if (error || !flashcardSet) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-[var(--color-error)] mx-auto mb-4" />
+            <p className="text-[var(--color-error)]">{error || "Flashcard set not found"}</p>
+            <button
+              onClick={() => router.push("/flashcards")}
+              className="mt-4 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg"
+            >
+              {t("backToFlashcards")}
+            </button>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (studyQueue.length === 0 && knownCards.size > 0) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
+            <p className="text-[var(--color-muted)]">Completing...</p>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  // Current card is the first card in the queue
+  const currentCard = studyQueue.length > 0 ? studyQueue[0] : null;
+  const progress = ((knownCards.size) / totalCards) * 100;
 
   const handleKnow = () => {
-    if (!knowCards.includes(currentCard.id)) {
-      setKnowCards([...knowCards, currentCard.id]);
-    }
-    handleNext();
+    if (!currentCard) return;
+    
+    // Add to known cards
+    const newKnown = new Set(knownCards);
+    newKnown.add(currentCard.id);
+    setKnownCards(newKnown);
+    
+    // Remove from review if it was there
+    const newReview = new Set(reviewCards);
+    newReview.delete(currentCard.id);
+    setReviewCards(newReview);
+    
+    // Remove from queue
+    const newQueue = studyQueue.slice(1);
+    setStudyQueue(newQueue);
+    setIsFlipped(false);
   };
 
   const handleNeedStudy = () => {
-    if (!studyCards.includes(currentCard.id)) {
-      setStudyCards([...studyCards, currentCard.id]);
-    }
-    handleNext();
-  };
-
-  const handleStudyComplete = () => {
-    // Navigate to results page
-    router.push(`/flashcards/${MOCK_FLASHCARD_SET.id}/results?known=${knowCards.length}&studied=${studyCards.length}`);
+    if (!currentCard) return;
+    
+    // Add to review cards
+    const newReview = new Set(reviewCards);
+    newReview.add(currentCard.id);
+    setReviewCards(newReview);
+    
+    // Move card to end of queue
+    const newQueue = [...studyQueue.slice(1), currentCard];
+    setStudyQueue(newQueue);
+    setIsFlipped(false);
   };
 
   const handleRestart = () => {
-    setCurrentIndex(0);
+    setStudyQueue([...flashcardSet.cards]);
+    setKnownCards(new Set());
+    setReviewCards(new Set());
     setIsFlipped(false);
-    setKnowCards([]);
-    setStudyCards([]);
   };
 
   const handleSpeak = () => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(
-        isFlipped ? currentCard.back : currentCard.front
-      );
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
+    if ("speechSynthesis" in window && currentCard) {
+      // Only speak text content, not images
+      const textToSpeak = isFlipped ? currentCard.back : currentCard.front;
+      if (textToSpeak) {
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      }
     }
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy":
-        return "bg-[var(--color-success-10)] text-[var(--color-success)] border-[var(--color-success)]/30";
-      case "Medium":
-        return "bg-[var(--color-warning-10)] text-[var(--color-warning)] border-[var(--color-warning)]/30";
-      case "Hard":
-        return "bg-[var(--color-error-10)] text-[var(--color-error)] border-[var(--color-error)]/30";
-      default:
-        return "bg-[var(--color-muted)]/10 text-[var(--color-muted)] border-[var(--color-muted)]/30";
-    }
-  };
+  // Handle case where queue is empty but we have no known cards
+  if (!currentCard) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-[var(--color-muted)]">No cards to study</p>
+            <button
+              onClick={() => router.push("/flashcards")}
+              className="mt-4 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg"
+            >
+              {t("backToFlashcards")}
+            </button>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -163,25 +266,24 @@ export default function FlashcardStudyPage() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-3xl font-bold text-[var(--color-text)] mb-1">
-                  {MOCK_FLASHCARD_SET.title}
+                  {flashcardSet.title}
                 </h1>
                 <p className="text-sm text-[var(--color-muted)]">
-                  {MOCK_FLASHCARD_SET.noteTitle}
+                  {flashcardSet.noteTitle}
                 </p>
               </div>
               <span className="text-sm text-[var(--color-muted)]">
-                {t("card")}
+                {t("known") || "Known"}
                 <br />
                 <span className="text-xl font-bold text-[var(--color-text)]">
-                  {currentIndex + 1} / {MOCK_FLASHCARD_SET.cards.length}
+                  {knownCards.size} / {totalCards}
                 </span>
               </span>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full h-1 bg-[var(--color-bg-light)] rounded-full overflow-hidden">
+            {/* Progress Bar - shows how many cards are known */}
+            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
               <motion.div
-                initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
                 className="h-full bg-[var(--color-primary)] rounded-full"
@@ -198,7 +300,7 @@ export default function FlashcardStudyPage() {
           >
             <motion.div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="flex-1 relative cursor-pointer min-h-[400px] bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-8 flex items-center justify-center"
+              className="flex-1 relative cursor-pointer min-h-[400px] bg-slate-900/50 border border-slate-800 rounded-xl p-8 flex items-center justify-center"
               style={{
                 perspective: "1000px",
               }}
@@ -220,19 +322,25 @@ export default function FlashcardStudyPage() {
                   style={{
                     backfaceVisibility: "hidden",
                   }}
-                  className="w-full h-full flex items-center justify-center text-center"
+                  className="w-full h-full flex flex-col items-center justify-center text-center"
                 >
-                  <div>
-                    <p className="text-xs text-[var(--color-muted)] mb-4 uppercase tracking-wider font-medium">
-                      {t("question")}
-                    </p>
+                  <p className="text-xs text-[var(--color-muted)] mb-2 uppercase tracking-wider font-medium">
+                    {t("question")}
+                  </p>
+                  {currentCard.frontImage ? (
+                    <img
+                      src={currentCard.frontImage}
+                      alt="Front"
+                      className="max-h-80 max-w-full object-cover rounded-lg"
+                    />
+                  ) : (
                     <p className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] leading-relaxed">
                       {currentCard.front}
                     </p>
-                    <p className="text-xs text-[var(--color-muted)] mt-8">
-                      {t("clickToReveal")}
-                    </p>
-                  </div>
+                  )}
+                  <p className="text-xs text-[var(--color-muted)] mt-8">
+                    {t("clickToReveal")}
+                  </p>
                 </motion.div>
 
                 {/* Back of Card */}
@@ -241,57 +349,50 @@ export default function FlashcardStudyPage() {
                     backfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
                   }}
-                  className="w-full h-full flex items-center justify-center text-center absolute inset-0"
+                  className="w-full h-full flex flex-col items-center justify-center text-center absolute inset-0"
                 >
-                  <div>
-                    <p className="text-xs text-[var(--color-primary)] mb-4 uppercase tracking-wider font-medium">
-                      {t("answer")}
-                    </p>
+                  <p className="text-xs text-[var(--color-primary)] mb-2 uppercase tracking-wider font-medium">
+                    {t("answer")}
+                  </p>
+                  {currentCard.backImage ? (
+                    <img
+                      src={currentCard.backImage}
+                      alt="Back"
+                      className="max-h-80 max-w-full object-cover rounded-lg"
+                    />
+                  ) : (
                     <p className="text-xl sm:text-2xl font-medium text-[var(--color-text)] leading-relaxed">
                       {currentCard.back}
                     </p>
-                  </div>
+                  )}
                 </motion.div>
               </motion.div>
             </motion.div>
 
-            {/* Audio Button */}
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={handleSpeak}
-                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
-              >
-                <Volume2 className="w-4 h-4" />
-                {t("listen")}
-              </button>
-            </div>
+            {/* Audio Button - only show if there's text content */}
+            {(currentCard.front || currentCard.back) && !currentCard.frontImage && !currentCard.backImage && (
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={handleSpeak}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  {t("listen")}
+                </button>
+              </div>
+            )}
           </motion.div>
 
-          {/* Navigation Dots */}
+          {/* Cards remaining indicator */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex justify-center gap-2 mb-4"
+            className="flex justify-center mb-6"
           >
-            {MOCK_FLASHCARD_SET.cards.map((_, idx) => (
-              <motion.button
-                key={idx}
-                onClick={() => {
-                  setCurrentIndex(idx);
-                  setIsFlipped(false);
-                }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className={`w-8 h-8 rounded-full font-medium text-xs transition-colors ${
-                  idx === currentIndex
-                    ? "bg-[var(--color-primary)] text-white"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-primary)]"
-                }`}
-              >
-                {idx + 1}
-              </motion.button>
-            ))}
+            <p className="text-sm text-[var(--color-muted)]">
+              {studyQueue.length} {studyQueue.length === 1 ? "card" : "cards"} remaining in this round
+            </p>
           </motion.div>
 
           {/* Stats Cards */}
@@ -299,30 +400,24 @@ export default function FlashcardStudyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"
+            className="grid grid-cols-3 gap-4 mb-6"
           >
             {[
-              { label: t("cardsKnown"), value: knowCards.length, icon: CheckCircle2, color: "text-[var(--color-success)]" },
-              { label: t("needStudy"), value: studyCards.length, icon: Layers, color: "text-[var(--color-warning)]" },
-              { label: t("successRate"), value: `${Math.round((knowCards.length / (knowCards.length + studyCards.length)) * 100) || 0}%`, icon: AlertCircle, color: "text-[var(--color-warning)]" },
-            ].map((stat, idx) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 + idx * 0.05 }}
-                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-4 text-center"
-                >
-                  <div className="rounded-full w-8 h-8 flex items-center justify-center bg-[var(--color-primary)]/10 mx-auto mb-2">
-                    <Icon className="w-4 h-4 text-[var(--color-primary)]" />
-                  </div>
-                  <p className="text-xs text-[var(--color-muted)] mb-1">{stat.label}</p>
-                  <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-                </motion.div>
-              );
-            })}
+              { label: t("known") || "Known", value: knownCards.size, color: "text-[var(--color-primary)]" },
+              { label: t("review") || "Review", value: reviewCards.size, color: "text-[var(--color-error)]" },
+              { label: t("remaining") || "Remaining", value: studyQueue.length, color: "text-[var(--color-text)]" },
+            ].map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + idx * 0.05 }}
+                className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center"
+              >
+                <p className={`text-2xl font-bold ${stat.color} mb-1`}>{stat.value}</p>
+                <p className="text-xs text-[var(--color-muted)]">{stat.label}</p>
+              </motion.div>
+            ))}
           </motion.div>
 
           {/* Action Buttons */}
@@ -330,34 +425,15 @@ export default function FlashcardStudyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-3 mb-4"
+            className="flex justify-center mb-4"
           >
-            {/* Previous Button */}
-            <button
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              {t("previous")}
-            </button>
-
             {/* Restart Button */}
             <button
               onClick={handleRestart}
-              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-slate-700 text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               {t("restart")}
-            </button>
-
-            {/* Next Button */}
-            <button
-              onClick={handleNext}
-              className="flex items-center justify-center gap-2 px-4 py-2 sm:flex-1 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
-            >
-              {t("next")}
-              <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>
 
@@ -370,14 +446,14 @@ export default function FlashcardStudyPage() {
           >
             <button
               onClick={handleKnow}
-              className="w-full px-6 py-3 bg-[var(--color-success-10)] border border-[var(--color-success)]/30 text-[var(--color-success)] font-medium rounded-lg hover:bg-[var(--color-success-20)] transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-[var(--color-success-10)] text-[var(--color-success)] font-medium rounded-lg hover:bg-[var(--color-success-20)] transition-colors flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               {t("iKnowThis")}
             </button>
             <button
               onClick={handleNeedStudy}
-              className="w-full px-6 py-3 bg-[var(--color-warning-10)] border border-[var(--color-warning)]/30 text-[var(--color-warning)] font-medium rounded-lg hover:bg-[var(--color-warning-20)] transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-[var(--color-warning-10)] text-[var(--color-warning)] font-medium rounded-lg hover:bg-[var(--color-warning-20)] transition-colors flex items-center justify-center gap-2"
             >
               <BookOpen className="w-4 h-4" />
               {t("needMoreStudy")}

@@ -3,7 +3,7 @@
 import Header from "@/components/layout/Header";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { ArrowLeft, Clock, Trash2 } from "lucide-react";
+import { ArrowLeft, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -44,28 +44,6 @@ export default function QuizPage() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDeleteQuiz = async () => {
-    setIsDeleting(true);
-    try {
-      const response = await fetch(`/api/quizzes/${quizId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete quiz");
-      }
-
-      router.push("/quizzes");
-    } catch (err) {
-      console.error("Error deleting quiz:", err);
-      setError("Failed to delete quiz");
-      setIsDeleting(false);
-      setShowDeleteConfirm(false);
-    }
-  };
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -197,14 +175,10 @@ export default function QuizPage() {
     }
   };
 
-  const correctAnswerNum = parseInt(question.correctAnswer, 10);
-  const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
-
   // Helper function to get option text and image
-  const getOptionData = (option: any) => {
+  const getOptionData = (option: any): { text: string; image?: string } => {
     // If it's an object with text and image properties, return it directly
     if (typeof option === 'object' && option !== null && typeof option.text !== 'undefined') {
-      console.log("Option is object with text:", option);
       return { text: option.text || '', image: option.image };
     }
     
@@ -214,21 +188,37 @@ export default function QuizPage() {
         const parsed = JSON.parse(option);
         // Only treat as JSON object if it has a text property
         if (typeof parsed === 'object' && parsed !== null && 'text' in parsed) {
-          console.log("Parsed option JSON:", parsed);
           return { text: parsed.text || '', image: parsed.image };
         }
         // If parsed but not a text object, treat original string as plain text
-        console.log("Parsed JSON but not text object, treating as plain string:", option);
         return { text: option, image: undefined };
       } catch {
-        console.log("Option is plain string:", option);
+        // JSON parse failed, treat as plain text
         return { text: option, image: undefined };
       }
     }
     
-    console.log("Option is unrecognized type:", option);
     return { text: '', image: undefined };
   };
+
+  // Helper function to resolve correctAnswer to index
+  // Handles both index strings ("0", "1") and actual answer text
+  const getCorrectAnswerIndex = (q: QuizQuestion): number => {
+    const parsed = parseInt(q.correctAnswer, 10);
+    // If it's a valid number and within range, use it
+    if (!isNaN(parsed) && parsed >= 0 && parsed < q.options.length) {
+      return parsed;
+    }
+    // Otherwise, try to find the option that matches the correctAnswer text
+    const index = q.options.findIndex((opt) => {
+      const optText = getOptionData(opt).text;
+      return optText === q.correctAnswer;
+    });
+    return index >= 0 ? index : 0; // Default to 0 if not found
+  };
+
+  const correctAnswerNum = getCorrectAnswerIndex(question);
+  const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
 
   return (
     <>
@@ -244,58 +234,7 @@ export default function QuizPage() {
               <ArrowLeft className="w-4 h-4" />
               {t("tabs.allQuizzes")}
             </Link>
-            
-            {/* Delete Button - Only show for quiz creator */}
-            {quiz && session?.user?.email && quiz.user?.email === session.user.email && (
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition border border-red-500/30 hover:border-red-500/50"
-              >
-                <Trash2 className="w-4 h-4" />
-                {t("questionPage.delete")}
-              </button>
-            )}
           </div>
-
-          {/* Delete Confirmation Modal */}
-          {showDeleteConfirm && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-              onClick={() => setShowDeleteConfirm(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 max-w-sm"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-lg font-semibold text-[var(--color-text)] mb-2">
-                  {t("questionPage.deleteConfirm")}
-                </h3>
-                <p className="text-[var(--color-muted)] mb-6">
-                  {t("questionPage.deleteMessage")}
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="flex-1 px-4 py-2 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] hover:bg-[var(--color-bg)]/80 transition"
-                  >
-                    {t("questionPage.cancel")}
-                  </button>
-                  <button
-                    onClick={handleDeleteQuiz}
-                    disabled={isDeleting}
-                    className="flex-1 px-4 py-2 bg-red-500/20 border border-red-500/50 text-red-400 hover:bg-red-500/30 disabled:opacity-50 rounded-lg transition"
-                  >
-                    {isDeleting ? t("questionPage.deleting") : t("questionPage.delete")}
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
 
           {/* Quiz Header */}
           <motion.div
@@ -324,7 +263,7 @@ export default function QuizPage() {
               </div>
             </div>
             {/* Progress Bar */}
-            <div className="mt-4 h-2 bg-[var(--color-border)] rounded-full overflow-hidden">
+            <div className="mt-4 h-2 bg-slate-800 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${((currentQuestion + 1) / quiz.totalQuestions) * 100}%` }}
@@ -339,7 +278,7 @@ export default function QuizPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 mb-8"
+            className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8"
           >
             {/* Question Image */}
             {question.questionImage && (
@@ -368,14 +307,14 @@ export default function QuizPage() {
                     whileHover={!isAnswered ? { scale: 1.02 } : {}}
                     onClick={() => handleAnswerSelect(index)}
                     disabled={isAnswered}
-                    className={`w-full p-4 text-left rounded-lg border-2 transition ${
+                    className={`w-full p-4 text-left rounded-xl border-2 transition ${
                       showCorrect
                         ? "bg-[var(--color-success)]/20 border-[var(--color-success)] text-[var(--color-success)]"
                         : showIncorrect
                           ? "bg-[var(--color-error)]/20 border-[var(--color-error)] text-[var(--color-error)]"
                           : isSelected
                             ? "bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-primary)]"
-                            : "bg-[var(--color-bg)] border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                            : "bg-slate-900/50 border-slate-800 text-[var(--color-text)] hover:border-[var(--color-primary)]"
                     } ${isAnswered ? "cursor-default" : "cursor-pointer"}`}
                   >
                     <div className="space-y-2">
@@ -443,7 +382,7 @@ export default function QuizPage() {
                     setShowFeedback(false);
                     setIsAnswered(false);
                   }}
-                  className="px-6 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-border)] transition font-medium"
+                  className="px-6 py-2 bg-slate-800 border border-slate-700 text-[var(--color-text)] rounded-lg hover:bg-slate-700 transition font-medium"
                 >
                   {t("questionPage.previous")}
                 </button>

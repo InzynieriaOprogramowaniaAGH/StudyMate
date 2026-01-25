@@ -16,6 +16,7 @@ import {
   Globe,
   Plus,
   Trash2,
+  Edit2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -407,13 +408,22 @@ export default function QuizzesPage() {
                         
                         {/* Delete button - only for creator */}
                         {session?.user?.email && quiz.user?.email === session.user.email && (
-                          <button
-                            onClick={() => setDeleteConfirmQuizId(quiz.id)}
-                            className="px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            {t("questionPage.delete")}
-                          </button>
+                          <>
+                            <button
+                              onClick={() => router.push(`/quizzes/${quiz.id}/edit`)}
+                              className="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                              {t("edit.edit")}
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirmQuizId(quiz.id)}
+                              className="px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              {t("edit.delete")}
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
