@@ -209,6 +209,31 @@
         "tip4": "Dodawaj przykłady i przypadki użycia dla lepszego zrozumienia",
         "tip5": "Regularnie przeglądaj i aktualizuj notatki"
       },
+      "tab": {
+        "manual": "Samodzielnie",
+        "ai": "Z pomocą AI"
+      },
+      "ai": {
+        "title": "Generowanie notatki przez AI",
+        "description": "Wklej tekst z wykładu, prześlij PDF lub zdjęcie zeszytu, a AI automatycznie wygeneruje zwięzłą notatkę z najważniejszymi punktami.",
+        "text": "Tekst",
+        "file": "Plik / Zdjęcie",
+        "textPlaceholder": "Wklej tutaj tekst z wykładu, książki, slajdów lub dowolne notatki, które chcesz przetworzyć...",
+        "uploadHint": "Przeciągnij i upuść plik PDF lub zdjęcie, lub kliknij, aby wybrać",
+        "selectedFiles": "Wybrane pliki",
+        "remove": "Usuń",
+        "clear": "Wyczyść listę",
+        "noneSelected": "Brak wybranych plików",
+        "generateBtn": "Wygeneruj notatkę",
+        "generating": "Generowanie...",
+        "inputRequired": "Wklej tekst lub prześlij plik, aby wygenerować notatkę",
+        "failed": "Nie udało się wygenerować notatki. Spróbuj ponownie.",
+        "success": "Notatka została wygenerowana!",
+        "info": "AI automatycznie rozpozna temat i typ zajęć, a następnie wypisze najważniejsze informacje w zwięzłej formie.",
+        "preview": "Podgląd wygenerowanej notatki",
+        "saveDirectly": "Zapisz bezpośrednio",
+        "editFirst": "Edytuj przed zapisem"
+      },
       "visibility": "Widoczność",
       "private": "Prywatna",
       "public": "Publiczna",

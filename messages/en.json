@@ -209,6 +209,31 @@
         "tip4": "Add examples and use cases for better understanding",
         "tip5": "Review and update your notes regularly"
       },
+      "tab": {
+        "manual": "Create Manually",
+        "ai": "Generate with AI"
+      },
+      "ai": {
+        "title": "Generate Note with AI",
+        "description": "Paste text from a lecture, upload a PDF or photo of your notebook, and AI will automatically generate a concise note with the key points.",
+        "text": "Text",
+        "file": "File / Image",
+        "textPlaceholder": "Paste text from a lecture, book, slides, or any notes you want to process...",
+        "uploadHint": "Drag and drop a PDF or image file, or click to select",
+        "selectedFiles": "Selected files",
+        "remove": "Remove",
+        "clear": "Clear list",
+        "noneSelected": "No files selected",
+        "generateBtn": "Generate Note",
+        "generating": "Generating...",
+        "inputRequired": "Paste text or upload a file to generate a note",
+        "failed": "Failed to generate note. Please try again.",
+        "success": "Note generated successfully!",
+        "info": "AI will automatically detect the topic and subject, then extract the most important information in a concise format.",
+        "preview": "Generated Note Preview",
+        "saveDirectly": "Save Directly",
+        "editFirst": "Edit Before Saving"
+      },
       "visibility": "Visibility",
       "private": "Private",
       "public": "Public",
