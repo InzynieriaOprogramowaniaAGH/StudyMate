@@ -36,6 +36,8 @@ node_modules/
 # misc
 .DS_Store
 *.pem
+build-output.txt
+*.log
 
 # debug
 npm-debug.log*
