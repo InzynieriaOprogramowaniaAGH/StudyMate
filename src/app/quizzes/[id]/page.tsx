@@ -197,14 +197,10 @@ export default function QuizPage() {
     }
   };
 
-  const correctAnswerNum = parseInt(question.correctAnswer, 10);
-  const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
-
   // Helper function to get option text and image
-  const getOptionData = (option: any) => {
+  const getOptionData = (option: any): { text: string; image?: string } => {
     // If it's an object with text and image properties, return it directly
     if (typeof option === 'object' && option !== null && typeof option.text !== 'undefined') {
-      console.log("Option is object with text:", option);
       return { text: option.text || '', image: option.image };
     }
     
@@ -214,21 +210,37 @@ export default function QuizPage() {
         const parsed = JSON.parse(option);
         // Only treat as JSON object if it has a text property
         if (typeof parsed === 'object' && parsed !== null && 'text' in parsed) {
-          console.log("Parsed option JSON:", parsed);
           return { text: parsed.text || '', image: parsed.image };
         }
         // If parsed but not a text object, treat original string as plain text
-        console.log("Parsed JSON but not text object, treating as plain string:", option);
         return { text: option, image: undefined };
       } catch {
-        console.log("Option is plain string:", option);
+        // JSON parse failed, treat as plain text
         return { text: option, image: undefined };
       }
     }
     
-    console.log("Option is unrecognized type:", option);
     return { text: '', image: undefined };
   };
+
+  // Helper function to resolve correctAnswer to index
+  // Handles both index strings ("0", "1") and actual answer text
+  const getCorrectAnswerIndex = (q: QuizQuestion): number => {
+    const parsed = parseInt(q.correctAnswer, 10);
+    // If it's a valid number and within range, use it
+    if (!isNaN(parsed) && parsed >= 0 && parsed < q.options.length) {
+      return parsed;
+    }
+    // Otherwise, try to find the option that matches the correctAnswer text
+    const index = q.options.findIndex((opt) => {
+      const optText = getOptionData(opt).text;
+      return optText === q.correctAnswer;
+    });
+    return index >= 0 ? index : 0; // Default to 0 if not found
+  };
+
+  const correctAnswerNum = getCorrectAnswerIndex(question);
+  const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
 
   return (
     <>

@@ -103,6 +103,22 @@ export default function ResultsPage() {
     return { text: '', image: undefined };
   };
 
+  // Helper function to resolve correctAnswer to index
+  // Handles both index strings ("0", "1") and actual answer text
+  const getCorrectAnswerIndex = (q: any, options: any[]): number => {
+    const parsed = parseInt(q.correctAnswer, 10);
+    // If it's a valid number and within range, use it
+    if (!isNaN(parsed) && parsed >= 0 && parsed < options.length) {
+      return parsed;
+    }
+    // Otherwise, try to find the option that matches the correctAnswer text
+    const index = options.findIndex((opt) => {
+      const optText = getOptionData(opt).text;
+      return optText === q.correctAnswer;
+    });
+    return index >= 0 ? index : 0; // Default to 0 if not found
+  };
+
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -117,10 +133,8 @@ export default function ResultsPage() {
           ...data,
           questions: data.questions.map((q: any) => {
             const options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
-            // correctAnswer is stored as a string (like "0", "1"), convert to number
-            const correctAnswerIndex = typeof q.correctAnswer === 'string' 
-              ? parseInt(q.correctAnswer, 10)
-              : q.correctAnswer;
+            // Use helper to resolve correctAnswer - handles both index strings and text values
+            const correctAnswerIndex = getCorrectAnswerIndex(q, options);
             return {
               ...q,
               options,
@@ -159,7 +173,10 @@ export default function ResultsPage() {
   const totalAnswered = Object.keys(answers).length;
   const correctCount = quiz ? quiz.questions.reduce((count, question, index) => {
     const userAnswer = answers[index];
-    const correctAnswerNum = parseInt(question.correctAnswer, 10);
+    // correctAnswer is already normalized to a number in useEffect
+    const correctAnswerNum = typeof question.correctAnswer === 'number' 
+      ? question.correctAnswer 
+      : parseInt(question.correctAnswer as unknown as string, 10);
     const isCorrect = userAnswer !== undefined && userAnswer === correctAnswerNum;
     return count + (isCorrect ? 1 : 0);
   }, 0) : 0;
@@ -388,10 +405,12 @@ export default function ResultsPage() {
                   userAnswerIndex !== undefined
                     ? question.options[userAnswerIndex]
                     : null;
-                // Ensure correctAnswer is converted to number if it's a string
-                let correctAnswerIndex = parseInt(question.correctAnswer, 10);
+                // correctAnswer is already normalized to a number in useEffect
+                let correctAnswerIndex = typeof question.correctAnswer === 'number'
+                  ? question.correctAnswer
+                  : parseInt(question.correctAnswer as unknown as string, 10);
                 
-                // Handle NaN case
+                // Handle NaN case - should not happen if normalization worked
                 if (isNaN(correctAnswerIndex)) {
                   console.warn(`Invalid correctAnswer for question ${qIndex}:`, question.correctAnswer);
                   correctAnswerIndex = 0;
