@@ -313,9 +313,16 @@
   "profile": {
     "tabs": {
       "account": "Konto",
+      "app": "Aplikacja",
       "security": "Bezpieczeństwo",
       "billing": "Płatności",
       "preferences": "Preferencje"
+    },
+    "app": {
+      "title": "Pobierz aplikację desktopową",
+      "desc1": "Korzystaj ze StudyMate bezpośrednio na komputerze — szybciej i wygodniej.",
+      "desc2": "Wersja desktopowa działa szybciej, daje dostęp offline i trzyma notatki oraz quizy zawsze pod ręką.",
+      "downloadLabel": "Pobierz wersję desktopową"
     },
     "preferences": {
       "title": "Preferencje",
