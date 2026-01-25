@@ -443,7 +443,8 @@
   "quizzes": {
     "title": "Moje quizy",
     "subtitle": "Sprawdź swoją wiedzę i śledź postępy",
-    "searchPlaceholder": "Szukaj quizów...",    "loading": "Ładowanie...",    "stats": {
+    "searchPlaceholder": "Szukaj quizów...",
+    "stats": {
       "totalQuizzes": "Wszystkie quizy",
       "averageScore": "Średni wynik",
       "perfectScores": "Idealne wyniki"
@@ -645,7 +646,6 @@
     "cards": "Karty",
     "lastReviewed": "Ostatnio przeglądane",
     "study": "Ucz się",
-    "edit": "Edytuj",
     "delete": "Usuń",
     "confirmDelete": "Czy na pewno chcesz usunąć ten zestaw fiszek?",
     "save": "Zapisz zmiany",
