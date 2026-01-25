@@ -5,7 +5,7 @@ import { ArrowLeft, Edit2, MoreVertical, Loader, HelpCircle, BookOpen, Sparkles,
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 interface Note {
@@ -20,6 +20,7 @@ interface Note {
 
 export default function NoteDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const noteId = params.id as string;
   const t = useTranslations("notes.detail");
   
@@ -27,6 +28,9 @@ export default function NoteDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState(false);
+  const [isGeneratingFlashcards, setIsGeneratingFlashcards] = useState(false);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNoteData = async () => {
@@ -53,6 +57,64 @@ export default function NoteDetailPage() {
       fetchNoteData();
     }
   }, [noteId]);
+
+  const handleGenerateFlashcards = async () => {
+    try {
+      setIsGeneratingFlashcards(true);
+      setGenError(null);
+
+      const response = await fetch(`/api/notes/${noteId}/generate/flashcards`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || t("generationFailed")
+        );
+      }
+
+      router.push("/flashcards");
+    } catch (err) {
+      console.error("Error generating flashcards:", err);
+      setGenError(
+        err instanceof Error
+          ? err.message
+          : t("generationFailed")
+      );
+    } finally {
+      setIsGeneratingFlashcards(false);
+    }
+  };
+
+  const handleGenerateQuiz = async () => {
+    try {
+      setIsGeneratingQuiz(true);
+      setGenError(null);
+
+      const response = await fetch(`/api/notes/${noteId}/generate/quiz`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || t("generationFailed")
+        );
+      }
+
+      router.push("/quizzes");
+    } catch (err) {
+      console.error("Error generating quiz:", err);
+      setGenError(
+        err instanceof Error
+          ? err.message
+          : t("generationFailed")
+      );
+    } finally {
+      setIsGeneratingQuiz(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -270,13 +332,48 @@ export default function NoteDetailPage() {
                     {t("generateMore")}
                   </h4>
                   <div className="space-y-2">
-                    <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                      <span>➕</span> {t("newQuiz")}
+                    <button
+                      onClick={handleGenerateQuiz}
+                      disabled={isGeneratingQuiz || isGeneratingFlashcards}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isGeneratingQuiz ? (
+                        <>
+                          <Loader className="w-3 h-3 animate-spin" />
+                          {t("generating")}
+                        </>
+                      ) : (
+                        <>
+                          <span>➕</span> {t("newQuiz")}
+                        </>
+                      )}
                     </button>
-                    <button className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)]">
-                      <span>📇</span> {t("moreFlashcards")}
+                    <button
+                      onClick={handleGenerateFlashcards}
+                      disabled={isGeneratingFlashcards || isGeneratingQuiz}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--color-text)] bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] transition border border-[var(--color-border)] hover:border-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isGeneratingFlashcards ? (
+                        <>
+                          <Loader className="w-3 h-3 animate-spin" />
+                          {t("generating")}
+                        </>
+                      ) : (
+                        <>
+                          <span>📇</span> {t("moreFlashcards")}
+                        </>
+                      )}
                     </button>
                   </div>
+                  {genError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-3 p-3 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-xs"
+                    >
+                      {genError}
+                    </motion.div>
+                  )}
                 </div>
 
                 {/* Statistics */}

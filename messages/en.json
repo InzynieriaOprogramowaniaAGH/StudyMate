@@ -274,6 +274,8 @@
       "generateMore": "Generate More",
       "newQuiz": "New Quiz",
       "moreFlashcards": "More Flashcards",
+      "generating": "Generating...",
+      "generationFailed": "Failed to generate. Please try again.",
       "statistics": "Statistics",
       "words": "Words",
       "readingTime": "Reading time",

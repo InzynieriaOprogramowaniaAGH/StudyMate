@@ -274,6 +274,8 @@
       "generateMore": "Generuj więcej",
       "newQuiz": "Nowy quiz",
       "moreFlashcards": "Więcej fiszek",
+      "generating": "Generowanie...",
+      "generationFailed": "Nie udało się wygenerować. Spróbuj ponownie.",
       "statistics": "Statystyki",
       "words": "Słowa",
       "readingTime": "Czas czytania",
