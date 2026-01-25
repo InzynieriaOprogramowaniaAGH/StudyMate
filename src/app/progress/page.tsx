@@ -10,19 +10,17 @@ import {
   Layers,
   Calendar,
   Flame,
+  Target,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  BarChart,
-  Bar,
   LineChart,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -35,126 +33,31 @@ interface Stats {
     date: string;
     count: number;
   }>;
+  weeklyScores: Array<{
+    week: string;
+    score: number;
+  }>;
+  currentStreak: number;
+  longestStreak: number;
+  counts: {
+    notes: number;
+    quizzes: number;
+    flashcardsReviewed: number;
+    totalReviews: number;
+  };
 }
-
-// Mock data for demonstration
-const MOCK_STATS: Stats = {
-  actionStats: [
-    { action: "noteAdded", _count: { action: 47 } },
-    { action: "quizCompleted", _count: { action: 32 } },
-    { action: "flashcardReviewed", _count: { action: 89 } },
-  ],
-  dailyStats: [
-    { date: "2025-11-20", count: 12 },
-    { date: "2025-11-21", count: 18 },
-    { date: "2025-11-22", count: 6 },
-    { date: "2025-11-23", count: 22 },
-    { date: "2025-11-24", count: 15 },
-    { date: "2025-11-25", count: 28 },
-    { date: "2025-11-26", count: 31 },
-  ],
-};
-
-// Mock weekly quiz scores - more varied
-const MOCK_WEEKLY_SCORES = [
-  { week: "Week 1", score: 72 },
-  { week: "Week 2", score: 81 },
-  { week: "Week 3", score: 76 },
-  { week: "Week 4", score: 95 },
-];
-
-// Calculate current streak
-const calculateCurrentStreak = () => {
-  const today = new Date();
-  let streak = 0;
-  
-  for (let i = 0; i < 365; i++) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    const dayNum = date.getDate();
-    
-    // Deterministic activity pattern
-    const activity = [0, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 0, 3, 2, 1, 4, 3, 2, 1, 3, 4, 2, 0, 1, 3, 2, 4, 1, 2, 3][dayNum - 1] || 0;
-    
-    if (activity > 0) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-  
-  return streak;
-};
-
-// Calculate longest streak
-const calculateLongestStreak = () => {
-  let maxStreak = 0;
-  let currentStreak = 0;
-  
-  for (let day = 1; day <= 31; day++) {
-    const activity = [0, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 0, 3, 2, 1, 4, 3, 2, 1, 3, 4, 2, 0, 1, 3, 2, 4, 1, 2, 3][day - 1] || 0;
-    
-    if (activity > 0) {
-      currentStreak++;
-      maxStreak = Math.max(maxStreak, currentStreak);
-    } else {
-      currentStreak = 0;
-    }
-  }
-  
-  return maxStreak;
-};
-
-// Calendar data - deterministic, based on date
-const getMonthCalendarData = () => {
-  const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
-  
-  // Get first day of month
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = new Date(currentYear, currentMonth + 1, 0);
-  const daysInMonth = lastDay.getDate();
-  // Convert to Monday-first week (0=Mon, 1=Tue, ..., 6=Sun)
-  const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
-  
-  const calendarDays = [];
-  
-  // Add empty cells for days before month starts
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    calendarDays.push({ date: null, activity: 0 });
-  }
-  
-  // Add days of current month - use deterministic pattern based on date number
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    // Deterministic activity based on day number (no random)
-    const activity = [0, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 0, 3, 2, 1, 4, 3, 2, 1, 3, 4, 2, 0, 1, 3, 2, 4, 1, 2, 3][day - 1] || 0;
-    calendarDays.push({ date: dateStr, activity });
-  }
-  
-  return { calendarDays, daysInMonth, startingDayOfWeek, monthYear: `${firstDay.toLocaleDateString('en-US', { month: 'long' })} ${currentYear}` };
-};
 
 const getActivityColor = (activity: number) => {
   if (activity === 0) {
     return "bg-gray-300 dark:bg-gray-600";
   }
-  
-  const colors = [
-    "bg-[var(--color-primary)]",
-    "bg-[var(--color-primary)]",
-    "bg-[var(--color-primary)]",
-    "bg-[var(--color-primary)]",
-    "bg-[var(--color-primary)]",
-  ];
-  return colors[activity] || "bg-[var(--color-primary)]";
+  return "bg-[var(--color-primary)]";
 };
 
 export default function ProgressPage() {
   const t = useTranslations("progress");
-  const [stats, setStats] = useState<Stats | null>(MOCK_STATS);
-  const [isLoading, setIsLoading] = useState(false);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -173,42 +76,57 @@ export default function ProgressPage() {
       } catch (err) {
         console.error("Error fetching stats:", err);
         setError("Failed to load statistics");
-        // Keep mock data on error
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Optional: Uncomment to fetch real data instead of using mock
-    // fetchStats();
+    fetchStats();
   }, []);
 
-  // Transform action stats for bar chart
-  const barChartData = stats?.actionStats.map((stat) => ({
-    action: stat.action,
-    count: stat._count.action,
-  })) || [];
+  // Generate calendar data based on real stats
+  const getMonthCalendarData = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
+    
+    // Create a map of date -> activity count from dailyStats
+    const activityMap: Record<string, number> = {};
+    stats?.dailyStats.forEach((stat) => {
+      activityMap[stat.date] = stat.count;
+    });
+    
+    const calendarDays = [];
+    
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      calendarDays.push({ date: null, activity: 0 });
+    }
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const activity = activityMap[dateStr] || 0;
+      calendarDays.push({ date: dateStr, activity });
+    }
+    
+    return { calendarDays, daysInMonth, startingDayOfWeek };
+  };
 
-  // Transform daily stats for line chart
-  const lineChartData = stats?.dailyStats.map((stat) => ({
-    date: new Date(stat.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    count: stat.count,
-  })) || [];
-
-  // Calculate total stats
+  // Calculate total actions from action stats
   const totalActions = stats?.actionStats.reduce(
     (sum, stat) => sum + stat._count.action,
     0
   ) || 0;
 
-  // Translated weekly scores
-  const translatedWeeklyScores = MOCK_WEEKLY_SCORES.map((item, index) => ({
+  // Translated weekly scores from real data
+  const translatedWeeklyScores = stats?.weeklyScores?.map((item, index) => ({
     ...item,
     week: t("charts.week", { number: index + 1 }),
-  }));
+  })) || [];
 
   // Get translated month name
   const getTranslatedMonthYear = () => {
@@ -263,7 +181,7 @@ export default function ProgressPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4"
               >
                 {[
                   {
@@ -273,29 +191,27 @@ export default function ProgressPage() {
                   },
                   {
                     label: t("stats.notesCreated"),
-                    value:
-                      stats?.actionStats.find((s) => s.action === "noteAdded")
-                        ?._count.action || 0,
+                    value: stats?.counts?.notes || 0,
                     icon: FileText,
                   },
                   {
                     label: t("stats.quizzesCompleted"),
-                    value:
-                      stats?.actionStats.find((s) => s.action === "quizCompleted")
-                        ?._count.action || 0,
+                    value: stats?.counts?.quizzes || 0,
                     icon: CheckCircle2,
                   },
                   {
                     label: t("stats.flashcardsReviewed"),
-                    value:
-                      stats?.actionStats.find(
-                        (s) => s.action === "flashcardReviewed"
-                      )?._count.action || 0,
+                    value: stats?.counts?.totalReviews || 0,
                     icon: Layers,
                   },
                   {
+                    label: t("stats.currentStreak"),
+                    value: stats?.currentStreak || 0,
+                    icon: Target,
+                  },
+                  {
                     label: t("stats.longestStreak"),
-                    value: calculateLongestStreak(),
+                    value: stats?.longestStreak || 0,
                     icon: Flame,
                     highlight: true,
                   },

@@ -273,7 +273,11 @@
       "avgScore": "Śr. wynik",
       "days": "dni",
       "fromLastWeek": "od zeszłego tygodnia",
-      "keepItUp": "Tak trzymaj!"
+      "keepItUp": "Tak trzymaj!",
+      "total": "Łącznie",
+      "completed": "Ukończone",
+      "overall": "Ogólnie",
+      "startStreak": "Zacznij swoją serię!"
     },
     "quickActions": {
       "title": "Szybkie akcje",
@@ -286,11 +290,13 @@
     "recentNotes": {
       "title": "Ostatnie notatki",
       "subtitle": "Twoje najnowsze materiały do nauki",
-      "viewAll": "Zobacz wszystko"
+      "viewAll": "Zobacz wszystko",
+      "noNotes": "Brak notatek. Utwórz swoją pierwszą notatkę!"
     },
     "todaysGoal": {
       "title": "Cel na dziś",
       "studyTime": "Czas nauki",
+      "notes": "Utworzone notatki",
       "quizzes": "Quizy",
       "flashcards": "Fiszki"
     },
@@ -299,12 +305,17 @@
     },
     "upcomingReviews": {
       "title": "Nadchodzące powtórki",
-      "cards": "kart"
+      "cards": "kart",
+      "noReviews": "Brak nadchodzących powtórek"
     },
     "time": {
-      "hoursAgo": "godzin temu",
+      "minutesAgo": "{count} min temu",
+      "hoursAgo": "{count} godzin temu",
       "yesterday": "Wczoraj",
-      "daysAgo": "dni temu",
+      "daysAgo": "{count} dni temu",
+      "anytime": "W dowolnym momencie",
+      "overdue": "Zaległe",
+      "soon": "Wkrótce",
       "inHours": "za {count} godzin",
       "tomorrow": "Jutro",
       "inDays": "za {count} dni"
@@ -687,6 +698,7 @@
       "notesCreated": "Utworzone notatki",
       "quizzesCompleted": "Ukończone quizy",
       "flashcardsReviewed": "Przejrzane fiszki",
+      "currentStreak": "Aktualna seria",
       "longestStreak": "Najdłuższa seria"
     },
     "charts": {

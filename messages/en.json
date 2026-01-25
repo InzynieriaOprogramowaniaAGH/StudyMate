@@ -273,7 +273,11 @@
       "avgScore": "Avg. Score",
       "days": "days",
       "fromLastWeek": "from last week",
-      "keepItUp": "Keep it up!"
+      "keepItUp": "Keep it up!",
+      "total": "Total",
+      "completed": "Completed",
+      "overall": "Overall",
+      "startStreak": "Start your streak!"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -286,11 +290,13 @@
     "recentNotes": {
       "title": "Recent Notes",
       "subtitle": "Your latest study materials",
-      "viewAll": "View All"
+      "viewAll": "View All",
+      "noNotes": "No notes yet. Create your first note!"
     },
     "todaysGoal": {
       "title": "Today's Goal",
       "studyTime": "Study Time",
+      "notes": "Notes Created",
       "quizzes": "Quizzes",
       "flashcards": "Flashcards"
     },
@@ -299,12 +305,17 @@
     },
     "upcomingReviews": {
       "title": "Upcoming Reviews",
-      "cards": "cards"
+      "cards": "cards",
+      "noReviews": "No upcoming reviews"
     },
     "time": {
-      "hoursAgo": "hours ago",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} hours ago",
       "yesterday": "Yesterday",
-      "daysAgo": "days ago",
+      "daysAgo": "{count} days ago",
+      "anytime": "Anytime",
+      "overdue": "Overdue",
+      "soon": "Soon",
       "inHours": "in {count} hours",
       "tomorrow": "Tomorrow",
       "inDays": "in {count} days"
@@ -689,6 +700,7 @@
       "notesCreated": "Notes Created",
       "quizzesCompleted": "Quizzes Completed",
       "flashcardsReviewed": "Flashcards Reviewed",
+      "currentStreak": "Current Streak",
       "longestStreak": "Longest Streak"
     },
     "charts": {
