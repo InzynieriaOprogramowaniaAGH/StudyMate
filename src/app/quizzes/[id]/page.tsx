@@ -28,6 +28,10 @@ interface QuizData {
   user?: { id: string; email: string };
 }
 
+interface ShuffledQuestion extends QuizQuestion {
+  originalCorrectAnswerIndex: number;
+}
+
 export default function QuizPage() {
   const t = useTranslations("quizzes");
   const router = useRouter();
@@ -36,6 +40,7 @@ export default function QuizPage() {
   const quizId = params.id as string;
 
   const [quiz, setQuiz] = useState<QuizData | null>(null);
+  const [shuffledQuestions, setShuffledQuestions] = useState<ShuffledQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number>(-1);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +49,80 @@ export default function QuizPage() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
+
+  // Helper function to get option text and image
+  const getOptionData = (option: any): { text: string; image?: string } => {
+    // If it's an object with text and image properties, return it directly
+    if (typeof option === 'object' && option !== null && typeof option.text !== 'undefined') {
+      return { text: option.text || '', image: option.image };
+    }
+    
+    // If it's a string, try to parse as JSON
+    if (typeof option === 'string') {
+      try {
+        const parsed = JSON.parse(option);
+        // Only treat as JSON object if it has a text property
+        if (typeof parsed === 'object' && parsed !== null && 'text' in parsed) {
+          return { text: parsed.text || '', image: parsed.image };
+        }
+        // If parsed but not a text object, treat original string as plain text
+        return { text: option, image: undefined };
+      } catch {
+        // JSON parse failed, treat as plain text
+        return { text: option, image: undefined };
+      }
+    }
+    
+    return { text: '', image: undefined };
+  };
+
+  // Helper function to resolve correctAnswer to index
+  // Handles both index strings ("0", "1") and actual answer text
+  const getCorrectAnswerIndex = (q: QuizQuestion): number => {
+    const parsed = parseInt(q.correctAnswer, 10);
+    // If it's a valid number and within range, use it
+    if (!isNaN(parsed) && parsed >= 0 && parsed < q.options.length) {
+      return parsed;
+    }
+    // Otherwise, try to find the option that matches the correctAnswer text
+    const index = q.options.findIndex((opt) => {
+      const optText = getOptionData(opt).text;
+      return optText === q.correctAnswer;
+    });
+    return index >= 0 ? index : 0; // Default to 0 if not found
+  };
+
+  // Helper function to shuffle options for a single question
+  const shuffleQuestionOptions = (q: QuizQuestion): ShuffledQuestion => {
+    const correctIdx = getCorrectAnswerIndex(q);
+    const optionsWithIndices = q.options.map((opt, idx) => ({ opt, originalIdx: idx }));
+    const shuffled = [...optionsWithIndices];
+
+    // Fisher-Yates shuffle
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    // Find new index of the originally correct answer
+    const newCorrectIdx = shuffled.findIndex((item) => item.originalIdx === correctIdx);
+
+    return {
+      ...q,
+      options: shuffled.map((item) => item.opt),
+      originalCorrectAnswerIndex: newCorrectIdx >= 0 ? newCorrectIdx : 0,
+    };
+  };
+
+  // Helper function to shuffle array order (Fisher-Yates)
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -55,6 +134,10 @@ export default function QuizPage() {
         const data: QuizData = await response.json();
         
         setQuiz(data);
+        // Shuffle options for all questions, then shuffle the order of questions
+        const shuffledOptions = data.questions.map((q) => shuffleQuestionOptions(q));
+        const shuffledOrder = shuffleArray(shuffledOptions);
+        setShuffledQuestions(shuffledOrder);
         setError(null);
       } catch (err) {
         console.error("Error fetching quiz:", err);
@@ -79,6 +162,22 @@ export default function QuizPage() {
     }
     return () => clearInterval(interval);
   }, [quiz, isLoading]);
+
+  // Re-shuffle options when current question changes
+  useEffect(() => {
+    if (shuffledQuestions.length > 0) {
+      const current = shuffledQuestions[currentQuestion];
+      if (current && quiz) {
+        const originalQuestion = quiz.questions.find((q) => q.id === current.id);
+        if (originalQuestion) {
+          const reshuffled = shuffleQuestionOptions(originalQuestion);
+          const updated = [...shuffledQuestions];
+          updated[currentQuestion] = reshuffled;
+          setShuffledQuestions(updated);
+        }
+      }
+    }
+  }, [currentQuestion]);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -144,7 +243,7 @@ export default function QuizPage() {
     );
   }
 
-  const question = quiz.questions[currentQuestion];
+  const question = shuffledQuestions[currentQuestion] || quiz.questions[currentQuestion];
   const isLastQuestion = currentQuestion === quiz.questions.length - 1;
 
   const handleAnswerSelect = (index: number) => {
@@ -175,49 +274,7 @@ export default function QuizPage() {
     }
   };
 
-  // Helper function to get option text and image
-  const getOptionData = (option: any): { text: string; image?: string } => {
-    // If it's an object with text and image properties, return it directly
-    if (typeof option === 'object' && option !== null && typeof option.text !== 'undefined') {
-      return { text: option.text || '', image: option.image };
-    }
-    
-    // If it's a string, try to parse as JSON
-    if (typeof option === 'string') {
-      try {
-        const parsed = JSON.parse(option);
-        // Only treat as JSON object if it has a text property
-        if (typeof parsed === 'object' && parsed !== null && 'text' in parsed) {
-          return { text: parsed.text || '', image: parsed.image };
-        }
-        // If parsed but not a text object, treat original string as plain text
-        return { text: option, image: undefined };
-      } catch {
-        // JSON parse failed, treat as plain text
-        return { text: option, image: undefined };
-      }
-    }
-    
-    return { text: '', image: undefined };
-  };
-
-  // Helper function to resolve correctAnswer to index
-  // Handles both index strings ("0", "1") and actual answer text
-  const getCorrectAnswerIndex = (q: QuizQuestion): number => {
-    const parsed = parseInt(q.correctAnswer, 10);
-    // If it's a valid number and within range, use it
-    if (!isNaN(parsed) && parsed >= 0 && parsed < q.options.length) {
-      return parsed;
-    }
-    // Otherwise, try to find the option that matches the correctAnswer text
-    const index = q.options.findIndex((opt) => {
-      const optText = getOptionData(opt).text;
-      return optText === q.correctAnswer;
-    });
-    return index >= 0 ? index : 0; // Default to 0 if not found
-  };
-
-  const correctAnswerNum = getCorrectAnswerIndex(question);
+  const correctAnswerNum = (question as ShuffledQuestion).originalCorrectAnswerIndex ?? getCorrectAnswerIndex(question);
   const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
 
   return (

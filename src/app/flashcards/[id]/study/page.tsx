@@ -54,6 +54,16 @@ export default function FlashcardStudyPage() {
     return () => clearInterval(timer);
   }, []);
 
+  // Helper function to shuffle array (Fisher-Yates)
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
   useEffect(() => {
     const fetchFlashcardSet = async () => {
       try {
@@ -64,7 +74,9 @@ export default function FlashcardStudyPage() {
         }
         const data = await response.json();
         setFlashcardSet(data);
-        setStudyQueue([...data.cards]);
+        // Shuffle cards on load for better learning experience
+        const shuffledCards = shuffleArray(data.cards);
+        setStudyQueue(shuffledCards);
         setTotalCards(data.cards.length);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
