@@ -151,6 +151,9 @@ model UserPreference {
   learningGoal String?
   theme        String?
   aiStyle      String?
+  dailyNotesGoal      Int     @default(3)
+  dailyQuizzesGoal    Int     @default(3)
+  dailyFlashcardsGoal Int     @default(20)
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 

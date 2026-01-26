@@ -8,6 +8,14 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+interface NoteStats {
+  quizCount: number;
+  flashcardCount: number;
+  avgQuizScore: number | null;
+  totalQuestions: number;
+  totalTimesReviewed: number;
+}
+
 interface Note {
   id: string;
   title: string;
@@ -16,6 +24,7 @@ interface Note {
   content: string;
   createdAt: string;
   updatedAt: string;
+  stats?: NoteStats;
 }
 
 export default function NoteDetailPage() {
@@ -300,30 +309,47 @@ export default function NoteDetailPage() {
                 {/* Study Items */}
                 <div className="space-y-3 mb-6">
                   {/* Quiz */}
-                  <div className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group">
-                    <div className="flex-shrink-0 mt-0.5">
-                      <HelpCircle className="w-5 h-5 text-[var(--color-primary)]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-[var(--color-text)]">
-                        {t("quiz")}
-                      </p>
-                      <p className="text-xs text-[var(--color-muted)]">5 {t("questions")}</p>
-                    </div>
-                  </div>
+                  {(note.stats?.quizCount ?? 0) > 0 && (
+                    <Link 
+                      href="/quizzes"
+                      className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
+                    >
+                      <div className="flex-shrink-0 mt-0.5">
+                        <HelpCircle className="w-5 h-5 text-[var(--color-primary)]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-[var(--color-text)]">
+                          {t("quiz")}
+                        </p>
+                        <p className="text-xs text-[var(--color-muted)]">{note.stats?.totalQuestions || 0} {t("questions")}</p>
+                      </div>
+                    </Link>
+                  )}
 
                   {/* Flashcards */}
-                  <div className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group">
-                    <div className="flex-shrink-0 mt-0.5">
-                      <BookOpen className="w-5 h-5 text-[var(--color-primary)]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-[var(--color-text)]">
-                        {t("flashcards")}
-                      </p>
-                      <p className="text-xs text-[var(--color-muted)]">24 {t("cards")}</p>
-                    </div>
-                  </div>
+                  {(note.stats?.flashcardCount ?? 0) > 0 && (
+                    <Link
+                      href="/flashcards"
+                      className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
+                    >
+                      <div className="flex-shrink-0 mt-0.5">
+                        <BookOpen className="w-5 h-5 text-[var(--color-primary)]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-[var(--color-text)]">
+                          {t("flashcards")}
+                        </p>
+                        <p className="text-xs text-[var(--color-muted)]">{note.stats?.flashcardCount || 0} {t("cards")}</p>
+                      </div>
+                    </Link>
+                  )}
+
+                  {/* No materials yet */}
+                  {(note.stats?.quizCount ?? 0) === 0 && (note.stats?.flashcardCount ?? 0) === 0 && (
+                    <p className="text-xs text-[var(--color-muted)] text-center py-2">
+                      {t("noMaterialsYet")}
+                    </p>
+                  )}
                 </div>
 
                 {/* Generate More Section */}
@@ -385,22 +411,26 @@ export default function NoteDetailPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-[var(--color-muted)]">{t("words")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">
-                        {note.content.split(/\s+/).length}
+                        {note.content.split(/\s+/).filter(w => w.length > 0).length}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-[var(--color-muted)]">{t("readingTime")}</span>
                       <span className="text-sm font-semibold text-[var(--color-text)]">
-                        {Math.ceil(note.content.split(/\s+/).length / 200)} {t("min")}
+                        {Math.max(1, Math.ceil(note.content.split(/\s+/).filter(w => w.length > 0).length / 200))} {t("min")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-[var(--color-muted)]">{t("timesReviewed")}</span>
-                      <span className="text-sm font-semibold text-[var(--color-text)]">7</span>
+                      <span className="text-sm font-semibold text-[var(--color-text)]">
+                        {note.stats?.totalTimesReviewed ?? 0}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-[var(--color-muted)]">{t("quizAvgScore")}</span>
-                      <span className="text-sm font-semibold text-[var(--color-text)]">85%</span>
+                      <span className="text-sm font-semibold text-[var(--color-text)]">
+                        {note.stats?.avgQuizScore !== null ? `${note.stats?.avgQuizScore}%` : "—"}
+                      </span>
                     </div>
                   </div>
                 </div>

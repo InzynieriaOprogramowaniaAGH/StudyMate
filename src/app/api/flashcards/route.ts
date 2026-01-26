@@ -55,6 +55,8 @@ export async function GET() {
       cards: typeof flashcards;
       lastReviewed: Date | null;
       createdAt: Date;
+      isPrivate: boolean;
+      user: { id: string; email: string } | null;
     }[] = [];
 
     const groupedByNote = new Map<string, typeof flashcards>();
@@ -96,6 +98,8 @@ export async function GET() {
           card.createdAt < earliest ? card.createdAt : earliest, 
           cards[0].createdAt
         ),
+        isPrivate: firstCard.isPrivate,
+        user: firstCard.user || null,
       });
     });
 
@@ -120,6 +124,8 @@ export async function GET() {
           card.createdAt < earliest ? card.createdAt : earliest, 
           cards[0].createdAt
         ),
+        isPrivate: firstCard.isPrivate,
+        user: firstCard.user || null,
       });
     });
 
@@ -138,6 +144,8 @@ export async function GET() {
           return card.lastReviewedAt > latest ? card.lastReviewedAt : latest;
         }, null as Date | null),
         createdAt: ungroupedCards[0].createdAt,
+        isPrivate: ungroupedCards[0].isPrivate,
+        user: ungroupedCards[0].user || null,
       });
     }
 

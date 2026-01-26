@@ -75,6 +75,16 @@ export async function PATCH(
       },
     });
 
+    // Record stats for quiz completion
+    if (updatedQuiz.user?.id) {
+      await prisma.stats.create({
+        data: {
+          userId: updatedQuiz.user.id,
+          action: "quizCompleted",
+        },
+      });
+    }
+
     return NextResponse.json(updatedQuiz);
   } catch (error) {
     console.error("Error updating quiz:", error);

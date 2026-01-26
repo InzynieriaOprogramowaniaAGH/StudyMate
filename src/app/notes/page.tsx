@@ -1,15 +1,17 @@
 "use client";
 
 import Header from "@/components/layout/Header";
-import { Search, Filter, MoreVertical, Clipboard, BookOpen, Loader } from "lucide-react";
+import { Search, Filter, MoreVertical, Clipboard, BookOpen, Loader, Lock, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 
 export default function NotesPage() {
   const t = useTranslations("notes");
+  const { data: session } = useSession();
   const [hoveredNoteId, setHoveredNoteId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [notes, setNotes] = useState<any[]>([]);
@@ -18,6 +20,7 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [viewMode, setViewMode] = useState<"all" | "my">("all");
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -52,7 +55,9 @@ export default function NotesPage() {
 
     const matchesSubject = selectedSubject === "" || note.subject === selectedSubject;
 
-    return matchesSearch && matchesSubject;
+    const matchesViewMode = viewMode === "all" || note.user?.email === session?.user?.email;
+
+    return matchesSearch && matchesSubject && matchesViewMode;
   });
 
   // Get unique subjects
@@ -80,6 +85,32 @@ export default function NotesPage() {
               <span>+</span> {t("createNote")}
             </Link>
           </div>
+
+          {/* View Mode Toggle */}
+          {session && (
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setViewMode("all")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "all"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("allNotes")}
+              </button>
+              <button
+                onClick={() => setViewMode("my")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "my"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("myNotes")}
+              </button>
+            </div>
+          )}
 
           {/* Search and Filter Section */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -206,12 +237,29 @@ export default function NotesPage() {
                     <CardContent className="p-4 sm:p-6 flex flex-col h-full">
                       {/* Header with subject and menu */}
                       <div className="flex justify-between items-start mb-4">
-                        <span className="text-xs font-medium text-[var(--color-primary)]">
-                          {note.subject || t("general")}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium text-[var(--color-primary)]">
+                            {note.subject || t("general")}
+                          </span>
+                          {note.isPrivate ? (
+                            <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[var(--color-muted)]/20 text-[var(--color-muted)]">
+                              <Lock className="w-3 h-3" />
+                              {t("private")}
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[var(--color-success)]/20 text-[var(--color-success)]">
+                              <Globe className="w-3 h-3" />
+                              {t("public")}
+                            </span>
+                          )}
+                        </div>
                         <div className="relative">
                           <button
-                            onClick={() => setOpenMenuId(openMenuId === note.id ? null : note.id)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === note.id ? null : note.id);
+                            }}
                             className={`w-8 h-8 rounded-lg flex items-center justify-center transition ${
                               openMenuId === note.id
                                 ? "bg-[var(--color-accent)]/30 text-[var(--color-accent)]"
@@ -229,12 +277,22 @@ export default function NotesPage() {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
                                 className="absolute right-0 top-full mt-2 w-40 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg overflow-hidden shadow-lg z-10"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
                               >
                                 {menuOptions.map((option, idx) => (
                                   <motion.button
                                     key={idx}
                                     whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
                                     className={`w-full text-left px-4 py-2 text-sm ${option.color}`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      // Handle menu action here
+                                      setOpenMenuId(null);
+                                    }}
                                   >
                                     {option.label}
                                   </motion.button>

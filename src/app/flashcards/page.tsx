@@ -2,11 +2,12 @@
 
 import Header from "@/components/layout/Header";
 import { motion } from "framer-motion";
-import { Search, RotateCcw, Layers, CheckCircle2, BookMarked, Plus, Trash2, Edit2 } from "lucide-react";
+import { Search, RotateCcw, Layers, CheckCircle2, BookMarked, Plus, Trash2, Edit2, Lock, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 
 interface FlashcardCard {
   id: string;
@@ -26,16 +27,20 @@ interface FlashcardSet {
   cards: FlashcardCard[];
   lastReviewed: string | null;
   createdAt: string;
+  isPrivate?: boolean;
+  user?: { id: string; email: string } | null;
 }
 
 export default function FlashcardsPage() {
   const router = useRouter();
   const t = useTranslations("flashcards");
+  const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingSetId, setDeletingSetId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"all" | "my">("all");
 
   const fetchFlashcards = async () => {
     try {
@@ -89,7 +94,10 @@ export default function FlashcardsPage() {
     const matchesSearch =
       set.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       set.noteTitle.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    
+    const matchesViewMode = viewMode === "all" || set.user?.email === session?.user?.email;
+    
+    return matchesSearch && matchesViewMode;
   });
 
   const stats = {
@@ -178,6 +186,37 @@ export default function FlashcardsPage() {
             })}
           </motion.div>
 
+          {/* View Mode Toggle */}
+          {session && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="flex gap-2 mb-4"
+            >
+              <button
+                onClick={() => setViewMode("all")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "all"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("allFlashcards")}
+              </button>
+              <button
+                onClick={() => setViewMode("my")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "my"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("myFlashcards")}
+              </button>
+            </motion.div>
+          )}
+
           {/* Search */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -239,16 +278,26 @@ export default function FlashcardsPage() {
                       <div className="mb-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="text-lg font-semibold text-[var(--color-text)]">
-                              {set.title}
-                            </h3>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                                {set.title}
+                              </h3>
+                              {set.isPrivate ? (
+                                <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[var(--color-muted)]/20 text-[var(--color-muted)]">
+                                  <Lock className="w-3 h-3" />
+                                  {t("private")}
+                                </span>
+                              ) : (
+                                <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[var(--color-success)]/20 text-[var(--color-success)]">
+                                  <Globe className="w-3 h-3" />
+                                  {t("public")}
+                                </span>
+                              )}
+                            </div>
                             <p className="text-sm text-[var(--color-muted)]">
                               {set.noteTitle}
                             </p>
                           </div>
-                          <span className="px-3 py-1 rounded-full text-xs font-medium border bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-[var(--color-primary)]/30">
-                            {set.cardCount} {t("cards")}
-                          </span>
                         </div>
                       </div>
 

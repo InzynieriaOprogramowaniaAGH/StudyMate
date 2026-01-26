@@ -158,6 +158,10 @@
     "title": "My Notes",
     "subtitle": "Manage and organize your study materials",
     "createNote": "Create Note",
+    "allNotes": "All Notes",
+    "myNotes": "My Notes",
+    "private": "Private",
+    "public": "Public",
     "searchPlaceholder": "Search notes...",
     "filter": "Filter",
     "allSubjects": "All Subjects",
@@ -272,6 +276,7 @@
       "flashcards": "Flashcards",
       "cards": "cards",
       "generateMore": "Generate More",
+      "noMaterialsYet": "No study materials yet. Generate some below!",
       "newQuiz": "New Quiz",
       "moreFlashcards": "More Flashcards",
       "generating": "Generating...",
@@ -364,7 +369,17 @@
     },
     "preferences": {
       "title": "Preferences",
-      "comingSoon": "Preferences panel will be available soon."
+      "description": "Customize your learning experience and daily goals.",
+      "dailyGoals": {
+        "title": "Daily Goals",
+        "notes": "Notes to create",
+        "quizzes": "Quizzes to complete",
+        "flashcards": "Flashcards to review"
+      },
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saveSuccess": "Goals saved successfully!",
+      "saveError": "Failed to save goals."
     },
     "header": {
       "change": "Change",
@@ -446,6 +461,8 @@
     "title": "My Quizzes",
     "subtitle": "Test your knowledge and track your progress",
     "searchPlaceholder": "Search quizzes...",
+    "allQuizzes": "All Quizzes",
+    "myQuizzes": "My Quizzes",
     "stats": {
       "totalQuizzes": "Total Quizzes",
       "averageScore": "Average Score",
@@ -591,6 +608,10 @@
     "title": "Study Flashcards",
     "subtitle": "Review and master your flashcard sets",
     "searchPlaceholder": "Search flashcard sets...",
+    "allFlashcards": "All Flashcards",
+    "myFlashcards": "My Flashcards",
+    "private": "Private",
+    "public": "Public",
     "createNew": "Create Flashcards",
     "loading": "Loading flashcards...",
     "reviewed": "Reviewed",

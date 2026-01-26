@@ -83,6 +83,14 @@ export async function POST(request: Request) {
       },
     });
 
+    // Record stats for note creation
+    await prisma.stats.create({
+      data: {
+        userId: user.id,
+        action: "noteAdded",
+      },
+    });
+
     return NextResponse.json(newNote);
   } catch (error) {
     console.error("Błąd tworzenia notatki:", error);

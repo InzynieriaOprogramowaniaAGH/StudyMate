@@ -302,6 +302,22 @@ export async function GET() {
       return a.dueDate.getTime() - b.dueDate.getTime();
     });
 
+    // Get user's daily goals (or defaults)
+    const userPreferences = await prisma.userPreference.findUnique({
+      where: { userId: user.id },
+      select: {
+        dailyNotesGoal: true,
+        dailyQuizzesGoal: true,
+        dailyFlashcardsGoal: true,
+      },
+    });
+
+    const dailyGoals = {
+      notes: userPreferences?.dailyNotesGoal ?? 3,
+      quizzes: userPreferences?.dailyQuizzesGoal ?? 3,
+      flashcards: userPreferences?.dailyFlashcardsGoal ?? 20,
+    };
+
     return NextResponse.json({
       actionStats,
       dailyStats,
@@ -317,6 +333,7 @@ export async function GET() {
       todayActivity,
       recentNotes,
       upcomingReviews: upcomingReviews.slice(0, 3),
+      dailyGoals,
     });
   } catch (error) {
     console.error("Error fetching stats:", error);
