@@ -28,8 +28,14 @@ interface QuizData {
   user?: { id: string; email: string };
 }
 
+interface ShuffledOption {
+  opt: any;
+  originalIdx: number;
+}
+
 interface ShuffledQuestion extends QuizQuestion {
-  originalCorrectAnswerIndex: number;
+  originalCorrectAnswerIndex: number; // index in shuffledOptions
+  shuffledOptions: ShuffledOption[]; // keeps mapping to original indices
 }
 
 export default function QuizPage() {
@@ -41,11 +47,12 @@ export default function QuizPage() {
 
   const [quiz, setQuiz] = useState<QuizData | null>(null);
   const [shuffledQuestions, setShuffledQuestions] = useState<ShuffledQuestion[]>([]);
+  const [questionOrder, setQuestionOrder] = useState<string[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number>(-1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
+  const [answers, setAnswers] = useState<Record<string, number>>({});
   const [showFeedback, setShowFeedback] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
@@ -110,6 +117,7 @@ export default function QuizPage() {
     return {
       ...q,
       options: shuffled.map((item) => item.opt),
+      shuffledOptions: shuffled,
       originalCorrectAnswerIndex: newCorrectIdx >= 0 ? newCorrectIdx : 0,
     };
   };
@@ -138,6 +146,7 @@ export default function QuizPage() {
         const shuffledOptions = data.questions.map((q) => shuffleQuestionOptions(q));
         const shuffledOrder = shuffleArray(shuffledOptions);
         setShuffledQuestions(shuffledOrder);
+        setQuestionOrder(shuffledOrder.map((q) => q.id));
         setError(null);
       } catch (err) {
         console.error("Error fetching quiz:", err);
@@ -244,6 +253,7 @@ export default function QuizPage() {
   }
 
   const question = shuffledQuestions[currentQuestion] || quiz.questions[currentQuestion];
+  const originalQuestion = quiz.questions.find((q) => q.id === question.id) ?? question;
   const isLastQuestion = currentQuestion === quiz.questions.length - 1;
 
   const handleAnswerSelect = (index: number) => {
@@ -255,27 +265,44 @@ export default function QuizPage() {
   const handleSubmitAnswer = () => {
     if (selectedAnswer === -1) return;
 
-    setAnswers({
-      ...answers,
-      [currentQuestion]: selectedAnswer,
-    });
+    const current = shuffledQuestions[currentQuestion];
+    const selectedOriginalIndex = current?.shuffledOptions?.[selectedAnswer]?.originalIdx ?? selectedAnswer;
+
+    setAnswers((prev) => ({
+      ...prev,
+      [current.id]: selectedOriginalIndex,
+    }));
     setShowFeedback(true);
     setIsAnswered(true);
   };
 
   const handleNext = () => {
     if (isLastQuestion) {
-      router.push(`/quizzes/${quizId}/results?answers=${JSON.stringify(answers)}&time=${timeElapsed}`);
+      const params = new URLSearchParams();
+      params.set("answers", encodeURIComponent(JSON.stringify(answers)));
+      params.set("time", String(timeElapsed));
+      if (questionOrder.length) {
+        params.set("order", encodeURIComponent(JSON.stringify(questionOrder)));
+      }
+      router.push(`/quizzes/${quizId}/results?${params.toString()}`);
     } else {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(answers[currentQuestion + 1] ?? -1);
+      setSelectedAnswer(-1);
       setShowFeedback(false);
       setIsAnswered(false);
     }
   };
 
-  const correctAnswerNum = (question as ShuffledQuestion).originalCorrectAnswerIndex ?? getCorrectAnswerIndex(question);
-  const isCorrect = selectedAnswer !== -1 && selectedAnswer === correctAnswerNum;
+  const correctAnswerOriginalIndex = getCorrectAnswerIndex(originalQuestion);
+  const correctAnswerShuffledIndex = (() => {
+    const idx = (question as ShuffledQuestion).shuffledOptions?.findIndex(
+      (opt) => opt.originalIdx === correctAnswerOriginalIndex
+    );
+    return idx !== undefined && idx >= 0 ? idx : correctAnswerOriginalIndex;
+  })();
+  const isCorrect =
+    selectedAnswer !== -1 &&
+    (question as ShuffledQuestion).shuffledOptions?.[selectedAnswer]?.originalIdx === correctAnswerOriginalIndex;
 
   return (
     <>
@@ -354,7 +381,7 @@ export default function QuizPage() {
               {question.options.map((option, index) => {
                 const optionData = getOptionData(option);
                 const isSelected = selectedAnswer === index;
-                const isCorrectOption = index === correctAnswerNum;
+                const isCorrectOption = index === (correctAnswerShuffledIndex ?? -1);
                 const showCorrect = showFeedback && isCorrectOption;
                 const showIncorrect = showFeedback && isSelected && !isCorrect;
 
@@ -408,7 +435,7 @@ export default function QuizPage() {
                 <p>
                   {isCorrect
                     ? t("questionPage.correctFeedback")
-                    : `${t("questionPage.incorrectFeedback")} ${getOptionData(question.options[correctAnswerNum]).text}`}
+                    : `${t("questionPage.incorrectFeedback")} ${getOptionData(originalQuestion.options[correctAnswerOriginalIndex]).text}`}
                 </p>
               </motion.div>
             )}

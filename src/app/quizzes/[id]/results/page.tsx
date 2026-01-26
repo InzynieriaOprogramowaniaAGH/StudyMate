@@ -45,11 +45,13 @@ export default function ResultsPage() {
   const searchParams = useSearchParams();
   const quizId = params.id as string;
   const answersParam = searchParams.get("answers");
+  const orderParam = searchParams.get("order");
   const timeParam = searchParams.get("time");
   const timeElapsed = timeParam ? parseInt(timeParam) : 0;
 
   const [quiz, setQuiz] = useState<QuizData | null>(null);
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
+  const [orderedQuestions, setOrderedQuestions] = useState<QuizQuestion[]>([]);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
@@ -143,13 +145,49 @@ export default function ResultsPage() {
           }),
         };
 
-        setQuiz(normalizedQuiz);
+        // Restore order of questions if provided (to match solving sequence)
+        let orderedList: QuizQuestion[] = normalizedQuiz.questions;
+        if (orderParam) {
+          try {
+            const parsedOrder = JSON.parse(decodeURIComponent(orderParam));
+            if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
+              const mapped = parsedOrder
+                .map((id: string) => normalizedQuiz.questions.find((q) => q.id === id))
+                .filter(Boolean) as QuizQuestion[];
+              if (mapped.length > 0) {
+                orderedList = mapped;
+              }
+            }
+          } catch (e) {
+            console.error("Failed to parse order:", e);
+          }
+        }
 
-        // Parse answers from query param
+        setQuiz({ ...normalizedQuiz, questions: normalizedQuiz.questions });
+        setOrderedQuestions(orderedList);
+
+        // Parse answers from query param (supports both id-keyed and legacy index arrays)
         if (answersParam) {
           try {
-            const parsed = JSON.parse(answersParam);
-            setAnswers(parsed);
+            const parsed = JSON.parse(decodeURIComponent(answersParam));
+
+            if (Array.isArray(parsed)) {
+              const mapped: Record<string, number> = {};
+              normalizedQuiz.questions.forEach((q, idx) => {
+                if (parsed[idx] !== undefined && parsed[idx] !== null) {
+                  mapped[q.id] = Number(parsed[idx]);
+                }
+              });
+              setAnswers(mapped);
+            } else if (parsed && typeof parsed === "object") {
+              const normalized: Record<string, number> = {};
+              Object.entries(parsed).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                  normalized[key] = Number(value);
+                }
+              });
+              setAnswers(normalized);
+            }
           } catch (e) {
             console.error("Failed to parse answers:", e);
           }
@@ -167,22 +205,24 @@ export default function ResultsPage() {
     if (quizId) {
       fetchQuiz();
     }
-  }, [quizId, answersParam]);
+  }, [quizId, answersParam, orderParam]);
 
   // Calculate score early (before early returns)
-  const totalAnswered = Object.keys(answers).length;
-  const correctCount = quiz ? quiz.questions.reduce((count, question, index) => {
-    const userAnswer = answers[index];
-    // correctAnswer is already normalized to a number in useEffect
-    const correctAnswerNum = typeof question.correctAnswer === 'number' 
-      ? question.correctAnswer 
+  const questionsForDisplay = orderedQuestions.length > 0 ? orderedQuestions : quiz?.questions ?? [];
+  const totalQuestionsCount = questionsForDisplay.length || quiz?.totalQuestions || 0;
+  const totalAnswered = questionsForDisplay.filter((q) => answers[q.id] !== undefined && answers[q.id] !== null).length;
+
+  const correctCount = questionsForDisplay.reduce((count, question) => {
+    const userAnswer = answers[question.id];
+    const correctAnswerNum = typeof question.correctAnswer === "number"
+      ? question.correctAnswer
       : parseInt(question.correctAnswer as unknown as string, 10);
     const isCorrect = userAnswer !== undefined && userAnswer === correctAnswerNum;
     return count + (isCorrect ? 1 : 0);
-  }, 0) : 0;
+  }, 0);
 
-  const percentage = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
-  const incorrectCount = totalAnswered - correctCount;
+  const percentage = totalQuestionsCount > 0 ? Math.round((correctCount / totalQuestionsCount) * 100) : 0;
+  const incorrectCount = totalQuestionsCount - correctCount;
 
   // Save score to database - moved before early returns
   useEffect(() => {
@@ -399,8 +439,8 @@ export default function ResultsPage() {
 
             {/* Questions List */}
             <div className="space-y-4">
-              {quiz.questions.map((question, qIndex) => {
-                const userAnswerIndex = answers[qIndex];
+              {questionsForDisplay.map((question, qIndex) => {
+                const userAnswerIndex = answers[question.id];
                 const userAnswer =
                   userAnswerIndex !== undefined
                     ? question.options[userAnswerIndex]
