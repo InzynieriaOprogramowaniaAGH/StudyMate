@@ -98,7 +98,7 @@ export function AccountTab({ user: _user }: { user: any }) {
   return (
     <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+        <div className="p-2 rounded-lg bg-[var(--color-bg-light)] border border-[var(--color-border)] flex-shrink-0">
           <UserIcon size={18} className="text-[var(--color-primary)]" />
         </div>
         <div className="min-w-0">

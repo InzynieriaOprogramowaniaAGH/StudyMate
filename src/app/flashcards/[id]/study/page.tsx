@@ -294,7 +294,7 @@ export default function FlashcardStudyPage() {
             </div>
 
             {/* Progress Bar - shows how many cards are known */}
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[var(--color-bg-light)] rounded-full overflow-hidden">
               <motion.div
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
@@ -312,7 +312,7 @@ export default function FlashcardStudyPage() {
           >
             <motion.div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="flex-1 relative cursor-pointer min-h-[400px] bg-slate-900/50 border border-slate-800 rounded-xl p-8 flex items-center justify-center"
+              className="flex-1 relative cursor-pointer min-h-[400px] bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-8 flex items-center justify-center"
               style={{
                 perspective: "1000px",
               }}
@@ -386,7 +386,7 @@ export default function FlashcardStudyPage() {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleSpeak}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
                 >
                   <Volume2 className="w-4 h-4" />
                   {t("listen")}
@@ -424,7 +424,7 @@ export default function FlashcardStudyPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 + idx * 0.05 }}
-                className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center"
+                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-4 text-center"
               >
                 <p className={`text-2xl font-bold ${stat.color} mb-1`}>{stat.value}</p>
                 <p className="text-xs text-[var(--color-muted)]">{stat.label}</p>
@@ -442,7 +442,7 @@ export default function FlashcardStudyPage() {
             {/* Restart Button */}
             <button
               onClick={handleRestart}
-              className="flex items-center justify-center gap-2 px-4 py-2 border border-slate-700 text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               {t("restart")}

@@ -223,7 +223,7 @@ export default function ProgressPage() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.1 + idx * 0.05 }}
-                      className={`bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-4 ${
+                      className={`bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-4 ${
                         stat.highlight
                           ? "shadow-lg shadow-[var(--color-primary)]/10"
                           : ""
@@ -252,7 +252,7 @@ export default function ProgressPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
               >
                 <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
                   {t("charts.quizScoresTrend")}
@@ -305,7 +305,7 @@ export default function ProgressPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
               >
                 <div className="flex items-center gap-2 mb-6">
                   <Calendar className="w-5 h-5 text-[var(--color-primary)]" />

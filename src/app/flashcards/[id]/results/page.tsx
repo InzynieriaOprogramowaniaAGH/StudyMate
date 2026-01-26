@@ -78,7 +78,7 @@ export default function FlashcardResultsPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-slate-900/50 border border-slate-800 rounded-xl p-8 mb-6 text-center"
+            className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-8 mb-6 text-center"
           >
             {/* Trophy Icon */}
             <div className="flex justify-center mb-4">
@@ -115,14 +115,14 @@ export default function FlashcardResultsPage() {
               </Link>
               <Link
                 href="/notes"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-[var(--color-text)] rounded-lg hover:bg-slate-700 transition font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-bg-darker)] transition font-medium"
               >
                 <FileText className="w-4 h-4" />
                 {t("viewNotes")}
               </Link>
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-[var(--color-text)] rounded-lg hover:bg-slate-700 transition font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-bg-darker)] transition font-medium"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 {t("dashboard")}
@@ -138,7 +138,7 @@ export default function FlashcardResultsPage() {
             className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6"
           >
             {/* Known Cards */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+            <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-4">
               <div className="flex items-center gap-2 text-[var(--color-muted)] mb-2">
                 <CheckCircle className="w-4 h-4 text-[var(--color-success)]" />
                 <span className="text-sm">{t("known")}</span>
@@ -149,7 +149,7 @@ export default function FlashcardResultsPage() {
             </div>
 
             {/* Needs Review */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+            <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-4">
               <div className="flex items-center gap-2 text-[var(--color-muted)] mb-2">
                 <XCircle className="w-4 h-4 text-[var(--color-error)]" />
                 <span className="text-sm">{t("needsReview")}</span>
@@ -160,7 +160,7 @@ export default function FlashcardResultsPage() {
             </div>
 
             {/* Time Spent */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+            <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-4">
               <div className="flex items-center gap-2 text-[var(--color-muted)] mb-2">
                 <Clock className="w-4 h-4" />
                 <span className="text-sm">{t("time")}</span>
@@ -176,7 +176,7 @@ export default function FlashcardResultsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-6"
+            className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 mb-6"
           >
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-[var(--color-primary)]" />
@@ -196,7 +196,7 @@ export default function FlashcardResultsPage() {
                   {percentage}%
                 </span>
               </div>
-              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-[var(--color-bg-light)] rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${percentage}%` }}
@@ -212,7 +212,7 @@ export default function FlashcardResultsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-6"
+            className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 mb-6"
           >
             <div className="flex items-center gap-2 mb-4">
               <BookOpen className="w-5 h-5 text-[var(--color-primary)]" />
@@ -245,7 +245,7 @@ export default function FlashcardResultsPage() {
           >
             <Link
               href="/dashboard"
-              className="px-6 py-2 border border-slate-700 text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center justify-center gap-2"
+              className="px-6 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4" />
               {t("backToHome")}

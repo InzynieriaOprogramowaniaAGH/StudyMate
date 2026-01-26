@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -158,7 +158,7 @@ export default function DashboardPage() {
         {/* stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 mb-6">
           {stats.map((s, i) => (
-            <Card key={i} className="bg-[var(--color-bg-light)] border-[var(--color-border)] shadow-none p-0">
+            <Card key={i} className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl shadow-none p-0">
               <CardHeader className="p-4 sm:p-3 pb-2">
                 <CardTitle className="text-[10px] text-[var(--color-text)] opacity-70 font-medium">{s.title}</CardTitle>
               </CardHeader>
@@ -175,7 +175,7 @@ export default function DashboardPage() {
           {/* LEFT (main) */}
           <div className="md:col-span-2 flex flex-col gap-6 md:gap-4">
             {/* Quick Actions */}
-            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)]">
+            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl">
               <CardHeader className="p-4 sm:p-3 pb-2">
                 <CardTitle className="text-sm font-semibold">{t("quickActions.title")}</CardTitle>
                 <p className="text-xs text-[var(--color-muted)] mt-1">{t("quickActions.subtitle")}</p>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
                     <a
                       key={i}
                       href={a.href}
-                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 px-4 rounded-md bg-[var(--color-bg-light)] border border-[var(--color-border)] hover:bg-[var(--color-bg-light)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
+                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 px-4 rounded-xl bg-[var(--color-bg-light)] border border-[var(--color-border)] hover:bg-[var(--color-bg-darker)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
                     >
                       <div className="rounded-full w-9 h-9 flex items-center justify-center bg-[var(--color-primary)]/10">
                         {a.icon}
@@ -200,13 +200,13 @@ export default function DashboardPage() {
             </Card>
 
             {/* Recent Notes*/}
-            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] flex-1">
+            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl flex-1">
               <CardHeader className="flex flex-row justify-between items-start p-4 sm:p-3 pb-2">
                 <div className="flex-1">
                   <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("recentNotes.title")}</CardTitle>
                   <p className="text-xs text-[var(--color-muted)] mt-1">{t("recentNotes.subtitle")}</p>
                 </div>
-                <a href="/notes" className="text-[var(--color-white)] text-xs hover:underline font-medium whitespace-nowrap ml-4">{t("recentNotes.viewAll")}</a>
+                <a href="/notes" className="text-[var(--color-black)] text-xs hover:underline font-medium whitespace-nowrap ml-4">{t("recentNotes.viewAll")}</a>
               </CardHeader>
 
               {/* Removed overflow */}
@@ -214,7 +214,7 @@ export default function DashboardPage() {
                 {recentNotes.length > 0 ? recentNotes.map((n, i) => (
                                     <article
                     key={n.id}
-                    className="bg-[var(--color-bg-light)] rounded-md p-4 sm:p-3 flex flex-col sm:flex-row gap-3 border border-[var(--color-border)]"
+                    className="bg-[var(--color-bg-light)] rounded-xl p-4 sm:p-3 flex flex-col sm:flex-row gap-3 border border-[var(--color-border)]"
                   >
                     {/* Icon */}
                     <div className="flex-shrink-0">
@@ -255,7 +255,7 @@ export default function DashboardPage() {
           {/* RIGHT (sidebar) */}
           <div className="flex flex-col gap-6 md:gap-4">
             {/* Today's Goal */}
-            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)]">
+            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl">
               <CardHeader className="p-4 sm:p-3 pb-2">
                 <CardTitle className="text-sm font-semibold">{t("todaysGoal.title")}</CardTitle>
               </CardHeader>
@@ -269,7 +269,7 @@ export default function DashboardPage() {
             </Card>
 
             {/* Upcoming Reviews */}
-            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] mt-4 md:mt-0">
+            <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl mt-4 md:mt-0">
               <CardHeader className="p-4 sm:p-3 pb-2">
                 <CardTitle className="text-sm font-semibold text-[var(--color-text)]">{t("upcomingReviews.title")}</CardTitle>
               </CardHeader>

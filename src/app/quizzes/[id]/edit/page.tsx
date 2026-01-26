@@ -338,7 +338,7 @@ export default function EditQuizPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+              className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
             >
               <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">
                 {t("creation.quizInfo")}
@@ -419,7 +419,7 @@ export default function EditQuizPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + qIndex * 0.05 }}
-                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-[var(--color-text)]">

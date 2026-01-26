@@ -123,7 +123,7 @@ export default function LogoutConfirm({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative z-10 w-[min(92%,520px)] mx-4 rounded-2xl bg-[var(--color-bg-light)] p-6 shadow-2xl"
+        className="relative z-10 w-[min(92%,520px)] mx-4 rounded-2xl bg-[var(--color-bg)] border border-[var(--color-border)] p-6 shadow-2xl"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <h3 className="text-lg font-semibold mb-2 text-[var(--color-text)]">{t("title")}</h3>
@@ -134,7 +134,7 @@ export default function LogoutConfirm({
             type="button"
             onMouseDown={(ev) => ev.stopPropagation()}
             onClick={() => closeModal()}
-            className="px-4 py-2 rounded-lg border border-[var(--color-border)]"
+            className="px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-light)] hover:bg-[var(--color-bg-darker)] transition"
             disabled={loading}
           >
             {t("cancel")}

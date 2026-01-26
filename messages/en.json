@@ -23,7 +23,8 @@
     "login": "Log in",
     "register": "Get Started",
     "logout": "Logout",
-    "changeLanguage": "Change language"
+    "changeLanguage": "Change language",
+    "settings": "Settings"
   },
   "hero": {
     "badge": "AI-Powered Learning",
