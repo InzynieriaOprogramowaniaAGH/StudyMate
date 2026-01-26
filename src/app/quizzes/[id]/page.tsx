@@ -431,19 +431,6 @@ export default function QuizPage() {
                   {isLastQuestion ? t("questionPage.finish") : t("questionPage.next")}
                 </button>
               )}
-              {currentQuestion > 0 && !isAnswered && (
-                <button
-                  onClick={() => {
-                    setCurrentQuestion(currentQuestion - 1);
-                    setSelectedAnswer(answers[currentQuestion - 1] ?? -1);
-                    setShowFeedback(false);
-                    setIsAnswered(false);
-                  }}
-                  className="px-6 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-bg-darker)] transition font-medium"
-                >
-                  {t("questionPage.previous")}
-                </button>
-              )}
             </div>
           </motion.div>
         </div>
