@@ -50,11 +50,20 @@ export async function POST(req: NextRequest) {
         const name = (file as any).name || "plik";
         if (file.type === "application/pdf") {
           try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const pdfParse = require("pdf-parse/lib/pdf-parse.js");
-            const pdfData: any = await pdfParse(fileBuffer);
-            const text = (pdfData?.text ?? "").trim();
-            if (text) parts.push(`--- PDF: ${name} ---\n${text}`);
+            const { extractText } = await import("unpdf");
+            const uint8Array = new Uint8Array(fileBuffer);
+            const result = await extractText(uint8Array);
+            
+            let text = '';
+            if (typeof result === 'string') {
+              text = result;
+            } else if (result && typeof result === 'object') {
+              text = String(result.text || result.contents || '');
+            }
+            
+            if (text && text.trim()) {
+              parts.push(`--- PDF: ${name} ---\n${text.trim()}`);
+            }
           } catch (err) {
             console.error("PDF parsing error:", err);
           }
