@@ -23,7 +23,8 @@
     "login": "Zaloguj się",
     "register": "Rozpocznij",
     "logout": "Wyloguj się",
-    "changeLanguage": "Zmień język"
+    "changeLanguage": "Zmień język",
+    "settings": "Ustawienia"
   },
   "hero": {
     "badge": "Nauka wspierana przez AI",

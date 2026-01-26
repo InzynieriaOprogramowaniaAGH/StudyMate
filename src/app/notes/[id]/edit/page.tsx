@@ -229,7 +229,7 @@ export default function EditNotePage() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
                 placeholder={t("new.noteTitlePlaceholder")}
                 required
               />
@@ -244,7 +244,7 @@ export default function EditNotePage() {
                 name="subject"
                 value={formData.subject}
                 onChange={handleInputChange}
-                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition"
               >
                 <option value="">{t("new.selectSubject")}</option>
                 {subjects.map((subj) => (
@@ -264,7 +264,7 @@ export default function EditNotePage() {
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
+                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
                 placeholder={t("new.descriptionPlaceholder")}
                 rows={3}
               />
@@ -279,7 +279,7 @@ export default function EditNotePage() {
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
-                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-vertical font-mono text-sm"
+                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition resize-vertical font-mono text-sm"
                 placeholder={t("new.contentPlaceholder")}
                 rows={12}
                 required
@@ -304,7 +304,7 @@ export default function EditNotePage() {
               </button>
               <Link
                 href={`/notes/${noteId}`}
-                className="flex items-center justify-center px-6 py-3 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg font-medium text-[var(--color-text)] hover:border-[var(--color-primary)] transition"
+                className="flex items-center justify-center px-6 py-3 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl font-medium text-[var(--color-text)] hover:bg-[var(--color-bg-darker)] transition"
               >
                 {t("new.cancel")}
               </Link>

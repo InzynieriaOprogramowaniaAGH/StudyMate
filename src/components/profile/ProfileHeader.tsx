@@ -87,7 +87,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
       <div className="flex flex-col items-center space-y-3 sm:space-y-4">
         {/* Avatar */}
         <div className="relative group cursor-pointer" onClick={handleClick}>
-          <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-[var(--color-bg-darker)] flex items-center justify-center flex-shrink-0">
+          <div className="w-20 sm:w-24 h-20 sm:h-24 rounded-full overflow-hidden border-2 border-[var(--color-border)] bg-[var(--color-bg-light)] flex items-center justify-center flex-shrink-0">
             {uploading ? (
               <Loader2 className="animate-spin text-[var(--color-primary)] w-6 h-6 sm:w-8 sm:h-8" />
             ) : (

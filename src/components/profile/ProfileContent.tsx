@@ -35,7 +35,7 @@ export default function ProfileContent({ user }: { user: any }) {
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 min-w-0 py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium rounded-lg transition-all ${
                 activeTab === tab.key
-                  ? "bg-[var(--color-primary)] text-[var(--color-bg)] shadow-inner"
+                  ? "bg-[var(--color-primary)] text-white shadow-inner"
                   : "text-[var(--color-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
               }`}
             >

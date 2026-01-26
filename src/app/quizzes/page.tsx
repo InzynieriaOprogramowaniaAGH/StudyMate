@@ -254,7 +254,7 @@ export default function QuizzesPage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.1 + idx * 0.05 }}
-                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <IconComponent className="w-8 h-8 text-[var(--color-primary)]" />
@@ -282,8 +282,8 @@ export default function QuizzesPage() {
                 onClick={() => setViewMode("all")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "all"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("allQuizzes")}
@@ -292,8 +292,8 @@ export default function QuizzesPage() {
                 onClick={() => setViewMode("my")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "my"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("myQuizzes")}
@@ -315,7 +315,7 @@ export default function QuizzesPage() {
                 placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)]"
+                className="w-full pl-10 pr-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
           </motion.div>
@@ -374,7 +374,7 @@ export default function QuizzesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 + idx * 0.05 }}
-                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-primary)]/50 transition-all"
+                className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 hover:border-[var(--color-primary)]/50 transition-all"
               >
                 <div className="flex flex-col gap-4">
                   {/* Header */}
@@ -384,7 +384,7 @@ export default function QuizzesPage() {
                         <h3 className="text-lg font-semibold text-[var(--color-text)]">
                           {quiz.title}
                         </h3>
-                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 border border-slate-700 ${
+                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 border border-[var(--color-border)] ${
                           quiz.isPrivate 
                             ? 'bg-[var(--color-muted)]/10 text-[var(--color-muted)]'
                             : 'bg-[var(--color-primary-10)] text-[var(--color-primary)]'

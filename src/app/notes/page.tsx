@@ -81,7 +81,7 @@ export default function NotesPage() {
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">{t("title")}</h1>
               <p className="text-xs sm:text-sm text-[var(--color-muted)] mt-1">{t("subtitle")}</p>
             </div>
-            <Link href="/notes/new" className="bg-[var(--color-primary)] text-black px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition flex items-center gap-2 w-fit">
+            <Link href="/notes/new" className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition flex items-center gap-2 w-fit">
               <span>+</span> {t("createNote")}
             </Link>
           </div>
@@ -93,8 +93,8 @@ export default function NotesPage() {
                 onClick={() => setViewMode("all")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "all"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("allNotes")}
@@ -103,8 +103,8 @@ export default function NotesPage() {
                 onClick={() => setViewMode("my")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "my"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("myNotes")}
@@ -121,13 +121,13 @@ export default function NotesPage() {
                 placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg pl-10 pr-4 py-2 text-sm text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl pl-10 pr-4 py-2 text-sm text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition"
               />
             </div>
             <div className="relative">
               <button 
                 onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] hover:border-[var(--color-primary)] transition whitespace-nowrap"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] hover:bg-[var(--color-bg-darker)] transition whitespace-nowrap"
               >
                 <Filter className="w-4 h-4" />
                 {t("filter")}
@@ -140,7 +140,7 @@ export default function NotesPage() {
                     initial={{ opacity: 0, scale: 0.95, y: -8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                    className="absolute right-0 top-full mt-2 w-48 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg overflow-hidden shadow-lg z-10"
+                    className="absolute right-0 top-full mt-2 w-48 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-lg z-10"
                   >
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
@@ -233,7 +233,7 @@ export default function NotesPage() {
                     transition={{ duration: 0.3 }}
                     whileHover={{ y: -4 }}
                   >
-                    <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] hover:border-[var(--color-primary)]/50 transition h-60 sm:h-64">
+                    <Card className="bg-[var(--color-bg-light)] border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)]/50 transition h-60 sm:h-64">
                     <CardContent className="p-4 sm:p-6 flex flex-col h-full">
                       {/* Header with subject and menu */}
                       <div className="flex justify-between items-start mb-4">
@@ -276,7 +276,7 @@ export default function NotesPage() {
                                 initial={{ opacity: 0, scale: 0.95, y: -8 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                                className="absolute right-0 top-full mt-2 w-40 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg overflow-hidden shadow-lg z-10"
+                                className="absolute right-0 top-full mt-2 w-40 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-lg z-10"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();

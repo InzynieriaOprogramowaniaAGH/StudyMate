@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Menu, X, User, Flame } from "lucide-react";
 import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import GB from "country-flag-icons/react/3x2/GB";
 import PL from "country-flag-icons/react/3x2/PL";
 import { useLocale, useTranslations } from "next-intl";
-import { locales, type Locale } from "@/i18n/config";
+import { type Locale } from "@/i18n/config";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -21,12 +21,8 @@ export default function Header() {
   const t = useTranslations("nav");
 
   const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [logoutRequested, setLogoutRequested] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
-  const avatarRef = useRef<HTMLButtonElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
 
   const locale = useLocale() as Locale;
   const [isPending, startTransition] = useTransition();
@@ -39,14 +35,8 @@ export default function Header() {
     });
   };
 
-  const closeAllMenus = () => {
-    setMenuOpen(false);
-    setMenuPos(null);
-    setOpen(false);
-  };
-
   useEffect(() => {
-    closeAllMenus();
+    setOpen(false);
   }, [pathname]);
 
   // Fetch current streak from stats API
@@ -68,49 +58,21 @@ export default function Header() {
     }
   }, [isAuthenticated]);
 
-  const openMenuAtAvatar = () => {
-    const btn = avatarRef.current;
-    if (!btn) {
-      setMenuPos({ top: 64, left: window.innerWidth - 200 });
-    } else {
-      const rect = btn.getBoundingClientRect();
-      const top = rect.bottom + 8;
-      const left = rect.right - 176;
-      setMenuPos({ top, left });
-    }
-    setMenuOpen(true);
-  };
-
-  const toggleMenu = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    e?.preventDefault();
-    if (!menuOpen) openMenuAtAvatar();
-    else closeAllMenus();
-  };
-
+  // Close menu on escape key
   useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      const target = e.target as Node | null;
-      if (menuOpen) {
-        if (avatarRef.current?.contains(target) || menuRef.current?.contains(target)) return;
-        closeAllMenus();
-      }
-    }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") closeAllMenus();
+      if (e.key === "Escape") setOpen(false);
     }
-    document.addEventListener("click", onDocClick);
     document.addEventListener("keydown", onKey);
     return () => {
-      document.removeEventListener("click", onDocClick);
       document.removeEventListener("keydown", onKey);
     };
-  }, [menuOpen]);
+  }, []);
 
   const requestLogout = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     e?.preventDefault();
-    closeAllMenus();
+    setOpen(false);
     setTimeout(() => setLogoutRequested(true), 10);
   };
 
@@ -132,215 +94,186 @@ export default function Header() {
     }
   };
 
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   const avatarUrl = session?.user?.image;
 
   return (
     <>
-      <header className="flex justify-between items-center px-6 md:px-8 py-4 border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
+      <header className="relative flex items-center justify-center px-6 md:px-8 py-5 border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
+        {/* Burger menu button - always visible on left */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="absolute left-6 text-[var(--color-text)] opacity-70 hover:opacity-100 transition"
+          aria-label="Toggle menu"
+          type="button"
+        >
+          <Menu size={28} />
+        </button>
+
+        {/* Centered app name - always visible */}
         <Link
           href="/"
-          className="text-2xl font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition"
+          className="text-4xl md:text-5xl font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition leading-relaxed pb-6"
         >
           StudyMate
         </Link>
 
-        <nav className="hidden md:flex space-x-6 items-center">
-          {isAuthenticated ? (
-            <>
-              <Link href="/dashboard" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("dashboard")}
-              </Link>
-              <Link href="/notes" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("notes")}
-              </Link>
-              <Link href="/flashcards" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("flashcards")}
-              </Link>
-              <Link href="/quizzes" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("quizzes")}
-              </Link>
-              <Link href="/progress" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("progress")}
-              </Link>
-              <ThemeToggle />
-              <div className="flex items-center gap-3 mr-2">
-
-                <button
-                  onClick={toggleLanguage}
-                  disabled={isPending}
-                  className={`w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
-                  title={t("changeLanguage")}
-                >
-                  <div className="w-full h-full flex items-center justify-center scale-150">
-                    {locale === "en" ? <GB /> : <PL />}
-                  </div>
-                </button>
-
-                <div className="flex items-center justify-center w-10 h-10 bg-[var(--color-bg)] rounded-full text-[var(--color-text)] text-base">
-                  <Flame className="w-8 h-8 text-[var(--color-primary)]" /> {currentStreak}
-
-                </div>
-              </div>
-              <div className="relative">
-                <button
-                  ref={avatarRef}
-                  type="button"
-                  onMouseDown={(ev) => ev.stopPropagation()}
-                  onClick={toggleMenu}
-                  className="w-10 h-10 rounded-full overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-primary)] transition"
-                  aria-expanded={menuOpen}
-                  aria-haspopup="true"
-                >
-                  {avatarUrl ? (
-                    <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[var(--color-bg-darker)] text-[var(--color-text)]">
-                      <User size={20} />
-                    </div>
-                  )}
-                </button>
-
-                <AnimatePresence>
-                  {menuOpen && menuPos && (
-                    <Portal>
-                      <motion.div
-                        ref={menuRef}
-                        style={{
-                          position: "fixed",
-                          top: `${Math.max(8, menuPos.top)}px`,
-                          left: `${Math.max(8, menuPos.left)}px`,
-                          width: 176,
-                        }}
-                        className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-light)]/95 backdrop-blur-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] overflow-hidden z-[99999]"
-                        initial={{ opacity: 0, y: -12, scale: 0.92 }}
-                        animate={{
-                          opacity: 1,
-                          y: 0,
-                          scale: 1,
-                          transition: { duration: 0.25, ease: "easeOut" },
-                        }}
-                        exit={{
-                          opacity: 0,
-                          y: -10,
-                          scale: 0.95,
-                          transition: { duration: 0.18, ease: "easeInOut" },
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="flex flex-col p-2">
-                          {[{ href: "/profile", label: t("profile") }].map((item) => (
-                            <GlowItem key={item.href}>
-                              <Link
-                                href={item.href}
-                                onClick={() => closeAllMenus()}
-                                className="block px-3 py-2 text-[var(--color-text)] rounded-lg transition"
-                              >
-                                {item.label}
-                              </Link>
-                            </GlowItem>
-                          ))}
-
-                          <GlowItem>
-                            <button
-                              onClick={requestLogout}
-                              className="w-full text-left px-3 py-2 text-red-400 rounded-lg transition"
-                            >
-                              {t("logout")}
-                            </button>
-                          </GlowItem>
-                        </div>
-                      </motion.div>
-                    </Portal>
-                  )}
-                </AnimatePresence>
-              </div>
-            </>
-          ) : (
-            <>
-              <Link href="/auth/login" className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition">
-                {t("login")}
-              </Link>
-              <Link
-                href="/auth/register"
-                className="text-black bg-[var(--color-primary)] px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition"
-              >
-                {t("register")}
-              </Link>
-            </>
-          )}
-        </nav>
-
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-[var(--color-text)] opacity-70 hover:opacity-100 transition"
-          aria-label="Toggle menu"
-          type="button"
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Streak indicator on right for authenticated users */}
+        {isAuthenticated && (
+          <div className="absolute right-6 flex items-center justify-center gap-1 text-[var(--color-text)] text-lg font-medium">
+            <Flame className="w-6 h-6 text-[var(--color-primary)]" />
+            <span>{currentStreak}</span>
+          </div>
+        )}
       </header>
 
-      {/* Mobile Menu */}
+      {/* Backdrop overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-[var(--color-bg)] border-b border-[var(--color-border)] overflow-hidden"
+            className="fixed inset-0 bg-black/60 z-[60]"
+            onClick={() => setOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar Drawer */}
+      <AnimatePresence>
+        {open && (
+          <motion.aside
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-0 left-0 bottom-0 w-[280px] bg-[var(--color-bg)] border-r border-[var(--color-border)] z-[70] flex flex-col"
           >
-            <nav className="flex flex-col px-6 py-4 space-y-3">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-end p-4 border-b border-[var(--color-border)]">
+              <button
+                onClick={() => setOpen(false)}
+                className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition p-2 rounded-lg hover:bg-[var(--color-bg-light)]"
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Navigation Content */}
+            <nav className="flex-1 overflow-y-auto p-4">
               {isAuthenticated ? (
-                <>
+                <div className="flex flex-col space-y-1">
+                  {/* Profile Section at top */}
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 text-[var(--color-text)] hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg mb-4"
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--color-border)]">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-[var(--color-bg-darker)] text-[var(--color-text)]">
+                          <User size={24} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-[var(--color-text)]">
+                        {session?.user?.name || t("profile")}
+                      </span>
+                      <span className="text-sm text-[var(--color-muted)]">
+                        {t("profile")}
+                      </span>
+                    </div>
+                  </Link>
+
+                  {/* Divider */}
+                  <div className="border-t border-[var(--color-border)] my-2" />
+
+                  {/* Navigation Links */}
                   <Link
                     href="/dashboard"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
                     {t("dashboard")}
                   </Link>
                   <Link
                     href="/notes"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
                     {t("notes")}
                   </Link>
                   <Link
                     href="/flashcards"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
                     {t("flashcards")}
                   </Link>
                   <Link
                     href="/quizzes"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
                     {t("quizzes")}
                   </Link>
                   <Link
                     href="/progress"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
                     {t("progress")}
                   </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2">
                   <Link
-                    href="/profile"
+                    href="/auth/login"
                     onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
+                    className="text-[var(--color-text)] opacity-80 hover:opacity-100 hover:bg-[var(--color-bg-light)] transition py-3 px-3 rounded-lg text-base"
                   >
-                    {t("profile")}
+                    {t("login")}
                   </Link>
-                  <div className="flex items-center gap-4 py-2">
+                  <Link
+                    href="/auth/register"
+                    onClick={() => setOpen(false)}
+                    className="text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition py-3 px-3 rounded-lg text-base text-center font-medium"
+                  >
+                    {t("register")}
+                  </Link>
+                </div>
+              )}
+            </nav>
+
+            {/* Drawer Footer */}
+            {isAuthenticated && (
+              <div className="p-4 border-t border-[var(--color-border)]">
+                {/* Settings Row */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-[var(--color-muted)]">{t("settings")}</span>
+                  <div className="flex items-center gap-2">
                     <ThemeToggle />
                     <button
                       onClick={toggleLanguage}
                       disabled={isPending}
-                      className={`w-10 h-10 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
+                      className={`w-9 h-9 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
                       title={t("changeLanguage")}
                     >
                       <div className="w-full h-full flex items-center justify-center scale-150">
@@ -348,36 +281,18 @@ export default function Header() {
                       </div>
                     </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      setOpen(false);
-                      requestLogout();
-                    }}
-                    className="text-red-400 opacity-70 hover:opacity-100 transition py-2 text-left"
-                  >
-                    {t("logout")}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setOpen(false)}
-                    className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition py-2"
-                  >
-                    {t("login")}
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    onClick={() => setOpen(false)}
-                    className="text-black bg-[var(--color-primary)] px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition text-center"
-                  >
-                    {t("register")}
-                  </Link>
-                </>
-              )}
-            </nav>
-          </motion.div>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={requestLogout}
+                  className="w-full text-red-400 hover:bg-red-500/10 transition py-3 px-3 rounded-lg text-base text-left"
+                >
+                  {t("logout")}
+                </button>
+              </div>
+            )}
+          </motion.aside>
         )}
       </AnimatePresence>
 
@@ -392,62 +307,5 @@ export default function Header() {
         </Portal>
       )}
     </>
-  );
-}
-
-function GlowItem({ children }: { children: React.ReactNode }) {
-  const [hovered, setHovered] = useState(false);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [target, setTarget] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (!hovered) return;
-    const anim = requestAnimationFrame(() => {
-      setCoords((prev) => ({
-        x: prev.x + (target.x - prev.x) * 0.15,
-        y: prev.y + (target.y - prev.y) * 0.15,
-      }));
-    });
-    return () => cancelAnimationFrame(anim);
-  }, [coords, target, hovered]);
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setTarget({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  return (
-    <motion.div
-      className="relative rounded-md overflow-hidden group cursor-pointer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onMouseMove={handleMove}
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 220, damping: 18 }}
-    >
-      <motion.div
-        className="absolute inset-0 bg-white/5 mix-blend-overlay"
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
-      />
-
-      <motion.div
-        className="absolute inset-0 pointer-events-none rounded-md"
-        style={{
-          background: hovered
-            ? `radial-gradient(120px circle at ${coords.x}px ${coords.y}px, rgba(255,255,255,0.15), transparent 70%)`
-            : "transparent",
-        }}
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
-      />
-
-      <motion.div
-        className="relative z-10 text-[15px] text-[var(--color-text)] px-3 py-1.5 font-medium select-none transition-colors duration-300 opacity-70 group-hover:opacity-100"
-        animate={{ opacity: hovered ? 1 : 0.7 }}
-      >
-        {children}
-      </motion.div>
-    </motion.div>
   );
 }

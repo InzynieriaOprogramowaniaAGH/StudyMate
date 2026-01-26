@@ -263,7 +263,7 @@ export default function QuizPage() {
               </div>
             </div>
             {/* Progress Bar */}
-            <div className="mt-4 h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div className="mt-4 h-2 bg-[var(--color-bg-light)] rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${((currentQuestion + 1) / quiz.totalQuestions) * 100}%` }}
@@ -278,7 +278,7 @@ export default function QuizPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-8"
+            className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 mb-8"
           >
             {/* Question Image */}
             {question.questionImage && (
@@ -314,7 +314,7 @@ export default function QuizPage() {
                           ? "bg-[var(--color-error)]/20 border-[var(--color-error)] text-[var(--color-error)]"
                           : isSelected
                             ? "bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-primary)]"
-                            : "bg-slate-900/50 border-slate-800 text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                            : "bg-[var(--color-bg-light)] border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
                     } ${isAnswered ? "cursor-default" : "cursor-pointer"}`}
                   >
                     <div className="space-y-2">
@@ -382,7 +382,7 @@ export default function QuizPage() {
                     setShowFeedback(false);
                     setIsAnswered(false);
                   }}
-                  className="px-6 py-2 bg-slate-800 border border-slate-700 text-[var(--color-text)] rounded-lg hover:bg-slate-700 transition font-medium"
+                  className="px-6 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-bg-darker)] transition font-medium"
                 >
                   {t("questionPage.previous")}
                 </button>

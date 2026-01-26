@@ -170,7 +170,7 @@ export default function FlashcardsPage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.15 + idx * 0.05 }}
-                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6"
+                  className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <Icon className="w-8 h-8 text-[var(--color-primary)]" />
@@ -198,8 +198,8 @@ export default function FlashcardsPage() {
                 onClick={() => setViewMode("all")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "all"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("allFlashcards")}
@@ -208,8 +208,8 @@ export default function FlashcardsPage() {
                 onClick={() => setViewMode("my")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   viewMode === "my"
-                    ? "bg-[var(--color-primary)] text-black"
-                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "bg-[var(--color-bg-light)] text-[var(--color-text)] hover:bg-[var(--color-bg-darker)]"
                 }`}
               >
                 {t("myFlashcards")}
@@ -232,7 +232,7 @@ export default function FlashcardsPage() {
                 placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl text-[var(--color-text)] placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
               />
             </div>
           </motion.div>
@@ -271,7 +271,7 @@ export default function FlashcardsPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.35 + idx * 0.05 }}
-                      className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 hover:border-[var(--color-primary)] transition-colors cursor-pointer"
+                      className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 hover:border-[var(--color-primary)] transition-colors cursor-pointer"
                       onClick={() => router.push(`/flashcards/${set.id}/study`)}
                     >
                       {/* Header */}
@@ -309,7 +309,7 @@ export default function FlashcardsPage() {
                             {cardsReviewedAtLeastOnce} / {set.cardCount}
                           </span>
                         </div>
-                        <div className="w-full h-2 bg-[var(--color-bg)] rounded-full overflow-hidden">
+                        <div className="w-full h-2 bg-[var(--color-bg-light)] rounded-full overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${progressPercent}%` }}
@@ -338,7 +338,7 @@ export default function FlashcardsPage() {
                             e.stopPropagation();
                             router.push(`/flashcards/${set.id}/edit`);
                           }}
-                          className="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text)] font-medium rounded-lg hover:border-[var(--color-primary)] transition-colors text-sm"
+                          className="px-4 py-2 bg-[var(--color-bg-light)] text-[var(--color-text)] font-medium rounded-lg hover:bg-[var(--color-bg-darker)] transition-colors text-sm"
                           title={t("edit.title") || "Edit"}
                         >
                           <Edit2 className="w-4 h-4" />
@@ -346,7 +346,7 @@ export default function FlashcardsPage() {
                         <button
                           onClick={(e) => handleDelete(set.id, e)}
                           disabled={deletingSetId === set.id}
-                          className="px-4 py-2 border border-[var(--color-border)] text-red-400 font-medium rounded-lg hover:border-red-400 hover:bg-red-500/10 transition-colors text-sm disabled:opacity-50"
+                          className="px-4 py-2 bg-[var(--color-bg-light)] text-red-400 font-medium rounded-lg hover:bg-red-500/20 transition-colors text-sm disabled:opacity-50"
                           title={t("confirmDelete") || "Delete"}
                         >
                           <Trash2 className="w-4 h-4" />

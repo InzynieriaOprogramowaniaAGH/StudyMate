@@ -223,7 +223,7 @@ export default function NoteDetailPage() {
                     initial={{ opacity: 0, scale: 0.95, y: -8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                    className="absolute right-0 top-full mt-2 w-40 bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg overflow-hidden shadow-lg z-10"
+                    className="absolute right-0 top-full mt-2 w-40 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-lg z-10"
                   >
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
@@ -268,7 +268,7 @@ export default function NoteDetailPage() {
               className="lg:col-span-2 space-y-6"
             >
               {/* Note Content Card */}
-              <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 sm:p-8">
+              <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 sm:p-8">
                 <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">{t("noteContent")}</h2>
                 <div className="text-[var(--color-text)] whitespace-pre-wrap leading-relaxed text-sm sm:text-base">
                   {note.content}
@@ -300,7 +300,7 @@ export default function NoteDetailPage() {
               className="lg:col-span-1"
             >
               {/* Study Materials Card */}
-              <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-lg p-6 sticky top-24">
+              <div className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-xl p-6 sticky top-24">
                 <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">{t("studyMaterials")}</h3>
                 <p className="text-xs text-[var(--color-muted)] mb-6">
                   {t("aiGenerated")}
@@ -312,7 +312,7 @@ export default function NoteDetailPage() {
                   {(note.stats?.quizCount ?? 0) > 0 && (
                     <Link 
                       href="/quizzes"
-                      className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
+                      className="flex items-start gap-3 p-3 bg-[var(--color-bg-light)] rounded-xl hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         <HelpCircle className="w-5 h-5 text-[var(--color-primary)]" />
@@ -330,7 +330,7 @@ export default function NoteDetailPage() {
                   {(note.stats?.flashcardCount ?? 0) > 0 && (
                     <Link
                       href="/flashcards"
-                      className="flex items-start gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
+                      className="flex items-start gap-3 p-3 bg-[var(--color-bg-light)] rounded-xl hover:border-[var(--color-primary)] border border-[var(--color-border)] transition cursor-pointer group"
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         <BookOpen className="w-5 h-5 text-[var(--color-primary)]" />

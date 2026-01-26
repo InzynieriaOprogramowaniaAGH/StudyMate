@@ -11,7 +11,7 @@ export function BillingTab() {
       {/* Subscription Section */}
       <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-4">
-          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-light)] border border-[var(--color-border)] flex-shrink-0">
             <CreditCard size={18} className="text-[var(--color-primary)]" />
           </div>
           <div className="min-w-0">
@@ -22,7 +22,7 @@ export function BillingTab() {
           </div>
         </div>
 
-        <div className="border border-[var(--color-border)] rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 bg-[var(--color-bg-darker)] hover:border-[var(--color-primary-30)] transition gap-3">
+        <div className="border border-[var(--color-border)] rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 bg-[var(--color-bg-light)] hover:border-[var(--color-primary-30)] transition gap-3">
           <div className="min-w-0">
             <h3 className="font-semibold text-base sm:text-lg text-[var(--color-text)]">{t("subscription.proPlan")}</h3>
             <p className="text-xs sm:text-sm text-[var(--color-muted)]">{t("subscription.price")}</p>
@@ -60,7 +60,7 @@ export function BillingTab() {
       {/* Payment Method */}
       <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-4">
-          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-light)] border border-[var(--color-border)] flex-shrink-0">
             <CreditCard size={18} className="text-[var(--color-primary)]" />
           </div>
           <div className="min-w-0">
@@ -71,7 +71,7 @@ export function BillingTab() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-[var(--color-border)] rounded-xl p-3 sm:p-4 bg-[var(--color-bg-darker)] hover:border-[var(--color-primary-30)] transition mb-3 gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-[var(--color-border)] rounded-xl p-3 sm:p-4 bg-[var(--color-bg-light)] hover:border-[var(--color-primary-30)] transition mb-3 gap-2">
           <div className="min-w-0">
             <p className="text-[var(--color-text)] font-medium text-sm">•••• •••• •••• 4242</p>
             <p className="text-xs text-[var(--color-muted)]">{t("paymentMethod.expires")}</p>
@@ -89,7 +89,7 @@ export function BillingTab() {
       {/* Billing History */}
       <section className="bg-[var(--color-bg-light)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-4">
-          <div className="p-2 rounded-lg bg-[var(--color-bg-darker)] border border-[var(--color-border)] flex-shrink-0">
+          <div className="p-2 rounded-lg bg-[var(--color-bg-light)] border border-[var(--color-border)] flex-shrink-0">
             <Receipt size={18} className="text-[var(--color-primary)]" />
           </div>
           <div className="min-w-0">
@@ -119,7 +119,7 @@ export function BillingTab() {
                 <span className="text-xs text-[var(--color-primary)] border border-[var(--color-primary-30)] rounded-md px-2 py-0.5 bg-[var(--color-primary-10)] whitespace-nowrap">
                   {t("billingHistory.paid")}
                 </span>
-                <button className="px-2 py-1 text-xs font-medium rounded-md bg-[var(--color-bg-darker)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-primary-30)] hover:text-[var(--color-primary)] transition whitespace-nowrap">
+                <button className="px-2 py-1 text-xs font-medium rounded-md bg-[var(--color-bg-light)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-primary-30)] hover:text-[var(--color-primary)] transition whitespace-nowrap">
                   {t("billingHistory.download")}
                 </button>
               </div>
