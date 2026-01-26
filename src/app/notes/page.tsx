@@ -81,7 +81,7 @@ export default function NotesPage() {
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">{t("title")}</h1>
               <p className="text-xs sm:text-sm text-[var(--color-muted)] mt-1">{t("subtitle")}</p>
             </div>
-            <Link href="/notes/new" className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition flex items-center gap-2 w-fit">
+            <Link href="/notes/new" className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition flex items-center gap-2 w-fit cursor-pointer">
               <span>+</span> {t("createNote")}
             </Link>
           </div>
@@ -211,7 +211,7 @@ export default function NotesPage() {
               {!searchQuery && (
                 <Link
                   href="/notes/new"
-                  className="inline-block bg-[var(--color-primary)] text-black px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition"
+                  className="inline-block bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition cursor-pointer"
                 >
                   + {t("createNote")}
                 </Link>

@@ -291,7 +291,7 @@ export default function EditNotePage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-black rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? (
                   <>

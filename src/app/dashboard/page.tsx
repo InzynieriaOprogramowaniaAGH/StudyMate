@@ -187,7 +187,9 @@ export default function DashboardPage() {
                     <a
                       key={i}
                       href={a.href}
-                      className="flex flex-col items-center justify-center gap-2 py-5 sm:py-4 px-4 rounded-xl bg-[var(--color-bg-light)] border border-[var(--color-border)] hover:bg-[var(--color-bg-darker)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm text-[var(--color-text)]"
+                      className={`flex flex-col items-center justify-center gap-2 py-5 sm:py-4 px-4 rounded-xl bg-[var(--color-bg-light)] border border-[var(--color-border)] hover:bg-[var(--color-bg-darker)] hover:border-[var(--color-primary)] hover:shadow-lg hover:shadow-[var(--color-primary)]/20 transition text-sm ${
+                        a.href === "/notes/new" ? "text-white cursor-pointer" : "text-[var(--color-text)]"
+                      }`}
                     >
                       <div className="rounded-full w-9 h-9 flex items-center justify-center bg-[var(--color-primary)]/10">
                         {a.icon}

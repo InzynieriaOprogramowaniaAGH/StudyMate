@@ -447,7 +447,7 @@ export default function NewNotePage() {
                     disabled={isLoading}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-primary)] text-black px-6 py-3 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-primary)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Save className="w-5 h-5" />
                     {isLoading ? t("new.saving") : t("new.saveNote")}
@@ -483,8 +483,8 @@ export default function NewNotePage() {
                       type="button"
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
                         aiInputType === "text"
-                          ? "bg-[var(--color-primary)] text-black"
-                          : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                          ? "bg-[var(--color-primary)] text-white cursor-pointer"
+                          : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:bg-[var(--color-bg-darker)] cursor-pointer"
                       }`}
                       onClick={() => setAiInputType("text")}
                     >
@@ -495,8 +495,8 @@ export default function NewNotePage() {
                       type="button"
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
                         aiInputType === "file"
-                          ? "bg-[var(--color-primary)] text-black"
-                          : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                          ? "bg-[var(--color-primary)] text-white cursor-pointer"
+                          : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:bg-[var(--color-bg-darker)] cursor-pointer"
                       }`}
                       onClick={() => setAiInputType("file")}
                     >
@@ -529,7 +529,7 @@ export default function NewNotePage() {
                           // Clear input to allow reselection
                           if (aiFileRef.current) aiFileRef.current.value = "";
                         }}
-                        className="block w-full text-sm text-[var(--color-text)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--color-primary)] file:text-black hover:file:bg-[var(--color-primary-dark)]"
+                        className="block w-full text-sm text-[var(--color-text)] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--color-primary)] file:text-white hover:file:bg-[var(--color-primary-dark)]"
                       />
                       {/* Selected files list */}
                       <div className="mt-4 text-left">
@@ -579,7 +579,7 @@ export default function NewNotePage() {
                       disabled={aiLoading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-black rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Sparkles className="w-5 h-5" />
                       {aiLoading ? t("new.ai.generating") : t("new.ai.generateBtn")}

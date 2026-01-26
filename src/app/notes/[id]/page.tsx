@@ -204,7 +204,7 @@ export default function NoteDetailPage() {
             <div className="flex gap-2 flex-shrink-0 relative">
               <Link
                 href={`/notes/${noteId}/edit`}
-                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-black rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition whitespace-nowrap"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-medium hover:bg-[var(--color-primary-dark)] transition whitespace-nowrap"
               >
                 <Edit2 className="w-4 h-4" />
                 {t("edit")}
