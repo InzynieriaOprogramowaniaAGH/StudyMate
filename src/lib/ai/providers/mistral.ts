@@ -6,6 +6,8 @@ import {
   AIFlashcardResponse,
   AIQuizGenerationRequest,
   AIQuizResponse,
+  AINoteGenerationRequest,
+  AINoteResponse,
 } from "../types";
 
 /**
@@ -164,6 +166,69 @@ ${request.noteContent}`;
       title: String(parsed.title),
       description: parsed.description ? String(parsed.description) : undefined,
       questions,
+    };
+  }
+
+  async generateNote(
+    request: AINoteGenerationRequest
+  ): Promise<AINoteResponse> {
+    if (!this.client) {
+      throw new Error("Mistral API key not configured");
+    }
+
+    const prompt = `Jesteś ekspertem w tworzeniu zwięzłych, uporządkowanych notatek do nauki.
+Zwracaj wynik wyłącznie jako JSON z kluczami: title, subject, description, content.
+- title: krótki tytuł (max 120 znaków)
+- subject: nazwa przedmiotu/obszaru (np. Algebra, Analiza, Fizyka, Biologia)
+- description: 1-2 zdania streszczenia
+- content: notatka w Markdown, nagłówki + wypunktowania, bez nadmiarowych komentarzy.
+Nie duplikuj subject ani title wewnątrz content.
+
+Materiał wejściowy:
+---
+${request.inputText.slice(0, 5000)}
+---`;
+
+    const chatResponse = await this.client.chat.complete({
+      model: "mistral-large-latest",
+      messages: [
+        {
+          role: "system",
+          content: "Return only valid JSON with the described structure.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      responseFormat: { type: "json_object" },
+      temperature: 0.25,
+    });
+
+    const content = chatResponse.choices?.[0]?.message?.content;
+    if (!content) {
+      throw new Error("Empty response from Mistral");
+    }
+
+    const textContent = typeof content === "string" ? content : JSON.stringify(content);
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(textContent);
+    } catch (err) {
+      console.error("Failed to parse Mistral note response:", err, textContent);
+      throw new Error("Failed to parse AI response");
+    }
+
+    if (!parsed?.content) {
+      throw new Error("AI nie wygenerował zawartości");
+    }
+
+    return {
+      title: parsed.title || "",
+      subject: parsed.subject || "",
+      description: parsed.description || "",
+      content: parsed.content,
     };
   }
 }

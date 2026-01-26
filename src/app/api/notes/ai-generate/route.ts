@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOpenAI } from "@/lib/openai";
+import { getAllAvailableProviders } from "@/lib/ai";
 import sharp from "sharp";
 
 export const runtime = "nodejs";
@@ -131,64 +132,58 @@ Notatka wygenerowana w trybie mock na podstawie przesłanego materiału.`;
       return NextResponse.json({ content: mockContent });
     }
 
-    // Normalna ścieżka z OpenAI
-    const client = getOpenAI();
-    if (!client) {
+    // Wybierz dostępnego dostawcę AI z fallbackiem (OpenAI/Gemini/Claude/Mistral/Cohere)
+    const providers = getAllAvailableProviders();
+
+    if (providers.length === 0) {
       return NextResponse.json(
-        { error: "OpenAI API jest wyłączone (brak OPENAI_API_KEY)." },
+        { error: "Brak dostępnego dostawcy AI. Ustaw klucz API w .env" },
         { status: 503 }
       );
     }
 
-    // Prompt dla AI do generowania notatek w formacie JSON
-    const systemPrompt = `Jesteś ekspertem w tworzeniu zwięzłych, uporządkowanych notatek do nauki.
-Zwracaj wynik *wyłącznie* jako JSON z kluczami: title, subject, description, content.
-- title: krótki tytuł (max 120 znaków)
-- subject: nazwa przedmiotu/obszaru (np. Algebra, Analiza, Fizyka, Biologia)
-- description: 1-2 zdania streszczenia
-- content: notatka w Markdown, nagłówki + wypunktowania, bez nadmiarowych komentarzy.
-Nie duplikuj subject ani title wewnątrz content.`;
+    let result: { title: string; subject: string; description: string; content: string } | null = null;
+    let lastError: unknown;
 
-    const userPrompt = `Opracuj notatkę na podstawie materiału poniżej.
-Wypełnij pola title, subject, description oraz content (Markdown, zwięzły):
+    for (let i = 0; i < providers.length; i++) {
+      const provider = providers[i];
+      const providerName = provider?.constructor?.name || "UnknownProvider";
+      const isLast = i === providers.length - 1;
+      try {
+        result = await provider.generateNote({ inputText });
+        break;
+      } catch (error: any) {
+        lastError = error;
+        const message = error?.message || "";
+        const isQuota =
+          error?.status === 429 ||
+          error?.code === "insufficient_quota" ||
+          message.includes("429") ||
+          message.toLowerCase().includes("quota");
 
----
-${inputText.slice(0, 5000)}
----`;
+        console.warn(`[AI][note] ${providerName} failed: ${message || error}`);
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.25,
-      max_tokens: 2000,
-    });
+        if (!isLast) {
+          console.warn("Trying next provider...");
+          continue;
+        }
 
-    const raw = completion.choices?.[0]?.message?.content ?? "";
-
-    let parsed: { title?: string; subject?: string; description?: string; content?: string } = {};
-    try {
-      parsed = JSON.parse(raw);
-    } catch (err) {
-      console.error("JSON parse error from AI response", err, raw);
+        if (isQuota) {
+          return NextResponse.json(
+            { error: "All AI providers are rate limited or out of quota. Add another key or wait." },
+            { status: 503 }
+          );
+        }
+        throw error;
+      }
     }
 
-    if (!parsed.content) {
-      return NextResponse.json(
-        { error: "AI nie wygenerował zawartości" },
-        { status: 500 }
-      );
+    if (!result) {
+      const message = lastError instanceof Error ? lastError.message : "AI generation failed";
+      return NextResponse.json({ error: message }, { status: 500 });
     }
 
-    return NextResponse.json({
-      title: parsed.title || "",
-      subject: parsed.subject || "",
-      description: parsed.description || "",
-      content: parsed.content,
-    });
+    return NextResponse.json(result);
   } catch (error: any) {
     console.error("AI note generation error:", error);
     return NextResponse.json(

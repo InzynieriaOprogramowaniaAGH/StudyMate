@@ -6,6 +6,24 @@ import { getAIProvider, getAllAvailableProviders } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
+function shuffleOptions(options: string[], correctAnswerIndex: number): {
+  shuffledOptions: string[];
+  newCorrectIndex: number;
+} {
+  const correct = options[correctAnswerIndex];
+  const shuffled = [...options];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return {
+    shuffledOptions: shuffled,
+    newCorrectIndex: Math.max(0, shuffled.indexOf(correct)),
+  };
+}
+
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -73,6 +91,19 @@ export async function POST(
       return NextResponse.json({ error: "No quiz generated" }, { status: 400 });
     }
 
+    // Shuffle options per question to randomize correct answer position
+    const shuffledQuestions = result.questions.map((q) => {
+      const { shuffledOptions, newCorrectIndex } = shuffleOptions(
+        q.options,
+        q.correctAnswerIndex
+      );
+      return {
+        question: q.question,
+        options: shuffledOptions,
+        correctAnswer: shuffledOptions[newCorrectIndex] || shuffledOptions[0],
+      };
+    });
+
     // Save quiz to database
     const created = await prisma.quiz.create({
       data: {
@@ -81,13 +112,9 @@ export async function POST(
         isPrivate: note.isPrivate,
         userId: note.user.id,
         noteId: note.id,
-        totalQuestions: result.questions.length,
+        totalQuestions: shuffledQuestions.length,
         questions: {
-          create: result.questions.map((q) => ({
-            question: q.question,
-            options: q.options,
-            correctAnswer: q.options[q.correctAnswerIndex] || q.options[0],
-          })),
+          create: shuffledQuestions,
         },
       },
       include: { questions: true },

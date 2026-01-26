@@ -6,6 +6,8 @@ import {
   AIFlashcardResponse,
   AIQuizGenerationRequest,
   AIQuizResponse,
+  AINoteGenerationRequest,
+  AINoteResponse,
 } from "../types";
 
 /**
@@ -156,6 +158,65 @@ ${request.noteContent}`;
       title: String(parsed.title),
       description: parsed.description ? String(parsed.description) : undefined,
       questions,
+    };
+  }
+
+  async generateNote(
+    request: AINoteGenerationRequest
+  ): Promise<AINoteResponse> {
+    if (!this.client) {
+      throw new Error("Cohere API key not configured");
+    }
+
+    const prompt = `Jesteś ekspertem w tworzeniu zwięzłych, uporządkowanych notatek do nauki.
+Zwracaj wynik wyłącznie jako JSON z kluczami: title, subject, description, content.
+- title: krótki tytuł (max 120 znaków)
+- subject: nazwa przedmiotu/obszaru (np. Algebra, Analiza, Fizyka, Biologia)
+- description: 1-2 zdania streszczenia
+- content: notatka w Markdown, nagłówki + wypunktowania, bez nadmiarowych komentarzy.
+Nie duplikuj subject ani title wewnątrz content.
+
+Materiał wejściowy:
+---
+${request.inputText.slice(0, 5000)}
+---`;
+
+    const response = await this.client.chat({
+      model: "command-r-plus-08-2024",
+      message: prompt,
+      preamble: "Return only valid JSON with the described structure.",
+      temperature: 0.25,
+    });
+
+    const text = response.text?.trim();
+    if (!text) {
+      throw new Error("Empty response from Cohere");
+    }
+
+    let cleanText = text;
+    if (cleanText.startsWith("```json")) {
+      cleanText = cleanText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+    } else if (cleanText.startsWith("```")) {
+      cleanText = cleanText.replace(/^```\s*/, "").replace(/\s*```$/, "");
+    }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(cleanText);
+    } catch (err) {
+      console.error("Failed to parse Cohere note response:", err, cleanText);
+      throw new Error("Failed to parse AI response");
+    }
+
+    if (!parsed?.content) {
+      throw new Error("AI nie wygenerował zawartości");
+    }
+
+    return {
+      title: parsed.title || "",
+      subject: parsed.subject || "",
+      description: parsed.description || "",
+      content: parsed.content,
     };
   }
 }

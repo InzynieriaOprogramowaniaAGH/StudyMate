@@ -6,6 +6,8 @@ import {
   AIFlashcardResponse,
   AIQuizGenerationRequest,
   AIQuizResponse,
+  AINoteGenerationRequest,
+  AINoteResponse,
 } from "../types";
 
 /**
@@ -168,6 +170,71 @@ ${request.noteContent}`;
       title: String(parsed.title),
       description: parsed.description ? String(parsed.description) : undefined,
       questions,
+    };
+  }
+
+  async generateNote(
+    request: AINoteGenerationRequest
+  ): Promise<AINoteResponse> {
+    if (!this.client) {
+      throw new Error("Claude API key not configured");
+    }
+
+    const prompt = `Jesteś ekspertem w tworzeniu zwięzłych, uporządkowanych notatek do nauki.
+Zwracaj wynik wyłącznie jako JSON z kluczami: title, subject, description, content.
+- title: krótki tytuł (max 120 znaków)
+- subject: nazwa przedmiotu/obszaru (np. Algebra, Analiza, Fizyka, Biologia)
+- description: 1-2 zdania streszczenia
+- content: notatka w Markdown, nagłówki + wypunktowania, bez nadmiarowych komentarzy.
+Nie duplikuj subject ani title wewnątrz content.
+
+Materiał wejściowy:
+---
+${request.inputText.slice(0, 5000)}
+---`;
+
+    const message = await this.client.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 4096,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.25,
+    });
+
+    const content = message.content[0];
+    if (content.type !== "text") {
+      throw new Error("Unexpected response type from Claude");
+    }
+
+    let text = content.text.trim();
+
+    if (text.startsWith("```json")) {
+      text = text.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+    } else if (text.startsWith("```")) {
+      text = text.replace(/^```\s*/, "").replace(/\s*```$/, "");
+    }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(text);
+    } catch (err) {
+      console.error("Failed to parse Claude note response:", err, text);
+      throw new Error("Failed to parse AI response");
+    }
+
+    if (!parsed?.content) {
+      throw new Error("AI nie wygenerował zawartości");
+    }
+
+    return {
+      title: parsed.title || "",
+      subject: parsed.subject || "",
+      description: parsed.description || "",
+      content: parsed.content,
     };
   }
 }

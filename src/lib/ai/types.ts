@@ -26,6 +26,10 @@ export interface AIQuizGenerationRequest {
   noteContent: string;
 }
 
+export interface AINoteGenerationRequest {
+  inputText: string;
+}
+
 export interface AIQuizQuestion {
   question: string;
   options: string[];
@@ -38,6 +42,13 @@ export interface AIQuizResponse {
   questions: AIQuizQuestion[];
 }
 
+export interface AINoteResponse {
+  title: string;
+  subject: string;
+  description: string;
+  content: string;
+}
+
 /**
  * Main AI Provider interface
  */
@@ -45,4 +56,5 @@ export interface IAIProvider {
   isAvailable(): boolean;
   generateFlashcards(req: AIFlashcardGenerationRequest): Promise<AIFlashcardResponse>;
   generateQuiz(req: AIQuizGenerationRequest): Promise<AIQuizResponse>;
+  generateNote(req: AINoteGenerationRequest): Promise<AINoteResponse>;
 }

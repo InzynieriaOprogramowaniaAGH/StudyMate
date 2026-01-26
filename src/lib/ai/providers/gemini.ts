@@ -6,6 +6,8 @@ import {
   AIFlashcardResponse,
   AIQuizGenerationRequest,
   AIQuizResponse,
+  AINoteGenerationRequest,
+  AINoteResponse,
 } from "../types";
 
 /**
@@ -140,6 +142,57 @@ ${req.noteContent}`;
       title: String(parsed.title),
       description: parsed.description ? String(parsed.description) : undefined,
       questions,
+    };
+  }
+
+  async generateNote(req: AINoteGenerationRequest): Promise<AINoteResponse> {
+    if (!this.client) {
+      throw new Error("Gemini API key not configured");
+    }
+
+    const prompt = `Jesteś ekspertem w tworzeniu zwięzłych, uporządkowanych notatek do nauki.
+Zwracaj wynik WYŁĄCZNIE jako JSON z kluczami: title, subject, description, content.
+- title: krótki tytuł (max 120 znaków)
+- subject: nazwa przedmiotu/obszaru (np. Algebra, Analiza, Fizyka, Biologia)
+- description: 1-2 zdania streszczenia
+- content: notatka w Markdown, nagłówki + wypunktowania, bez nadmiarowych komentarzy.
+Nie duplikuj subject ani title wewnątrz content.
+
+Materiał wejściowy:
+---
+${req.inputText.slice(0, 5000)}
+---
+
+Zwróć tylko JSON.`;
+
+    const model = this.client.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+
+    let cleanedText = text.trim();
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.slice(7);
+    }
+    if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.slice(3);
+    }
+    if (cleanedText.endsWith("```")) {
+      cleanedText = cleanedText.slice(0, -3);
+    }
+    cleanedText = cleanedText.trim();
+
+    const parsed = JSON.parse(cleanedText);
+
+    if (!parsed?.content) {
+      throw new Error("AI nie wygenerował zawartości");
+    }
+
+    return {
+      title: parsed.title || "",
+      subject: parsed.subject || "",
+      description: parsed.description || "",
+      content: parsed.content,
     };
   }
 }

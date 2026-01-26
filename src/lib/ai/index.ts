@@ -89,14 +89,16 @@ export function getAvailableProviders(): Record<AIProviderType, boolean> {
  * Get all available provider instances
  */
 export function getAllAvailableProviders(): IAIProvider[] {
-  const providers: IAIProvider[] = [
-    new OpenAIProvider(),
-    new GeminiProvider(),
-    new ClaudeProvider(),
-    new MistralProvider(),
-    new CohereProvider(),
+  const configured = getConfiguredProvider();
+  const orderedTypes: AIProviderType[] = [
+    configured,
+    ...(["openai", "gemini", "claude", "mistral", "cohere"] as AIProviderType[]).filter(
+      (t) => t !== configured
+    ),
   ];
-  return providers.filter(p => p.isAvailable());
+
+  const providers: IAIProvider[] = orderedTypes.map((t) => createProvider(t));
+  return providers.filter((p) => p.isAvailable());
 }
 
 /**
