@@ -158,6 +158,10 @@
     "title": "Moje notatki",
     "subtitle": "Zarządzaj i organizuj swoje materiały do nauki",
     "createNote": "Utwórz notatkę",
+    "allNotes": "Wszystkie notatki",
+    "myNotes": "Moje notatki",
+    "private": "Prywatna",
+    "public": "Publiczna",
     "searchPlaceholder": "Szukaj notatek...",
     "filter": "Filtruj",
     "allSubjects": "Wszystkie przedmioty",
@@ -272,6 +276,7 @@
       "flashcards": "Fiszki",
       "cards": "kart",
       "generateMore": "Generuj więcej",
+      "noMaterialsYet": "Brak materiałów do nauki. Wygeneruj je poniżej!",
       "newQuiz": "Nowy quiz",
       "moreFlashcards": "Więcej fiszek",
       "generating": "Generowanie...",
@@ -364,7 +369,17 @@
     },
     "preferences": {
       "title": "Preferencje",
-      "comingSoon": "Panel preferencji będzie dostępny wkrótce."
+      "description": "Dostosuj swoje doświadczenie nauki i dzienne cele.",
+      "dailyGoals": {
+        "title": "Dzienne cele",
+        "notes": "Notatki do utworzenia",
+        "quizzes": "Quizy do ukończenia",
+        "flashcards": "Fiszki do przeglądnięcia"
+      },
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "saveSuccess": "Cele zostały zapisane!",
+      "saveError": "Nie udało się zapisać celów."
     },
     "header": {
       "change": "Zmień",
@@ -446,6 +461,8 @@
     "title": "Moje quizy",
     "subtitle": "Sprawdź swoją wiedzę i śledź postępy",
     "searchPlaceholder": "Szukaj quizów...",
+    "allQuizzes": "Wszystkie quizy",
+    "myQuizzes": "Moje quizy",
     "stats": {
       "totalQuizzes": "Wszystkie quizy",
       "averageScore": "Średni wynik",
@@ -592,6 +609,10 @@
     "subtitle": "Przeglądaj i opanuj swoje zestawy fiszek",
     "searchPlaceholder": "Szukaj zestawów fiszek...",
     "createNew": "Utwórz fiszki",
+    "allFlashcards": "Wszystkie fiszki",
+    "myFlashcards": "Moje fiszki",
+    "private": "Prywatna",
+    "public": "Publiczna",
     "loading": "Ładowanie fiszek...",
     "reviewed": "Przejrzane",
     "today": "Dzisiaj",

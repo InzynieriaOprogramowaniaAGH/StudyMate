@@ -96,6 +96,7 @@ export default function QuizzesPage() {
   const [error, setError] = useState<string | null>(null);
   const [deleteConfirmQuizId, setDeleteConfirmQuizId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewMode, setViewMode] = useState<"all" | "my">("all");
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -172,7 +173,9 @@ export default function QuizzesPage() {
       (activeTab === "Completed" && quiz.status === "Completed") ||
       (activeTab === "New" && quiz.status === "Not Started");
 
-    return matchesSearch && matchesSubject && matchesLevel && matchesTab;
+    const matchesViewMode = viewMode === "all" || quiz.user?.email === session?.user?.email;
+
+    return matchesSearch && matchesSubject && matchesLevel && matchesTab && matchesViewMode;
   });
 
   // Calculate stats
@@ -266,6 +269,37 @@ export default function QuizzesPage() {
               );
             })}
           </motion.div>
+
+          {/* View Mode Toggle */}
+          {session && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="flex gap-2 mb-4"
+            >
+              <button
+                onClick={() => setViewMode("all")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "all"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("allQuizzes")}
+              </button>
+              <button
+                onClick={() => setViewMode("my")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  viewMode === "my"
+                    ? "bg-[var(--color-primary)] text-black"
+                    : "bg-[var(--color-bg-light)] border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)]"
+                }`}
+              >
+                {t("myQuizzes")}
+              </button>
+            </motion.div>
+          )}
 
           {/* Search Bar */}
           <motion.div

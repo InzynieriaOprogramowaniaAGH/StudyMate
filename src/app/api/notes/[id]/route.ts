@@ -16,6 +16,19 @@ export async function GET(
       include: {
         user: {
           select: { id: true, email: true }
+        },
+        quizzes: {
+          select: {
+            id: true,
+            score: true,
+            totalQuestions: true,
+          }
+        },
+        flashcards: {
+          select: {
+            id: true,
+            timesReviewed: true,
+          }
         }
       }
     });
@@ -33,7 +46,35 @@ export async function GET(
       }
     }
 
-    return NextResponse.json(note);
+    // Calculate statistics
+    const quizCount = note.quizzes.length;
+    const flashcardCount = note.flashcards.length;
+    
+    // Calculate average quiz score
+    const quizzesWithScores = note.quizzes.filter(q => q.score !== null);
+    const avgQuizScore = quizzesWithScores.length > 0
+      ? Math.round(quizzesWithScores.reduce((sum, q) => sum + (q.score || 0), 0) / quizzesWithScores.length)
+      : null;
+    
+    // Calculate total questions across all quizzes
+    const totalQuestions = note.quizzes.reduce((sum, q) => sum + (q.totalQuestions || 0), 0);
+
+    // Calculate total times flashcards were reviewed
+    const totalTimesReviewed = note.flashcards.reduce((sum, f) => sum + (f.timesReviewed || 0), 0);
+
+    // Return note with stats
+    const { quizzes, flashcards, ...noteData } = note;
+    
+    return NextResponse.json({
+      ...noteData,
+      stats: {
+        quizCount,
+        flashcardCount,
+        avgQuizScore,
+        totalQuestions,
+        totalTimesReviewed,
+      }
+    });
   } catch (error) {
     console.error("Error fetching note:", error);
     return NextResponse.json(

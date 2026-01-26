@@ -7,6 +7,7 @@ import { BillingTab } from "./BillingTab";
 import {ProfileHeader} from "./ProfileHeader";
 import { useTranslations } from "next-intl";
 import { AppTab } from "./AppTab";
+import { PreferencesTab } from "./PreferencesTab";
 
 export default function ProfileContent({ user }: { user: any }) {
   const [activeTab, setActiveTab] = useState("account");
@@ -14,6 +15,7 @@ export default function ProfileContent({ user }: { user: any }) {
 
   const tabs = [
     { key: "account", label: t("tabs.account") },
+    { key: "preferences", label: t("tabs.preferences") },
     { key: "app", label: t("tabs.app") },
     { key: "security", label: t("tabs.security") },
     { key: "billing", label: t("tabs.billing") },
@@ -44,6 +46,7 @@ export default function ProfileContent({ user }: { user: any }) {
 
         {/* Dynamic Content */}
         {activeTab === "account" && <AccountTab user={user} />}
+        {activeTab === "preferences" && <PreferencesTab />}
         {activeTab === "app" && <AppTab />}
         {activeTab === "security" && <SecurityTab />}
         {activeTab === "billing" && <BillingTab />}

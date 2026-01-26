@@ -29,10 +29,16 @@ interface UpcomingReview {
 }
 
 interface TodayActivity {
-  quiz_completed?: number;
-  flashcard_reviewed?: number;
-  note_created?: number;
+  quizCompleted?: number;
+  flashcardReviewed?: number;
+  noteAdded?: number;
   [key: string]: number | undefined;
+}
+
+interface DailyGoals {
+  notes: number;
+  quizzes: number;
+  flashcards: number;
 }
 
 export default function DashboardPage() {
@@ -49,6 +55,11 @@ export default function DashboardPage() {
   const [recentNotes, setRecentNotes] = useState<RecentNote[]>([]);
   const [upcomingReviews, setUpcomingReviews] = useState<UpcomingReview[]>([]);
   const [todayActivity, setTodayActivity] = useState<TodayActivity>({});
+  const [dailyGoals, setDailyGoals] = useState<DailyGoals>({
+    notes: 3,
+    quizzes: 3,
+    flashcards: 20,
+  });
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -71,6 +82,9 @@ export default function DashboardPage() {
           setRecentNotes(data.recentNotes || []);
           setUpcomingReviews(data.upcomingReviews || []);
           setTodayActivity(data.todayActivity || {});
+          if (data.dailyGoals) {
+            setDailyGoals(data.dailyGoals);
+          }
         })
         .catch((err) => console.error("Failed to fetch dashboard stats:", err));
     }
@@ -91,9 +105,9 @@ export default function DashboardPage() {
   ];
 
   // Calculate today's goals based on actual activity
-  const todayQuizzes = todayActivity.quiz_completed || 0;
-  const todayFlashcards = todayActivity.flashcard_reviewed || 0;
-  const todayNotes = todayActivity.note_created || 0;
+  const todayQuizzes = todayActivity.quizCompleted || 0;
+  const todayFlashcards = todayActivity.flashcardReviewed || 0;
+  const todayNotes = todayActivity.noteAdded || 0;
 
   // Helper function to format relative time
   const formatRelativeTime = (dateStr: string) => {
@@ -247,9 +261,9 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="p-4 sm:p-3">
                 <div className="flex flex-col gap-4">
-                  <GoalItem label={t("todaysGoal.notes")} value={todayNotes} total={3} />
-                  <GoalItem label={t("todaysGoal.quizzes")} value={todayQuizzes} total={3} />
-                  <GoalItem label={t("todaysGoal.flashcards")} value={todayFlashcards} total={20} />
+                  <GoalItem label={t("todaysGoal.notes")} value={todayNotes} total={dailyGoals.notes} />
+                  <GoalItem label={t("todaysGoal.quizzes")} value={todayQuizzes} total={dailyGoals.quizzes} />
+                  <GoalItem label={t("todaysGoal.flashcards")} value={todayFlashcards} total={dailyGoals.flashcards} />
                 </div>
               </CardContent>
             </Card>
@@ -301,13 +315,15 @@ function GoalItem({
   value: number;
   total: number;
 }) {
+  const percentage = total > 0 ? Math.min((value / total) * 100, 100) : 0;
+  
   return (
     <div>
       <div className="flex justify-between text-xs mb-1">
         <span className="text-sm text-[var(--color-text)]">{label}</span>
         <span className="text-sm text-[var(--color-muted)] font-medium">{value} / {total}</span>
       </div>
-      <Progress value={(value / total) * 100} className="h-2 bg-[var(--color-progress-bg)]" />
+      <Progress value={percentage} className="h-2 bg-[var(--color-progress-bg)]" />
     </div>
   );
 }
