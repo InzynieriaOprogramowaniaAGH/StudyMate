@@ -12,7 +12,7 @@ export default function Hero() {
   const t = useTranslations("hero");
 
   return (
-    <section className="flex flex-col items-center text-center py-20 sm:py-24 px-4 sm:px-6 bg-bg">
+    <section className="flex flex-col items-center text-center py-20 sm:py-24 px-4 sm:px-6 bg-[var(--color-bg-light)]">
     <motion.span
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -63,7 +63,7 @@ export default function Hero() {
         </Link>
         <Link
           href="#how"
-          className="border border-border hover:border-primary px-6 py-3 rounded-xl font-medium text-white transition-transform hover:scale-105"
+          className="border border-border hover:border-primary px-6 py-3 rounded-xl font-medium text-[var(--color-text)] transition-transform hover:scale-105"
         >
           {t("secondaryCta")}
         </Link>

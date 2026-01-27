@@ -45,7 +45,7 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="py-20 sm:py-24 px-4 sm:px-8 bg-bg-light text-center text-white"
+      className="py-20 sm:py-24 px-4 sm:px-8 bg-[var(--color-bg-light)] text-center text-[var(--color-text)]"
     >
       <motion.h2
         initial={{ opacity: 0, y: 10 }}
@@ -100,7 +100,7 @@ export default function Testimonials() {
                 className="rounded-full mr-3 border border-border"
               />
               <div>
-                <p className="font-semibold text-white">{t.name}</p>
+                <p className="font-semibold text-[var(--color-text)]">{t.name}</p>
                 <p className="text-muted text-sm">{t.role}</p>
               </div>
             </motion.div>

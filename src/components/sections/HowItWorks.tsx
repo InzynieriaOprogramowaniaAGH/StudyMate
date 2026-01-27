@@ -24,9 +24,15 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="relative py-24 px-6 bg-[var(--color-bg)] text-center text-[var(--color-white)] overflow-hidden">
-      {/* subtle gradient separator */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0D] to-transparent opacity-60 pointer-events-none" />
+    <section className="relative py-24 px-6 bg-[var(--color-bg-light)] text-center text-[var(--color-text)] overflow-hidden">
+      {/* subtle gradient separator synced with theme */}
+      <div
+        className="absolute inset-0 opacity-60 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-bg-light) 60%, transparent), transparent)",
+        }}
+      />
 
       <div className="relative max-w-6xl mx-auto">
         <motion.h2

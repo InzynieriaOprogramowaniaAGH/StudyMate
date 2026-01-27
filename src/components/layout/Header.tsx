@@ -173,7 +173,7 @@ export default function Header() {
               {/* Centered app name - always visible */}
               <Link
                 href="/"
-                className="text-3xl md:font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-10 transition leading-relaxed"
+                className="text-3xl md:font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition leading-relaxed"
               >
                 StudyMate
               </Link>

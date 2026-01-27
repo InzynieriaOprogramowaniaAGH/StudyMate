@@ -47,9 +47,9 @@ export default function Features() {
   ];
 
   return (
-    <section className="relative py-24 px-6 bg-[var(--color-bg-darker)] text-center text-[var(--color-white)] overflow-hidden">
+    <section className="relative py-24 px-6 bg-[var(--color-bg-light)] text-center text-[var(--color-text)] overflow-hidden">
       {/* subtle background glow layer */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0E0E13] to-transparent opacity-60 pointer-events-none" />
+      <div className="absolute inset-0 from-transparent via-[#0E0E13] to-transparent opacity-60 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto">
         <motion.h2
