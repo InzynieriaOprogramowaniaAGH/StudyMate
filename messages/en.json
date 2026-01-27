@@ -24,7 +24,8 @@
     "register": "Get Started",
     "logout": "Logout",
     "changeLanguage": "Change language",
-    "settings": "Settings"
+    "settings": "Settings",
+    "downloadApp": "Download App"
   },
   "hero": {
     "badge": "AI-Powered Learning",

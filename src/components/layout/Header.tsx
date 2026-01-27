@@ -13,6 +13,7 @@ import GB from "country-flag-icons/react/3x2/GB";
 import PL from "country-flag-icons/react/3x2/PL";
 import { useLocale, useTranslations } from "next-intl";
 import { type Locale } from "@/i18n/config";
+import { DesktopInstallerButton } from "../profile/DesktopInstaller";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -241,6 +242,7 @@ export default function Header() {
                   >
                     {t("progress")}
                   </Link>
+                  <DesktopInstallerButton />
                 </div>
               ) : (
                 <div className="flex flex-col space-y-2">
@@ -286,7 +288,7 @@ export default function Header() {
                 {/* Logout Button */}
                 <button
                   onClick={requestLogout}
-                  className="w-full text-red-400 hover:bg-red-500/10 transition py-3 px-3 rounded-lg text-base text-left"
+                  className="w-full text-red-400 hover:bg-red-500/10 transition py-3 px-3 rounded-lg text-base text-left mb-4"
                 >
                   {t("logout")}
                 </button>

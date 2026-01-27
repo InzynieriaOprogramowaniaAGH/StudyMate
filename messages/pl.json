@@ -24,7 +24,8 @@
     "register": "Rozpocznij",
     "logout": "Wyloguj się",
     "changeLanguage": "Zmień język",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "downloadApp": "Pobierz aplikację"
   },
   "hero": {
     "badge": "Nauka wspierana przez AI",
