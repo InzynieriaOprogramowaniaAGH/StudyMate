@@ -111,7 +111,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="relative flex items-center justify-center px-6 md:px-8 py-5 border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
+      <header className="relative flex items-center justify-center px-6 md:p-5 border-b border-[var(--color-border)] sticky top-0 bg-[var(--color-bg)] backdrop-blur-md z-50">
         {/* Burger menu button - always visible on left */}
         <button
           onClick={() => setOpen(!open)}
@@ -122,13 +122,18 @@ export default function Header() {
           <Menu size={28} />
         </button>
 
-        {/* Centered app name - always visible */}
-        <Link
-          href="/"
-          className="text-4xl md:text-5xl font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition leading-relaxed pb-6"
+        {/* Centered app name - hide when sidebar is open */}
+        <motion.div
+          animate={{ opacity: open ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
         >
-          StudyMate
-        </Link>
+          <Link
+            href="/"
+            className="text-4xl md:text-5xl font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-90 transition leading-relaxed"
+          >
+            StudyMate
+          </Link>
+        </motion.div>
 
         {/* Streak indicator on right for authenticated users */}
         {isAuthenticated && (
@@ -164,10 +169,17 @@ export default function Header() {
             className="fixed top-0 left-0 bottom-0 w-[280px] bg-[var(--color-bg)] border-r border-[var(--color-border)] z-[70] flex flex-col"
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-end p-4 border-b border-[var(--color-border)]">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+              {/* Centered app name - always visible */}
+              <Link
+                href="/"
+                className="text-3xl md:font-bold bg-[linear-gradient(to_right,var(--color-primary),var(--color-accent),var(--color-primary))] bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient-slow hover:opacity-10 transition leading-relaxed"
+              >
+                StudyMate
+              </Link>
               <button
                 onClick={() => setOpen(false)}
-                className="text-[var(--color-text)] opacity-70 hover:opacity-100 transition p-2 rounded-lg hover:bg-[var(--color-bg-light)]"
+                className="items-ri text-[var(--color-text)] opacity-70 hover:opacity-100 transition p-2 rounded-lg hover:bg-[var(--color-bg-light)]"
                 aria-label="Close menu"
               >
                 <X size={24} />
@@ -242,7 +254,6 @@ export default function Header() {
                   >
                     {t("progress")}
                   </Link>
-                  <DesktopInstallerButton />
                 </div>
               ) : (
                 <div className="flex flex-col space-y-2">
@@ -264,36 +275,43 @@ export default function Header() {
               )}
             </nav>
 
-            {/* Drawer Footer */}
+            {/* Desktop Installer */}
             {isAuthenticated && (
-              <div className="p-4 border-t border-[var(--color-border)]">
-                {/* Settings Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-[var(--color-muted)]">{t("settings")}</span>
-                  <div className="flex items-center gap-2">
-                    <ThemeToggle />
-                    <button
-                      onClick={toggleLanguage}
-                      disabled={isPending}
-                      className={`w-9 h-9 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
-                      title={t("changeLanguage")}
-                    >
-                      <div className="w-full h-full flex items-center justify-center scale-150">
-                        {locale === "en" ? <GB /> : <PL />}
-                      </div>
-                    </button>
-                  </div>
-                </div>
+              <div className="p-4">
+                <DesktopInstallerButton />
+              </div>
+            )}
 
-                {/* Logout Button */}
+            {/* Drawer Footer */}
+            <div className="p-4 border-t border-[var(--color-border)]">
+              {/* Settings Row */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm text-[var(--color-muted)]">{t("settings")}</span>
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <button
+                    onClick={toggleLanguage}
+                    disabled={isPending}
+                    className={`w-9 h-9 rounded-full border border-[var(--color-border)] hover:border-[var(--color-primary)] transition flex items-center justify-center overflow-hidden ${isPending ? 'opacity-50 cursor-wait' : ''}`}
+                    title={t("changeLanguage")}
+                  >
+                    <div className="w-full h-full flex items-center justify-center scale-150">
+                      {locale === "en" ? <GB /> : <PL />}
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Logout Button */}
+              {isAuthenticated && (
                 <button
                   onClick={requestLogout}
                   className="w-full text-red-400 hover:bg-red-500/10 transition py-3 px-3 rounded-lg text-base text-left mb-4"
                 >
                   {t("logout")}
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </motion.aside>
         )}
       </AnimatePresence>
